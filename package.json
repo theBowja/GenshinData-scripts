@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {
+    "fuzzysort": "^2.0.1"
+  }
+}
