@@ -9,7 +9,7 @@ global.getReadable = function(name, langcode) {
 	let path = `${config.GenshinData_folder}/Readable/${langcode}/${name}.txt`;
 
 	if (fs.existsSync(path)) {
-		return fs.readFileSync(path, 'utf8');
+		return fs.readFileSync(path, 'utf8').replaceAll('\r\n', '\n').trim();
 	} else {
 		return '';
 	}
@@ -21,7 +21,8 @@ global.xskilldepot = getExcel('AvatarSkillDepotExcelConfigData');
 
 global.xmanualtext = getExcel('ManualTextMapConfigData');
 
-const langcodes = ['CHS', 'CHT', 'DE', 'EN', 'ES', 'FR', 'ID', 'JP', 'KR', 'PT', 'RU', 'TH', 'VI'];
+// if you're adding a new language code, remember to add a translation for Snezhnaya below
+const langcodes = ['CHS', 'CHT', 'DE', 'EN', 'ES', 'FR', 'ID', 'IT', 'JP', 'KR', 'PT', 'RU', 'TH', 'TR', 'VI'];
 
 /* ========================================================================================== */
 
@@ -130,11 +131,13 @@ if(!xcity.find(ele => getLanguage('EN')[ele.cityNameTextMapHash] === 'Snezhnaya'
 	getLanguage('ES')['Snezhnaya'] = 'Snezhnaya';
 	getLanguage('FR')['Snezhnaya'] = 'Snezhnaya';
 	getLanguage('ID')['Snezhnaya'] = 'Snezhnaya';
+	getLanguage('IT')['Snezhnaya'] = 'Snezhnaya';
 	getLanguage('JP')['Snezhnaya'] = 'スネージナヤ';
 	getLanguage('KR')['Snezhnaya'] = '스네즈나야';
 	getLanguage('PT')['Snezhnaya'] = 'Snezhnaya';
 	getLanguage('RU')['Snezhnaya'] = 'Снежная';
 	getLanguage('TH')['Snezhnaya'] = 'Snezhnaya';
+	getLanguage('TR')['Snezhnaya'] = 'Snezhnaya';
 	getLanguage('VI')['Snezhnaya'] = 'Snezhnaya';
 
 	xcity.push({ cityId: 8758412, cityNameTextMapHash: 'Snezhnaya'})

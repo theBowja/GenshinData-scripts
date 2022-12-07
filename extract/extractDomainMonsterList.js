@@ -221,7 +221,11 @@ function collateDomainMonsterList(lang) {
 	}
 
 	for(let dom of Object.values(mydomain)) {
-		if(!dom.monsterlist) console.log(dom.name + ' has no monsterlist');
+		if(!dom.monsterlist) {
+			console.log(dom.name + ' has no monsterlist');
+			dom.monsterlist = [];
+		}
+
 	}
 
 	return mydomain

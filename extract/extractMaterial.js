@@ -97,14 +97,14 @@ function collateMaterial(lang) {
 		if(getLanguage('EN')[obj.typeDescTextMapHash] === 'Fish') {
 			let fishId = xfish.find(ele => ele.itemId === obj.id).id;
 			let stockIds = xstock.reduce((stockAccum, stockObj) => {
-				if(stockObj._fishWeight[fishId] !== undefined) stockAccum.push(stockObj.id);
+				if(stockObj.fishWeight[fishId] !== undefined) stockAccum.push(stockObj.id);
 				return stockAccum;
 			}, []);
 			data.fishinglocations = stockIds.reduce((poolAccum, stockId) => {
-				let pool = xpool.find(p => p._stockList.includes(stockId));
+				let pool = xpool.find(p => p.stockList.includes(stockId));
 				if(pool === undefined) return poolAccum;
-				if(!poolAccum.includes(language[pool._poolNameTextMapHash]))
-					poolAccum.push(language[pool._poolNameTextMapHash]);
+				if(!poolAccum.includes(language[pool.poolNameTextMapHash]))
+					poolAccum.push(language[pool.poolNameTextMapHash]);
 				return poolAccum;
 			}, []);
 		}
