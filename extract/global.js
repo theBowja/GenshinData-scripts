@@ -49,6 +49,8 @@ global.replaceNewline = function(str) { return str.replace(/\\n/gi, '\n'); }
 global.removeSprite = function(str) { return str.replace(/{SPRITE_PRESET.*?}/gi, ''); }
 global.sanitizeDescription = function(str) { return removeSprite(replaceNewline(replaceLayout(stripHTML(convertBold(str || ''))))); }
 global.getMatSourceText = function(id, textmap) { return getExcel('MaterialSourceDataExcelConfigData').find(e => e.id === id).textList.map(e => textmap[e]).filter(e => e !== '' && e !== undefined); }
+global.getPropNameWithMatch = function(excel, idkey, idval, propval) { return Object.entries(excel.find(e => e[idkey] === idval)).find(e => e[1] === propval)[0]; };
+
 /* ======================================================================================= */
 
 // object map that converts the genshin coded element into a TextMapHash
