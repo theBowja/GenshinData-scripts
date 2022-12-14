@@ -1,6 +1,7 @@
 require('./global.js');
 
 const xmat = getExcel('MaterialExcelConfigData');
+const xface = getExcel('GCGCardFaceExcelConfigData');
 
 const propMap = {};
 const propMatch = {
@@ -20,7 +21,7 @@ const skipdupelog = [];
 function collate(lang) {
 	const language = getLanguage(lang);
 	const dupeCheck = {};
-	let mydata = .reduce((accum, obj) => {
+	let mydata = xface.reduce((accum, obj) => {
 		let data = {};
 		data.id = obj.id;
 

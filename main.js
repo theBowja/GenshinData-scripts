@@ -30,6 +30,14 @@ function exportData() {
 	// exportData('adventureranks', require('./extract/extractAdventureRank'));
 	// exportData('crafts', require('./extract/extractCraft'));
 
+	exportData('tcgcards', require('./extract/extractTcgCard'));
+	exportData('tcgkeywords', require('./extract/extractTcgKeyword'));
+	exportData('tcgsprites', require('./extract/extractTcgSprite'));
+	exportData('tcgshopitems', require('./extract/extractTcgShopItem'));
+
+	exportData('tcglevelrewards', require('./extract/extractTcgLevelReward'));
+	exportData('tcgcardboxes', require('./extract/extractTcgCardBox'));
+	exportData('tcgcardbacks', require('./extract/extractTcgCardBack'));
 
 
 	// exportData('commissions', require('./extract/extractCommission'), true); // unfinished

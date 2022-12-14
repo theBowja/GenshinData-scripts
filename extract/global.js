@@ -46,7 +46,8 @@ global.stripHTML = function(str) { return (str || '').replace(/(<([^>]+)>)/gi, '
 global.capitalizeFirst = function(str) { return str[0].toUpperCase() + str.toLowerCase().slice(1); }
 global.replaceLayout = function(str) { return str.replace(/{LAYOUT_MOBILE#.*?}{LAYOUT_PC#(.*?)}{LAYOUT_PS#.*?}/gi,'$1').replace('#','').replaceAll('{NON_BREAK_SPACE}', ' '); }
 global.replaceNewline = function(str) { return str.replace(/\\n/gi, '\n'); }
-global.sanitizeDescription = function(str) { return replaceNewline(replaceLayout(stripHTML(convertBold(str || '')))); }
+global.removeSprite = function(str) { return str.replace(/{SPRITE_PRESET.*?}/gi, ''); }
+global.sanitizeDescription = function(str) { return removeSprite(replaceNewline(replaceLayout(stripHTML(convertBold(str || ''))))); }
 global.getMatSourceText = function(id, textmap) { return getExcel('MaterialSourceDataExcelConfigData').find(e => e.id === id).textList.map(e => textmap[e]).filter(e => e !== '' && e !== undefined); }
 /* ======================================================================================= */
 
@@ -85,11 +86,12 @@ global.dayOfWeek = function(num) {
 
 const uniqueLog = {};
 // if it isn't unique, then appends "a" to end. or "b". all the way to "z".
-global.makeUniqueFileName = function(textmaphash, map) {
+global.makeUniqueFileName = function(textmaphash, map, sanitize) {
 	let name = getLanguage('EN')[textmaphash];
-	if(name === "" || name === undefined) return "";
+	if (sanitize) name = sanitizeDescription(name);
+	if (name === "" || name === undefined) return "";
 	let filename = makeFileName(name);
-	if(map[filename] === undefined) return filename;
+	if (map[filename] === undefined) return filename;
 
 	let i = 1;
 	while(map[filename+"-"+("0" + i).slice(-2)] !== undefined) { i++; }
@@ -102,11 +104,11 @@ global.makeUniqueFileName = function(textmaphash, map) {
 }
 
 const dupelogskip = [118002, 11419, 100934, 28030501, 80032, 82010];
-global.checkDupeName = function(data, namemap) {
+global.checkDupeName = function(data, namemap, skipdupelog) {
 	let name = data.name;
 	let key = name.toLowerCase().replace(/[ ["'·\.「」…！\!？\?(\)。，,《》—『』«»<>\]#{\}]/g, '');
 	let id;
-	if (namemap[key]) {
+	if (namemap[key]) { // if already exists, then give it dupealias property and change 
 		namemap[key].dupealias = namemap[key].name + ' 0';
 		id = namemap[key].id || namemap[key].id[0] || -1;
 	} else {
@@ -116,7 +118,7 @@ global.checkDupeName = function(data, namemap) {
 	let i = 1;
 	while (namemap[key+i]) { i++; }
 	data.dupealias = name+' '+i;
-	if(!dupelogskip.includes(id)) console.log(" dupealias added " + id + ": "+data.dupealias);
+	if(!dupelogskip.includes(id) && !skipdupelog.includes(id)) console.log(" dupealias added " + id + ": "+data.dupealias);
 	namemap[key+i] = data;
 	return true;
 }
