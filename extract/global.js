@@ -49,7 +49,7 @@ global.replaceNewline = function(str) { return str.replace(/\\n/gi, '\n'); }
 global.removeSprite = function(str) { return str.replace(/{SPRITE_PRESET.*?}/gi, ''); }
 global.sanitizeDescription = function(str) { return removeSprite(replaceNewline(replaceLayout(stripHTML(convertBold(str || ''))))); }
 global.getMatSourceText = function(id, textmap) { return getExcel('MaterialSourceDataExcelConfigData').find(e => e.id === id).textList.map(e => textmap[e]).filter(e => e !== '' && e !== undefined); }
-global.getPropNameWithMatch = function(excel, idkey, idval, propval) { return Object.entries(excel.find(e => e[idkey] === idval)).find(e => e[1] === propval)[0]; };
+global.getPropNameWithMatch = function(excel, idkey, idval, propval) { return Object.entries(excel.find(e => e[idkey] === idval)).find(e => e[1] === propval || e[1][0] === propval)[0]; };
 
 /* ======================================================================================= */
 
@@ -128,23 +128,47 @@ global.checkDupeName = function(data, namemap, skipdupelog) {
 const xcity = getExcel('CityConfigData');
 // adds Snezhnaya manually
 if(!xcity.find(ele => getLanguage('EN')[ele.cityNameTextMapHash] === 'Snezhnaya')) {
-	getLanguage('CHS')['Snezhnaya'] = '至冬国';
-	getLanguage('CHT')['Snezhnaya'] = '至冬國';
-	getLanguage('DE')['Snezhnaya'] = 'Snezhnaya';
-	getLanguage('EN')['Snezhnaya'] = 'Snezhnaya';
-	getLanguage('ES')['Snezhnaya'] = 'Snezhnaya';
-	getLanguage('FR')['Snezhnaya'] = 'Snezhnaya';
-	getLanguage('ID')['Snezhnaya'] = 'Snezhnaya';
-	getLanguage('IT')['Snezhnaya'] = 'Snezhnaya';
-	getLanguage('JP')['Snezhnaya'] = 'スネージナヤ';
-	getLanguage('KR')['Snezhnaya'] = '스네즈나야';
-	getLanguage('PT')['Snezhnaya'] = 'Snezhnaya';
-	getLanguage('RU')['Snezhnaya'] = 'Снежная';
-	getLanguage('TH')['Snezhnaya'] = 'Snezhnaya';
-	getLanguage('TR')['Snezhnaya'] = 'Snezhnaya';
-	getLanguage('VI')['Snezhnaya'] = 'Snezhnaya';
+	if (getLanguage('EN')[536575635]) {
+		xcity.push({ cityId: 8758412, cityNameTextMapHash: 536575635 })
+	} else {
+		getLanguage('CHS')['Snezhnaya'] = '至冬国';
+		getLanguage('CHT')['Snezhnaya'] = '至冬國';
+		getLanguage('DE')['Snezhnaya'] = 'Snezhnaya';
+		getLanguage('EN')['Snezhnaya'] = 'Snezhnaya';
+		getLanguage('ES')['Snezhnaya'] = 'Snezhnaya';
+		getLanguage('FR')['Snezhnaya'] = 'Snezhnaya';
+		getLanguage('ID')['Snezhnaya'] = 'Snezhnaya';
+		getLanguage('IT')['Snezhnaya'] = 'Snezhnaya';
+		getLanguage('JP')['Snezhnaya'] = 'スネージナヤ';
+		getLanguage('KR')['Snezhnaya'] = '스네즈나야';
+		getLanguage('PT')['Snezhnaya'] = 'Snezhnaya';
+		getLanguage('RU')['Snezhnaya'] = 'Снежная';
+		getLanguage('TH')['Snezhnaya'] = 'Snezhnaya';
+		getLanguage('TR')['Snezhnaya'] = 'Snezhnaya';
+		getLanguage('VI')['Snezhnaya'] = 'Snezhnaya';
+		xcity.push({ cityId: 8758412, cityNameTextMapHash: 'Snezhnaya'})
+	}
+}
 
-	xcity.push({ cityId: 8758412, cityNameTextMapHash: 'Snezhnaya'})
+// Goes through binoutput to get data on tcg skill's damage and element
+const tcgSkillKeyMap = {};
+global.loadTcgSkillKeyMap = function() {
+	if (tcgSkillKeyMap.loaded) return tcgSkillKeyMap;
+	const filelist = fs.readdirSync(`${config.GenshinData_folder}/BinOutput/_unknown_dir`);
+	for (const filename of filelist) {
+		if (!filename.endsWith('.json')) continue;
+
+		const fileObj = require(`${config.GenshinData_folder}/BinOutput/_unknown_dir/${filename}`);
+		if (!fileObj.name) continue;
+
+		try {
+			tcgSkillKeyMap[fileObj.name] = Object.values(Object.values(fileObj)[1]);
+		} catch(e) {
+			continue;
+		}
+	}
+	tcgSkillKeyMap.loaded = true;
+	return tcgSkillKeyMap;
 }
 
 /* =========================================================================================== */

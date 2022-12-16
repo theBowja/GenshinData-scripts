@@ -31,7 +31,9 @@ function exportData() {
 	// exportData('crafts', require('./extract/extractCraft'));
 
 	exportData('tcgcards', require('./extract/extractTcgCard'));
+	exportData('tcgcharactercards', require('./extract/extractTcgCharacterCard'));
 	exportData('tcgkeywords', require('./extract/extractTcgKeyword'));
+	exportData('tcgdetailedrules', require('./extract/extractTcgDetailedRule'));
 	exportData('tcgsprites', require('./extract/extractTcgSprite'));
 	exportData('tcgshopitems', require('./extract/extractTcgShopItem'));
 

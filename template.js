@@ -2,19 +2,7 @@ require('./global.js');
 
 const xmat = getExcel('MaterialExcelConfigData');
 
-const propMap = {};
-const propMatch = {
-	// id: 'BDFMGMADMGC',
-	storyDescTextHashMap: 753619631,
-	source: 142707039
-}
-
-// find property names
-for(let [key, value] of Object.entries(xcard[0])) {
-	for(let [pkey, pval] of Object.entries(propMatch)) {
-		if (value === pval) propMap[pkey] = key;
-	}
-}
+// const propImage = getPropNameWithMatch(xdetail, 'id', 1001, "UI_Gcg_InSide_01");
 
 const skipdupelog = [];
 function collate(lang) {
