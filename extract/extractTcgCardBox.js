@@ -3,7 +3,9 @@ require('./global.js');
 const xmat = getExcel('MaterialExcelConfigData');
 const xbox = getExcel('GCGDeckFieldExcelConfigData');
 xbox[0].id = 100;
+const xcardback = getExcel('GCGDeckBackExcelConfigData');
 
+const propBackImage = getPropNameWithMatch(xcardback, 'id', 101, 'Gcg_CardBack_Mengde');
 
 const propMap = {};
 const propMatch = {
@@ -37,6 +39,9 @@ function collate(lang) {
 		const mat = xmat.find(e => e.id === obj.itemId);
 		data.rarity = mat.rankLevel;
 		data.filename_icon = mat.icon;
+
+		const backimage = xcardback.find(e => e.id === obj.id+1)[propBackImage];
+		data.filename_bg = `UI_Gcg_Bg_${backimage.substring(backimage.lastIndexOf('_')+1)}`;
 
 		let filename = makeUniqueFileName(obj.nameTextMapHash, accum);
 		if(filename === '') return accum;
