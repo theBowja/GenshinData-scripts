@@ -1,4 +1,4 @@
-require('./global.js');
+require('./globalTcg.js');
 
 const xmat = getExcel('MaterialExcelConfigData');
 const xrule = getExcel('GCGRuleTextExcelConfigData');
@@ -36,7 +36,7 @@ function collate(lang) {
 			rule.content = sanitizeDescription(language[ruleObj.contentTextMapHash]);
 			rule.contentraw = language[ruleObj.contentTextMapHash];
 			if (ruleObj[propImage] && ruleObj[propImage] !== "")
-				rule.image = ruleObj[propImage];
+				rule.filename_image = ruleObj[propImage];
 			data.rules.push(rule);
 		}
 

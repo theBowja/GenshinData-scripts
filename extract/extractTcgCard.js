@@ -1,4 +1,4 @@
-require('./global.js');
+require('./globalTcg.js');
 
 const xcard = getExcel('GCGDeckCardExcelConfigData');
 const xchar = getExcel('GCGCharExcelConfigData');

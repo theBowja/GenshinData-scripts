@@ -1,4 +1,4 @@
-require('./global.js');
+require('./globalTcg.js');
 
 const xmat = getExcel('MaterialExcelConfigData');
 const xkey = getExcel('GCGKeywordExcelConfigData');

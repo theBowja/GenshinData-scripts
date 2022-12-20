@@ -1,27 +1,16 @@
 require('./globalTcg.js');
 
 const xmat = getExcel('MaterialExcelConfigData');
-const xface = getExcel('GCGCardFaceExcelConfigData');
+const xcard = getExcel('GCGCardExcelConfigData');
 
-const propMap = {};
-const propMatch = {
-	// id: 'BDFMGMADMGC',
-	storyDescTextHashMap: 753619631,
-	source: 142707039
-}
-
-// find property names
-for(let [key, value] of Object.entries(xcard[0])) {
-	for(let [pkey, pval] of Object.entries(propMatch)) {
-		if (value === pval) propMap[pkey] = key;
-	}
-}
+// const propImage = getPropNameWithMatch(xdetail, 'id', 1001, "UI_Gcg_InSide_01");
 
 const skipdupelog = [];
 function collate(lang) {
 	const language = getLanguage(lang);
 	const dupeCheck = {};
-	let mydata = xface.reduce((accum, obj) => {
+	let mydata = xcard.reduce((accum, obj) => {
+		if (obj.cardType !== 'GCG_CARD_STATE') return accum;
 		let data = {};
 		data.id = obj.id;
 

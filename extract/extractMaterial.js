@@ -28,8 +28,8 @@ check MaterialSourceDataExcelConfigData should have
 const filter = ['MATERIAL_EXCHANGE', 'MATERIAL_WOOD', 'MATERIAL_AVATAR_MATERIAL', 'MATERIAL_EXP_FRUIT',
 				'MATERIAL_WEAPON_EXP_STONE', 'MATERIAL_CONSUME', 'MATERIAL_FISH_BAIT', 'MATERIAL_FISH_ROD'];
 
-// Adventure EXP, Mora, Primogems, Companionship EXP, Apple, Sunsettia
-const includeMatId = [102, 202, 201, 105, 100001, 100002];
+// Adventure EXP, Mora, Primogems, Companionship EXP, Apple, Sunsettia, Starshroom, Activated Starshroom, Scorched Starshroom
+const includeMatId = [102, 202, 201, 105, 100001, 100002, 101212, 101226, 101227];
 // Crafted Items, Primordial Essence, Raw Meat (S), Fowl (S), Original Essence (Invalidated), Original Resin (Invalidated)
 // Scarlet Quartz, Scarlet Quartz, Test Stamina Growth Item, Test Temporary stamina Growth Item
 const excludeMatId = [110000, 112001, 100086, 100087, 210, 211,

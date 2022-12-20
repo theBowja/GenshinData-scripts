@@ -1,19 +1,19 @@
 
-// exportData();
-copyStatsData();
+exportData();
+// copyStatsData();
 
 function exportData() {
 	const { exportCurve, exportData } = require('./extract/global.js');
 
-	exportData('characters', require('./extract/extractCharacter.js'));
+	// exportData('characters', require('./extract/extractCharacter.js'));
 	// exportCurve('characters', 'AvatarCurveExcelConfigData');
 	// exportData('constellations', require('./extract/extractConstellation'));
 	// exportData('talents', require('./extract/extractTalent.js'));
-	exportData('weapons', require('./extract/extractWeapon.js'));
+	// exportData('weapons', require('./extract/extractWeapon.js'));
 	// exportCurve('weapons', 'WeaponCurveExcelConfigData')
 	// exportData('artifacts', require('./extract/extractArtifact.js'));
 	// exportData('foods', require('./extract/extractFood'));
-	// exportData('materials', require('./extract/extractMaterial')); // change: used both TextList/JumpList.
+	exportData('materials', require('./extract/extractMaterial')); // change: used both TextList/JumpList.
 	// exportData('domains', require('./extract/extractDomain'));
 	// exportData('enemies', require('./extract/extractEnemy'));
 	// exportCurve('enemies', 'MonsterCurveExcelConfigData');
@@ -30,12 +30,14 @@ function exportData() {
 	// exportData('adventureranks', require('./extract/extractAdventureRank'));
 	// exportData('crafts', require('./extract/extractCraft'));
 
-	exportData('tcgcards', require('./extract/extractTcgCard'));
+	// exportData('tcgcards', require('./extract/extractTcgCard'));
 	exportData('tcgcharactercards', require('./extract/extractTcgCharacterCard'));
+	exportData('tcgactioncards', require('./extract/extractTcgActionCard'));
+	// exportData('tcgstatuseffects', require('./extract/extractTcgStatusEffect'));
 	exportData('tcgkeywords', require('./extract/extractTcgKeyword'));
 	exportData('tcgdetailedrules', require('./extract/extractTcgDetailedRule'));
-	exportData('tcgsprites', require('./extract/extractTcgSprite'));
-	exportData('tcgshopitems', require('./extract/extractTcgShopItem'));
+	// exportData('tcgsprites', require('./extract/extractTcgSprite'));
+	// exportData('tcgshopitems', require('./extract/extractTcgShopItem'));
 
 	exportData('tcglevelrewards', require('./extract/extractTcgLevelReward'));
 	exportData('tcgcardboxes', require('./extract/extractTcgCardBox'));

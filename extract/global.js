@@ -41,13 +41,13 @@ global.getPlayerElement = function(SkillDepotId) { let tmp = xskilldepot.find(el
 global.getLanguage = function(abbriev) { return getTextMap(abbriev.toUpperCase()); }
 global.normalizeStr = function(str) { return str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
 global.makeFileName = function(str, lang) { return normalizeStr(str).toLowerCase().replace(/[^a-z0-9]/g,''); }
-global.convertBold = function(str) { return str.replace(/<color=#FFD780FF>(.*?)<\/color>/gi, '**$1**'); }
+global.convertBold = function(str, removeBold) { return str.replace(/<color=#FFD780FF>(.*?)<\/color>/gi, removeBold ? '$1' : '**$1**'); }
 global.stripHTML = function(str) { return (str || '').replace(/(<([^>]+)>)/gi, ''); }
 global.capitalizeFirst = function(str) { return str[0].toUpperCase() + str.toLowerCase().slice(1); }
 global.replaceLayout = function(str) { return str.replace(/{LAYOUT_MOBILE#.*?}{LAYOUT_PC#(.*?)}{LAYOUT_PS#.*?}/gi,'$1').replace('#','').replaceAll('{NON_BREAK_SPACE}', ' '); }
 global.replaceNewline = function(str) { return str.replace(/\\n/gi, '\n'); }
 global.removeSprite = function(str) { return str.replace(/{SPRITE_PRESET.*?}/gi, ''); }
-global.sanitizeDescription = function(str) { return removeSprite(replaceNewline(replaceLayout(stripHTML(convertBold(str || ''))))); }
+global.sanitizeDescription = function(str, removeBold) { return removeSprite(replaceNewline(replaceLayout(stripHTML(convertBold(str || '', removeBold))))); }
 global.getMatSourceText = function(id, textmap) { return getExcel('MaterialSourceDataExcelConfigData').find(e => e.id === id).textList.map(e => textmap[e]).filter(e => e !== '' && e !== undefined); }
 global.getPropNameWithMatch = function(excel, idkey, idval, propval) { return Object.entries(excel.find(e => e[idkey] === idval)).find(e => e[1] === propval || e[1][0] === propval)[0]; };
 
@@ -106,7 +106,7 @@ global.makeUniqueFileName = function(textmaphash, map, sanitize) {
 }
 
 const dupelogskip = [118002, 11419, 100934, 28030501, 80032, 82010];
-global.checkDupeName = function(data, namemap, skipdupelog) {
+global.checkDupeName = function(data, namemap, skipdupelog=[]) {
 	let name = data.name;
 	let key = name.toLowerCase().replace(/[ ["'·\.「」…！\!？\?(\)。，,《》—『』«»<>\]#{\}]/g, '');
 	let id;
@@ -150,26 +150,8 @@ if(!xcity.find(ele => getLanguage('EN')[ele.cityNameTextMapHash] === 'Snezhnaya'
 	}
 }
 
-// Goes through binoutput to get data on tcg skill's damage and element
-const tcgSkillKeyMap = {};
-global.loadTcgSkillKeyMap = function() {
-	if (tcgSkillKeyMap.loaded) return tcgSkillKeyMap;
-	const filelist = fs.readdirSync(`${config.GenshinData_folder}/BinOutput/_unknown_dir`);
-	for (const filename of filelist) {
-		if (!filename.endsWith('.json')) continue;
 
-		const fileObj = require(`${config.GenshinData_folder}/BinOutput/_unknown_dir/${filename}`);
-		if (!fileObj.name) continue;
 
-		try {
-			tcgSkillKeyMap[fileObj.name] = Object.values(Object.values(fileObj)[1]);
-		} catch(e) {
-			continue;
-		}
-	}
-	tcgSkillKeyMap.loaded = true;
-	return tcgSkillKeyMap;
-}
 
 /* =========================================================================================== */
 
