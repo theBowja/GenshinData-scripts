@@ -36,7 +36,7 @@ function collate(lang) {
 		let data = {};
 		data.id = obj.id;
 
-		data.name = language[obj.nameTextMapHash];
+		data.name = sanitizeName(language[obj.nameTextMapHash]);
 		data.hp = obj.hp;
 		data.maxenergy = obj[propMaxEnergy];
 
@@ -57,7 +57,7 @@ function collate(lang) {
 			const skillObj = xskill.find(e => e.Id === skillId);
 			const skill = {};
 			skill.id = skillId;
-			skill.name = language[skillObj.nameTextMapHash];
+			skill.name = sanitizeName(language[skillObj.nameTextMapHash]);
 			skill.descriptionraw = language[skillObj.descTextMapHash];
 			if (tcgSkillKeyMap[skillObj[propSkillKey]]) {
 				if (skill.descriptionraw.includes('D__KEY__DAMAGE')) {
@@ -95,6 +95,7 @@ function collate(lang) {
 		if(filename === '') return accum;
 		checkDupeName(data, dupeCheck, skipdupelog);
 		accum[filename] = data;
+		if (!validName(data.name)) console.log(`${__filename.split(/[\\/]/).pop()} invalid data name: ${data.name}`);
 
 		return accum;
 	}, {});

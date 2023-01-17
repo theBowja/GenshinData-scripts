@@ -18,7 +18,7 @@ function collate(lang) {
 		let data = {};
 		data.id = obj.id;
 
-		data.name = language[obj.titleTextMapHash];
+		data.name = sanitizeName(language[obj.titleTextMapHash]);
 		data.rules = [];
 
 		for (const ruleId of obj.detailIdList) {
@@ -44,6 +44,7 @@ function collate(lang) {
 		if(filename === '') return accum;
 		checkDupeName(data, dupeCheck, skipdupelog);
 		accum[filename] = data;
+		if (!validName(data.name)) console.log(`${__filename.split(/[\\/]/).pop()} invalid data name: ${data.name}`);
 
 		return accum;
 	}, {});

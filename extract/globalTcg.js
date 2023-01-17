@@ -89,7 +89,7 @@ global.getDescriptionReplaced = function(data, description, translation) {
 				replacementText = charName;
 				break;
 
-			case 'S':
+			case 'S': // GCGSkill
 				const skillId = parseInt(description.substring(ind+3, description.indexOf(']', ind)), 10);
 				const skillObj = xskill.find(e => e.Id === skillId);
 				const skillName = translation[skillObj.nameTextMapHash];
@@ -218,4 +218,43 @@ global.getTcgTagImage = function(tag) {
 	default:
 		console.log(`Tag ${tag} does not have an image mapped in global.getTcgTagImage(tag)`);
 	}
+}
+
+global.getTcgHintIcon = function(type) {
+	switch (type) {
+	case 'GCG_HINT_HEAL':
+		return 'UI_Gcg_Buff_Common_Element_Heal';
+	case 'GCG_HINT_CRYO':
+		return 'UI_Gcg_Buff_Common_Element_Ice';
+	case 'GCG_HINT_HYDRO':
+		return 'UI_Gcg_Buff_Common_Element_Water';
+	case 'GCG_HINT_PYRO':
+		return 'UI_Gcg_Buff_Common_Element_Fire';
+	case 'GCG_HINT_ELECTRO':
+		return 'UI_Gcg_Buff_Common_Element_Electric';
+	case 'GCG_HINT_ANEMO':
+		return 'UI_Gcg_Buff_Common_Element_Wind';
+	case 'GCG_HINT_DENDRO':
+		return 'UI_Gcg_Buff_Common_Element_Grass';
+	case 'GCG_HINT_GEO':
+		return 'UI_Gcg_Buff_Common_Element_Rock';
+	// case 'GCG_HINT_PHYSICAL':
+		//return 'UI_Gcg_Buff_Common_Element_Physics';
+	}
+	console.log(`Hint type ${type} does not have an image mapped in global.getTcgHintIcon`);
+}
+
+// UI_Gcg_Buff_
+global.getTcgStatusIcon = function(cardid, type) {
+	switch (cardid) {
+
+	}
+
+	switch (type) {
+	case 'GCG_':
+		return ''
+
+
+	}
+	console.log(`Status type ${type} does not have an image mapped in global.getTcgStatusIcon`);
 }

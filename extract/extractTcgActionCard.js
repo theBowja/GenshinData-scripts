@@ -26,13 +26,14 @@ function collate(lang) {
 		let data = {};
 		data.id = obj.id;
 
-		data.name = language[obj.nameTextMapHash];
+		data.name = sanitizeName(language[obj.nameTextMapHash]);
 
 		data.cardtype = obj.cardType;
 		let cardTypeSuffix = data.cardtype.substring(data.cardtype.lastIndexOf('_')+1);
 		if (cardTypeSuffix === 'MODIFY') cardTypeSuffix = 'EQUIP';
 		else if (cardTypeSuffix === 'ASSIST') cardTypeSuffix = 'SUPPORT';
 		data.cardtypetext = language[xmanualtext.find(e => e.textMapId === `UI_GCG_CARD_TYPE_${cardTypeSuffix}`).textMapContentTextMapHash];
+		if (data.cardtype && !data.cardtypetext) console.log(`ActionCard doesn't have translation for type ${data.cardtype}`);
 
 		data.tags = obj[propTags].filter(e => e !== 'GCG_TAG_NONE');
 		data.tagstext = data.tags.map(tag => language[xtag.find(e => e.type === tag).nameTextMapHash]);
@@ -73,6 +74,7 @@ function collate(lang) {
 		if(filename === '') return accum;
 		checkDupeName(data, dupeCheck, skipdupelog);
 		accum[filename] = data;
+		if (!validName(data.name)) console.log(`${__filename.split(/[\\/]/).pop()} invalid data name: ${data.name}`);
 
 		return accum;
 	}, {});

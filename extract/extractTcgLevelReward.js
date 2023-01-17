@@ -26,19 +26,20 @@ function collate(lang) {
 		data.rewards = rewards.map(repre => {
 			let mat = xmat.find(m => m.id === repre.itemId);
 			if (mat) {
-				let reward = { id: mat.id, name: language[mat.nameTextMapHash] };
+				let reward = { id: mat.id, name: sanitizeName(language[mat.nameTextMapHash]) };
 				reward.count = parseInt(repre.itemCount);
 				return reward;
 			} else {
 				console.log('TcgLevelReward: Unsupported reward mapping');
 			}
 		});
-		data.icontype = obj[propIconType];
+		data.icontype = obj[propIconType] || 'GCG_LEVEL_ICON_TYPE_NONE';
 
 		let filename = makeFileName(obj.level+'', accum);
 		if(filename === '') return accum;
 		checkDupeName(data, dupeCheck, skipdupelog);
 		accum[filename] = data;
+		if (!validName(data.name)) console.log(`${__filename.split(/[\\/]/).pop()} invalid data name: ${data.name}`);
 
 		return accum;
 	}, {});

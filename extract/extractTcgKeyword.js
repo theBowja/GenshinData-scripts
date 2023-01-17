@@ -24,7 +24,7 @@ function collate(lang) {
 		let data = {};
 		data.id = obj.id;
 
-		data.name = sanitizeDescription(language[obj.titleTextMapHash]);
+		data.name = sanitizeName(sanitizeDescription(language[obj.titleTextMapHash]));
 		data.nameraw = language[obj.titleTextMapHash];
 		data.description = sanitizeDescription(language[obj.descTextMapHash]);
 		data.descriptionraw = language[obj.descTextMapHash];
@@ -34,6 +34,7 @@ function collate(lang) {
 		if(filename === '') return accum;
 		checkDupeName(data, dupeCheck);
 		accum[filename] = data;
+		if (!validName(data.name)) console.log(`${__filename.split(/[\\/]/).pop()} invalid data name: ${data.name}`);
 
 		return accum;
 	}, {});
