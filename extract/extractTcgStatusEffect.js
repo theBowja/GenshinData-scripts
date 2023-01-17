@@ -4,7 +4,7 @@ const xcard = getExcel('GCGCardExcelConfigData');
 
 const propEquipDesc = getPropNameWithMatch(xcard, 'id', 100, 1935968141);
 // const propIconType = getPropNameWithMatch(xcard, 'id', 100, 1935968141);
-const propTagList = getPropNameWithMatch(xcard, 'id', 100, 'GCG_TAG_IMMUNE_FREEZING');
+const propTagList = getPropNameWithMatch(xcard, 'id', 106, 'GCG_TAG_FORBIDDEN_ATTACK');
 const propBuffType = getPropNameWithMatch(xcard, 'id', 113031, 'GCG_STATE_BUFF_PYRO');
 const propMagic = getPropNameWithMatch(xcard, 'id', 135021, 'GCG_PERSIST_EFFECT_PROTEGO');
 const propToken = getPropNameWithMatch(xcard, 'id', 135021, 'GCG_TOKEN_SHIELD');
