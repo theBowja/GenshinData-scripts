@@ -1,6 +1,7 @@
 require('./globalTcg.js');
 
 const xcard = getExcel('GCGCardExcelConfigData');
+const xtag = getExcel('GCGTagExcelConfigData');
 
 const propEquipDesc = getPropNameWithMatch(xcard, 'id', 100, 1935968141);
 // const propIconType = getPropNameWithMatch(xcard, 'id', 100, 1935968141);
@@ -45,6 +46,9 @@ function collate(lang) {
 		data.cardtypetext = language[xmanualtext.find(e => e.textMapId === cardtypemanualmap[obj.cardType]).textMapContentTextMapHash];
 		if (!data.cardtypetext) console.log(`TcgStatusEffect doesn't have card type ${data.statustype} mapped.`);
 
+		data.tags = obj[propTagList].filter(e => e !== 'GCG_TAG_NONE');
+		// data.tagstext = data.tags.map(tag => language[xtag.find(e => e.type === tag).nameTextMapHash]);
+
 		if (obj.cardType === 'GCG_CARD_MODIFY')
 			data.descriptionraw = language[obj[propEquipDesc]];
 		else
@@ -57,7 +61,6 @@ function collate(lang) {
 		data.bufftype = obj[propBuffType]; // not always have
 
 		// HAVENT FIGURED OUT WHAT THESE ARE FOR
-		data.tags = obj[propTagList].filter(e => e !== 'GCG_TAG_NONE');
 		data.buff = obj[propBuffType];
 		data.magic = obj[propMagic];
 		data.token = obj[propToken];

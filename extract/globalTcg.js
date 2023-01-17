@@ -196,6 +196,7 @@ global.getTcgTagImage = function(tag) {
 	case 'GCG_TAG_ELEMENT_GEO':
 		return 'UI_Gcg_Tag_Element_Rock';
 	case 'GCG_TAG_ELEMENT_DENDRO':
+	case 'GCG_TAG_DENDRO_PRODUCE':
 		return 'UI_Gcg_Tag_Element_Grass';
 
 	case 'GCG_TAG_NATION_LIYUE':

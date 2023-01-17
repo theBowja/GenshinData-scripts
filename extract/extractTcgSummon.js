@@ -2,13 +2,19 @@ require('./globalTcg.js');
 
 const xcard = getExcel('GCGCardExcelConfigData');
 const xcardview = getExcel('GCGCardViewExcelConfigData');
+const xtag = getExcel('GCGTagExcelConfigData');
 
 const propToken = getPropNameWithMatch(xcard, 'id', 114011, "GCG_TOKEN_ICON_HOURGLASS");
 const propCounter = getPropNameWithMatch(xcard, 'id', 114011, "GCG_TOKEN_LIFE");
 const propHint = getPropNameWithMatch(xcard, 'id', 114011, "GCG_HINT_ELECTRO");
 // const propImage = getPropNameWithMatch(xcard, 'id', 114011, "UI_Gcg_InSide_01");
+const propTags = getPropNameWithMatch(xcard, 'id', 211011, 'GCG_TAG_TALENT');
 
 const propCardFace = getPropNameWithMatch(xcardview, 'id', 1101, 'Gcg_CardFace_Char_Avatar_Ganyu');
+
+const cardtypemanualmap = {
+	GCG_CARD_SUMMON: 'UI_GCG_CARD_TYPE_SUMMON'
+};
 
 const skipdupelog = [];
 function collate(lang) {
@@ -24,6 +30,12 @@ function collate(lang) {
 		data.id = obj.id;
 
 		data.name = sanitizeName(language[obj.nameTextMapHash]);
+
+		data.cardtypetext = language[xmanualtext.find(e => e.textMapId === cardtypemanualmap[obj.cardType]).textMapContentTextMapHash];
+
+		data.tags = obj[propTags].filter(e => e !== 'GCG_TAG_NONE');
+		data.tagstext = data.tags.map(tag => language[xtag.find(e => e.type === tag).nameTextMapHash]);
+		data.filename_tagsicon = data.tags.map(tag => getTcgTagImage(tag));
 
 		data.descriptionraw = language[obj.descTextMapHash];
 		data.descriptionreplaced = getDescriptionReplaced(obj, data.descriptionraw, language);
