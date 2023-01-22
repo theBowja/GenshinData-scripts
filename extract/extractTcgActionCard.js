@@ -22,11 +22,14 @@ function collate(lang) {
 	const language = getLanguage(lang);
 	const dupeCheck = {};
 	let mydata = xcard.reduce((accum, obj) => {
-		if (!obj[propCollectible]) return accum;
+		if (!['GCG_CARD_EVENT', 'GCG_CARD_MODIFY', 'GCG_CARD_ASSIST'].includes(obj.cardType)) return accum;
+		// else if (!obj[propCollectible]) return accum;
 		let data = {};
 		data.id = obj.id;
 
 		data.name = sanitizeName(language[obj.nameTextMapHash]);
+		// if (data.name === undefined || data.name === '') return accum;
+		data.obtainable = obj[propCollectible];
 
 		data.cardtype = obj.cardType;
 		let cardTypeSuffix = data.cardtype.substring(data.cardtype.lastIndexOf('_')+1);
@@ -40,6 +43,7 @@ function collate(lang) {
 		data.filename_tagsicon = data.tags.map(tag => getTcgTagImage(tag));
 
 		data.descriptionraw = language[obj.descTextMapHash];
+		if (data.descriptionraw === undefined || data.descriptionraw === '') return accum;
 		data.descriptionreplaced = getDescriptionReplaced(data, data.descriptionraw, language);
 		data.description = sanitizeDescription(data.descriptionreplaced, true);
 

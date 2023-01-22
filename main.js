@@ -30,15 +30,14 @@ function exportData() {
 	// exportData('adventureranks', require('./extract/extractAdventureRank'));
 	// exportData('crafts', require('./extract/extractCraft'));
 
-	// exportData('tcgcards', require('./extract/extractTcgCard'));
 	// exportData('tcgcharactercards', require('./extract/extractTcgCharacterCard'));
-	// exportData('tcgactioncards', require('./extract/extractTcgActionCard'));
-	exportData('tcgstatuseffects', require('./extract/extractTcgStatusEffect'));
-	exportData('tcgsummons', require('./extract/extractTcgSummon'));
+	exportData('tcgactioncards', require('./extract/extractTcgActionCard'));
+	// exportData('tcgstatuseffects', require('./extract/extractTcgStatusEffect'));
+	// exportData('tcgsummons', require('./extract/extractTcgSummon'));
 	// exportData('tcgkeywords', require('./extract/extractTcgKeyword'));
 	// exportData('tcgdetailedrules', require('./extract/extractTcgDetailedRule'));
-	//// exportData('tcgsprites', require('./extract/extractTcgSprite'));
-	//// exportData('tcgshopitems', require('./extract/extractTcgShopItem'));
+	// // exportData('tcgsprites', require('./extract/extractTcgSprite'));
+	// // exportData('tcgshopitems', require('./extract/extractTcgShopItem'));
 
 	// exportData('tcglevelrewards', require('./extract/extractTcgLevelReward'));
 	// exportData('tcgcardboxes', require('./extract/extractTcgCardBox'));

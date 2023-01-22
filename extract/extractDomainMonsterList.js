@@ -66,6 +66,11 @@ const monsterMap = {
 	"bless seven sense iii": ['ere daythun', 'ere clear', 'ere sunfrost', 'ere cross', 'ere lineb', 'ere halberd'],
 	"bless seven sense iv": ['ere daythun', 'ere clear', 'ere sunfrost'],
 
+	"bless desert citadel i": ['hy slime', 'py slime', 'st py fung', 'cry slime', 'l el slime'],
+	"bless desert citadel ii": ['l pyr slim', 'cry slime', 'pyro slime', 'wh el fungus', 'wing cryoshroo'],
+	"bless desert citadel iii": ['grou geoshro', 'l pyro slim', 'l hy slim', 'grou hydroshr'],
+	"bless desert citadel iv": ['l py slim', 'gro hydrosh', 'la hy sl', 'grou geoshr', 'wing cryosh'],
+
 	"forge alt sand i": ['hy slime', 'la hy slime', 'py slime', 'la py slime'],
 	"forge alt sand ii": ['la hy slime', 'la py slime'],
 	"forge alt sand iii": ['la hy slime', 'la py slime', 'hy ab mage', 'py ab mage'],
