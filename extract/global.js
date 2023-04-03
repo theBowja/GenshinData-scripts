@@ -50,7 +50,7 @@ global.removeSprite = function(str) { return str.replace(/{SPRITE_PRESET.*?}/gi,
 global.sanitizeDescription = function(str, removeBold) { return removeSprite(replaceNewline(replaceLayout(stripHTML(convertBold(str || '', removeBold))))); }
 global.getMatSourceText = function(id, textmap) { return getExcel('MaterialSourceDataExcelConfigData').find(e => e.id === id).textList.map(e => textmap[e]).filter(e => e !== '' && e !== undefined); }
 global.getPropNameWithMatch = function(excel, idkey, idval, propval) { return Object.entries(excel.find(e => e[idkey] === idval)).find(e => e[1] === propval || e[1][0] === propval)[0]; };
-global.validName = function(name) { return !/[|{}#]/.test(name)}
+global.validName = function(name) { return !name === '' && !name.includes('</') && !/[|{}#]/.test(name)}
 global.sanitizeName = function(str) { 
 	str = str.split('|s')[0];
 	if (str.includes('{NON_BREAK_SPACE}')) {
@@ -58,6 +58,23 @@ global.sanitizeName = function(str) {
 		str = str.replaceAll('{NON_BREAK_SPACE}', '').substring(1);
 	}
 	return str;
+}
+
+global.removeNonBreakSpace = function(str) { return str.replaceAll('{NON_BREAK_SPACE}', ' ').substring(str[0] === '#' ? 1 : 0); };
+global.removeColorHTML = function(str) { return str.replace(/<color=#.*?>(.*?)<\/color>/gi, '$1'); };
+global.replaceLayoutPC = function(str) { return str.replace(/{LAYOUT_MOBILE#.*?}{LAYOUT_PC#(.*?)}{LAYOUT_PS#.*?}/gi,'$1').substring(str[0] === '#' ? 1 : 0); };
+global.replaceGenderM = function(str) { return str.replace(/{F#.*?}/gi, '').replace(/{M#(.*?)}/gi, '$1').substring(str[0] === '#' ? 1 : 0); }
+global.sanitizer = function(str, ...sanfunctions) {
+	for (const sanfunc of sanfunctions) { str = sanfunc(str); }
+	return str;
+}
+global.validateString = function(str, folder, lang) {
+	if (str === '' || str.includes('</') || /[|{}#]/.test(str)) {
+		// console.log(`${folder} ${lang} invalid string: ${str}`);
+		throw `${folder} ${lang} invalid string: ${str}`;
+		return false;
+	}
+	return true;
 }
 
 /* ======================================================================================= */

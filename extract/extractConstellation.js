@@ -8,21 +8,36 @@ function collateConstellation(lang) {
 		// bad practice to declare functions inside loop but i need to be able to call it multiple times for players
 		function dowork() {
 			let data = {};
+			data.id = obj.skillDepotId;
 			let depot = xskilldepot.find(ele => ele.id === obj.skillDepotId);
 			if(depot === undefined || depot.energySkill === undefined) return; // not a finished (traveler) character
 			if(depot.talentStarName === '') return; // unfinished
 
 			data.name = language[obj.nameTextMapHash];
 			if(isPlayer(obj)) data.name += ` (${language[elementTextMapHash[getPlayerElement(obj.skillDepotId)]]})`
-			//console.log(depot)
+
 			data.images = {};
 			let stars = depot.talents.map(talentId => xconstellation.find(ele => ele.talentId === talentId));
 			for(let i = 1; i <= 6; i++) {
 				data['c'+i] = {
-					name: sanitizeDescription(language[stars[i-1].nameTextMapHash]),
-					effect: sanitizeDescription(language[stars[i-1].descTextMapHash])
+					name: sanitizer(language[stars[i-1].nameTextMapHash], removeNonBreakSpace),
+					descriptionraw: sanitizer(language[stars[i-1].descTextMapHash], replaceNewline)
 				};
-				data.images['c'+i] = `https://upload-os-bbs.mihoyo.com/game_record/genshin/constellation_icon/${stars[i-1].icon}.png`;
+				data['c'+i].description = sanitizer(data['c'+i].descriptionraw, removeNonBreakSpace, removeColorHTML, replaceLayoutPC, replaceGenderM);
+				validateString(data['c'+i].name, 'constellations', lang);
+				validateString(data['c'+i].description, 'constellations', lang);
+
+				data.images['filename_c'+i] = stars[i-1].icon;
+			}
+
+			let rx = /UI_Talent_[^_]*_([^_]*)/;
+			let extract = rx.exec(data.images.filename_c1)[1];
+			if(!extract.startsWith('Player')) {
+				data.images.filename_constellation = `Eff_UI_Talent_${extract}`;
+			} else {
+				let element = /Player(.*)/.exec(extract)[1];
+				data.images.filename_constellation = `Eff_UI_Talent_PlayerBoy_${element}`;
+				data.images.filename_constellation2 = `Eff_UI_Talent_PlayerGirl_${element}`;
 			}
 
 			accum[avatarIdToFileName[isPlayer(obj) ? obj.skillDepotId : obj.id]] = data;
