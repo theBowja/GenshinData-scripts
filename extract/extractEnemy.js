@@ -91,10 +91,13 @@ function collateEnemy(lang) {
 			} else if(obj.Id === 29070101) { // scaramouche lvl90
 				let rewardpreview = xpreview.find(pre => pre.id === 15042).previewItems.filter(pre => pre.id);
 				data.rewardpreview = mapRewardList(rewardpreview, language);				
+			} else if(obj.Id === 29080101) { // Guardian of Apep’s Oasis lvl90
+				let rewardpreview = xpreview.find(pre => pre.id === 15046).previewItems.filter(pre => pre.id);
+				data.rewardpreview = mapRewardList(rewardpreview, language);				
 			}
 		}
 		if(!data.rewardpreview) {
-			console.log('no reward list for '+obj.Id+' : '+data.name); 
+			if (lang === 'EN') console.log('no reward list for '+obj.Id+' : '+data.name); 
 			data.rewardpreview = [];
 		}
 
