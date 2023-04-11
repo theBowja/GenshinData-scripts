@@ -190,6 +190,11 @@ const monsterMap = {
 	"maste basket of ii": ['ruin earthguard', 'ruin destroy', 'ruin scout'],
 	"maste basket of iii": ['ruin earthguard', 'ruin skywatch'],
 	"maste basket of iv": ['ruin earthguard', 'ruin skywatch'],
+
+	"forsaken rampart i": ['hilichu', 'hili fight', 'hydr sama', 'blaz ax mita'],
+	"forsaken rampart ii": ['hili', 'hili fig', 'hili gren', 'hyd sama', 'anem hili rog'],
+	"forsaken rampart iii": ['hili figh', 'blaz ax mita', 'hyd hili rog'],
+	"forsaken rampart iv": ['blaz ax mita', 'anemo hili rog', 'hydr hili rogu'],
 }
 
 function autocomplete(input, dict) {
@@ -227,7 +232,7 @@ function collateDomainMonsterList(lang) {
 
 	for(let dom of Object.values(mydomain)) {
 		if(!dom.monsterlist) {
-			console.log(dom.name + ' has no monsterlist');
+			if (lang === 'EN') console.log(dom.name + ' has no monsterlist');
 			dom.monsterlist = [];
 		}
 
