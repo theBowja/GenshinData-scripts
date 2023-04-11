@@ -20,12 +20,12 @@ function collateConstellation(lang) {
 			let stars = depot.talents.map(talentId => xconstellation.find(ele => ele.talentId === talentId));
 			for(let i = 1; i <= 6; i++) {
 				data['c'+i] = {
-					name: sanitizer(language[stars[i-1].nameTextMapHash], removeNonBreakSpace),
-					descriptionraw: sanitizer(language[stars[i-1].descTextMapHash], replaceNewline)
+					name: sanitizer(language[stars[i-1].nameTextMapHash], replaceNonBreakSpace, removeHashtag),
+					descriptionRaw: sanitizer(language[stars[i-1].descTextMapHash], replaceNewline)
 				};
-				data['c'+i].description = sanitizer(data['c'+i].descriptionraw, removeNonBreakSpace, removeColorHTML, replaceLayoutPC, replaceGenderM);
-				validateString(data['c'+i].name, 'constellations', lang);
-				validateString(data['c'+i].description, 'constellations', lang);
+				data['c'+i].description = sanitizer(data['c'+i].descriptionRaw, replaceNonBreakSpace, removeColorHTML, replaceLayoutPC, replaceGenderM, removeHashtag);
+				validateString(data['c'+i].name, 'constellations.name', lang);
+				validateString(data['c'+i].description, 'constellations.description', lang);
 
 				data.images['filename_c'+i] = stars[i-1].icon;
 			}

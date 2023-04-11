@@ -45,7 +45,6 @@ global.convertBold = function(str, removeBold) { return str.replace(/<color=#FFD
 global.stripHTML = function(str) { return (str || '').replace(/(<([^>]+)>)/gi, ''); }
 global.capitalizeFirst = function(str) { return str[0].toUpperCase() + str.toLowerCase().slice(1); }
 global.replaceLayout = function(str) { return str.replace(/{LAYOUT_MOBILE#.*?}{LAYOUT_PC#(.*?)}{LAYOUT_PS#.*?}/gi,'$1').replace('#','').replaceAll('{NON_BREAK_SPACE}', ' '); }
-global.replaceNewline = function(str) { return str.replace(/\\n/gi, '\n'); }
 global.removeSprite = function(str) { return str.replace(/{SPRITE_PRESET.*?}/gi, ''); }
 global.sanitizeDescription = function(str, removeBold) { return removeSprite(replaceNewline(replaceLayout(stripHTML(convertBold(str || '', removeBold))))); }
 global.getMatSourceText = function(id, textmap) { return getExcel('MaterialSourceDataExcelConfigData').find(e => e.id === id).textList.map(e => textmap[e]).filter(e => e !== '' && e !== undefined); }
@@ -60,21 +59,65 @@ global.sanitizeName = function(str) {
 	return str;
 }
 
-global.removeNonBreakSpace = function(str) { return str.replaceAll('{NON_BREAK_SPACE}', ' ').substring(str[0] === '#' ? 1 : 0); };
-global.removeColorHTML = function(str) { return str.replace(/<color=#.*?>(.*?)<\/color>/gi, '$1'); };
-global.replaceLayoutPC = function(str) { return str.replace(/{LAYOUT_MOBILE#.*?}{LAYOUT_PC#(.*?)}{LAYOUT_PS#.*?}/gi,'$1').substring(str[0] === '#' ? 1 : 0); };
-global.replaceGenderM = function(str) { return str.replace(/{F#.*?}/gi, '').replace(/{M#(.*?)}/gi, '$1').substring(str[0] === '#' ? 1 : 0); }
+global.replaceNewline = function(str) { return str.replace(/\\n/gi, '\n'); }
+global.replaceNonBreakSpace = function(str) { return str.replaceAll('{NON_BREAK_SPACE}', ' '); };
+global.removeColorHTML = function(str) { return str.replace(/<color=#.*?>(.*?)<\/color>/gis, '$1'); };
+global.replaceLayoutPC = function(str) { return str.replace(/{LAYOUT_MOBILE#.*?}{LAYOUT_PC#(.*?)}{LAYOUT_PS#.*?}/gi,'$1'); };
+global.replaceGenderM = function(str) { return str.replace(/{F#.*?}/gi, '').replace(/{M#(.*?)}/gi, '$1'); }
+global.replaceGenderF = function(str) { return str.replace(/{M#.*?}/gi, '').replace(/{F#(.*?)}/gi, '$1'); }
+global.removeHashtag = function(str) { return str.substring(str[0] === '#' ? 1 : 0); }
 global.sanitizer = function(str, ...sanfunctions) {
 	for (const sanfunc of sanfunctions) { str = sanfunc(str); }
 	return str;
 }
-global.validateString = function(str, folder, lang) {
-	if (str === '' || str.includes('</') || /[|{}#]/.test(str)) {
+global.validateString = function(str, folder, lang, throwerror = true) {
+	if (str === undefined || str === '' ||  /\||{|}|#|<\/|\\n/.test(str)) {
 		// console.log(`${folder} ${lang} invalid string: ${str}`);
-		throw `${folder} ${lang} invalid string: ${str}`;
+		if (throwerror) throw `${folder} ${lang} invalid string: ${str}`;
 		return false;
 	}
 	return true;
+}
+
+global.localeMap = {
+	'CHS': 'zh-cn',
+	'CHT': 'zh-tw',
+	'DE':  'de',
+	'EN':  'en',
+	'ES':  'es',
+	'FR':  'fr',
+	'ID':  'id',
+	'IT':  'it',
+	'JP':  'ja',
+	'KR':  'ko',
+	'PT':  'pt',
+	'RU':  'ru',
+	'TH':  'th',
+	'TR':  'tr',
+	'VI':  'vi'
+};
+global.bodyToGender = {
+	'BODY_BOY': 'MALE',
+	'BODY_LOLI': 'FEMALE',
+	'BODY_GIRL': 'FEMALE',
+	'BODY_MALE': 'MALE',
+	'BODY_LADY': 'FEMALE'
+}
+global.genderTranslations = {
+	'MALE': {
+		CHS: '男', CHT: '男', DE: 'Männlich', EN: 'Male', ES: 'Masculino',
+		FR: 'Homme', ID: 'Pria', IT: 'maschio', JP: '男', KR: '남성', PT: 'Masculino',
+		RU: 'Мужской', TH: 'ชาย', TR: 'erkek', VI: 'nam'
+	},
+	'FEMALE': {
+		CHS: '女', CHT: '女', DE: 'Weiblich', EN: 'Female', ES: 'Femenino',
+		FR: 'Femme', ID: 'Perempuan', IT: 'femmina', JP: '女', KR: '여성', PT: 'Feminino',
+		RU: 'Женский', TH: 'ผู้หญิง', TR: 'kadın', VI: 'nữ'
+	}
+}
+global.mapElementToType = { // for characters
+	anemo: 'ELEMENT_ANEMO', geo: 'ELEMENT_GEO', cryo: 'ELEMENT_CRYO', hydro: 'ELEMENT_HYDRO',
+	pyro: 'ELEMENT_PYRO', dendro: 'ELEMENT_DENDRO', electro: 'ELEMENT_ELECTRO', none: 'ELEMENT_NONE'
 }
 
 /* ======================================================================================= */

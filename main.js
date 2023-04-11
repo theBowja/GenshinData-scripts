@@ -9,7 +9,7 @@ function exportData() {
 	// exportCurve('characters', 'AvatarCurveExcelConfigData');
 	// exportData('constellations', require('./extract/extractConstellation'));
 	// exportData('talents', require('./extract/extractTalent.js'));
-	// exportData('weapons', require('./extract/extractWeapon.js'));
+	exportData('weapons', require('./extract/extractWeapon.js'));
 	// exportCurve('weapons', 'WeaponCurveExcelConfigData')
 	// exportData('artifacts', require('./extract/extractArtifact.js'));
 	// exportData('foods', require('./extract/extractFood'));
@@ -31,7 +31,7 @@ function exportData() {
 	// exportData('crafts', require('./extract/extractCraft'));
 
 	// exportData('tcgcharactercards', require('./extract/extractTcgCharacterCard'));
-	exportData('tcgactioncards', require('./extract/extractTcgActionCard'));
+	// exportData('tcgactioncards', require('./extract/extractTcgActionCard'));
 	// exportData('tcgstatuseffects', require('./extract/extractTcgStatusEffect'));
 	// exportData('tcgsummons', require('./extract/extractTcgSummon'));
 	// exportData('tcgkeywords', require('./extract/extractTcgKeyword'));

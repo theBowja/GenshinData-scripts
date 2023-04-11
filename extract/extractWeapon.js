@@ -29,20 +29,28 @@ function collateWeapon(lang) {
 
 		data.name = language[obj.nameTextMapHash];
 		checkDupeName(data, dupeCheck);
-		data.description = sanitizeDescription(language[obj.descTextMapHash]);
-		data.weapontype = language[weaponTextMapHash[obj.weaponType]];
-		data.rarity = ''+obj.rankLevel;
+
+		data.descriptionRaw = sanitizer(language[obj.descTextMapHash], replaceNewline);
+		data.description = sanitizer(data.descriptionRaw, removeHashtag, replaceGenderM, replaceNonBreakSpace);
+		validateString(data.description, 'weapons.description', lang);
+
+		data.weaponType = obj.weaponType;
+		data.weaponText = language[weaponTextMapHash[obj.weaponType]];
+		data.rarity = obj.rankLevel;
 
 		data.story = getReadable(`Weapon${obj.id}${(lang != 'CHS') ? ('_' + lang) : ''}`, lang);
 
 		if(obj.weaponProp[0].propType !== 'FIGHT_PROP_BASE_ATTACK') console.log(obj,'weapon did not find base atk');
-		data.baseatk = obj.weaponProp.find(obj => obj.propType === 'FIGHT_PROP_BASE_ATTACK').initValue;
+		data.baseAtkValue = obj.weaponProp.find(obj => obj.propType === 'FIGHT_PROP_BASE_ATTACK').initValue;
 
 		let substat = obj.weaponProp[1].propType;
 		if(substat !== undefined) {
-			data.substat = language[xmanualtext.find(ele => ele.textMapId === substat).textMapContentTextMapHash];
+			data.mainStatType = substat;
+			data.mainStatText = language[xmanualtext.find(ele => ele.textMapId === substat).textMapContentTextMapHash];
 			let subvalue = obj.weaponProp[1].initValue;
-			data.subvalue = subvalue;
+			if(subvalue <= 2) subvalue = (Math.round(subvalue*1000)/10).toLocaleString(global.localeMap[lang])+'%';
+			else subvalue = (Math.round(subvalue)).toLocaleString(global.localeMap[lang]);
+			data.baseStatText = subvalue;
 		}
 
 		if(obj.skillAffix[0] !== 0) {
@@ -50,28 +58,40 @@ function collateWeapon(lang) {
 			for(let offset = 0; offset < 5; offset++) {
 				let ref = xrefine.find(ele => ele.affixId === affixId+offset);
 				if(ref === undefined) break;
-				if(offset === 0) data.effectname = language[ref.nameTextMapHash];
-				let effect = language[ref.descTextMapHash];
-				effect = effect.replaceAll('{NON_BREAK_SPACE}', ' ');
-				effect = effect.replace(/<\/color>s/g, 's<\/color>');
-				if(filename === 'swordofdescension' || filename === 'predator') { // has extra color
-					effect = effect.replace(/<color=#.*?>/i, '').replace(/<\/color>/i, '');
-					effect = effect.replace(/<color=#.*?>/i, '').replace(/<\/color>/i, '');
+				if(offset === 0) {
+					data.effectName = language[ref.nameTextMapHash]; // 1* weapons dont have effects
+					validateString(data.effectName, 'weapon.effectName', lang);
 				}
 
-				effect = effect.replace(/<color=#.*?>/gi, '{').replace(/<\/color>/gi, '}');
-				effect = effect.split(/{|}/);
-				data['r'+(offset+1)] = [];
-				data['effect'] = sanitizeDescription(effect.reduce((accum, ele, i) => {
-					if(i % 2 === 0) {
-						return accum + ele;
-					} else if(ele.includes('#')) {
-						return accum + `{${ele}}`;
-					} else {
-						data['r'+(offset+1)].push(ele);
-						return accum + `{${(i-1)/2}}`;
+				const effect = sanitizer(language[ref.descTextMapHash], replaceNewline);
+
+				data['r'+(offset+1)] = {
+					//descriptionRaw: sanitizer(language[ref.descTextMapHash], replaceNewline),
+					description: sanitizer(effect, removeColorHTML, replaceNonBreakSpace, removeHashtag, replaceGenderM),
+					values: []
+				};
+
+				let effectTemplateRaw = effect;
+
+				const effectMatches = effect.match(/<color=#.*?>(.*?)<\/color>/gis);
+				if (effectMatches !== null) {
+					for (const match of effectMatches) {
+						const value = /<color=#.*?>(.*?)<\/color>/gis.exec(match)[1];
+						if (/\d/.test(value)) { // refine value is valid if it contains a number
+							data['r'+(offset+1)].values.push(value);
+
+							const replacement = match.replace(`>${value}<`, `>{${data['r'+(offset+1)].values.length - 1}}<`);
+							effectTemplateRaw = effectTemplateRaw.replace(match, replacement);
+						}
 					}
-				}, ''));
+				}
+				// else if (!filename.includes('isshin')) {
+				// 	 console.log(`error: weapon has no replaceable value for refinement: ${effect}`);
+				// }
+
+				data.effectTemplateRaw = effectTemplateRaw;
+				// data.effectTemplate = sanitizer(effectTemplateRaw, removeColorHTML, replaceNonBreakSpace, removeHashtag, replaceGenderM);
+				// validateString(data.effectTemplate, 'weapon.effectTemplate', lang); // can't validate because i replaced values with {0} etc.
 			}
 		}
 
@@ -81,13 +101,15 @@ function collateWeapon(lang) {
 			// 1 and 2 star weapons only have 4 ascensions instead of 6
 			let apromo = xsubstat.find(ele => ele.weaponPromoteId === obj.weaponPromoteId && ele.promoteLevel === i);
 			costs['ascend'+i] = [{
+				id: 202,
 				name: language[moraNameTextMapHash],
-				count: apromo.coinCost
+				count: apromo.coinCost || 0
 			}];
 
 			for(let items of apromo.costItems) {
 				if(items.id === undefined) continue;
 				costs['ascend'+i].push({
+					id: items.id,
 					name: language[xmat.find(ele => ele.id === items.id).nameTextMapHash],
 					count: items.count
 				})
@@ -120,8 +142,13 @@ function collateWeapon(lang) {
 		}, [])
 		data.stats = stats;
 
-		data.icon = obj.icon;
-		data.awakenicon = obj.awakenIcon;
+		// IMAGES
+		data.filename_icon = obj.icon;
+		data.filename_awakenIcon = obj.awakenIcon;
+		data.filename_gacha = `UI_Gacha_EquipIcon_${obj.icon.slice(obj.icon.indexOf("UI_EquipIcon")+13)}`;
+
+		data.mihoyo_icon = `https://upload-os-bbs.mihoyo.com/game_record/genshin/equip/${obj.icon}.png`;
+		data.mihoyo_awakenIcon = `https://upload-os-bbs.mihoyo.com/game_record/genshin/equip/${obj.awakenIcon}.png`;
 
 		accum[filename] = data;
 		return accum;

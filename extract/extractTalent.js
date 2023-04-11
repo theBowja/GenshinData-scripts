@@ -21,6 +21,7 @@ function collateTalent(lang) {
 
 			let filename = avatarIdToFileName[isPlayer(obj) ? obj.skillDepotId : obj.id];
 
+			data.id = obj.skillDepotId;
 			data.name = language[obj.nameTextMapHash]; // client-facing name
 			if(isPlayer(obj)) data.name += ` (${language[elementTextMapHash[getPlayerElement(obj.skillDepotId)]]})`
 
@@ -38,21 +39,37 @@ function collateTalent(lang) {
 				let talent = xtalent.find(tal => tal.id === skId);
 				let combatTypeProp = talentCombatTypeMap[index];
 				let ref = data[combatTypeProp] = {};
-				ref.id = talent.id;
+				// ref.id = talent.id;
 				ref.name = language[talent.nameTextMapHash];
-				let desc = language[talent.descTextMapHash].split('\\n\\n<i>'); // extract out the italicized part
-				ref.info = sanitizeDescription(desc[0]);
-				if(desc[1]) ref.description = sanitizeDescription(desc[1]);
-				ref.icon = talent.skillIcon;
-				if(combatTypeProp === 'combat3')
-					ref.icon = ref.icon + '_HD';
+				validateString(ref.name, 'talents.combatname', lang);
 
-				ref.labels = [];
+				ref.descriptionRaw = global.sanitizer(language[talent.descTextMapHash], replaceNewline);
+				let description = ref.descriptionRaw;
+				let flavortext;
+				if (ref.descriptionRaw.includes('<i>')) {
+					let match = /(.*)\n\n(.?<i>.*)/s.exec(ref.descriptionRaw);
+					if (!match) match = /(.*)(<i>.*)/s.exec(ref.descriptionRaw);
+					description = match[1];
+					flavortext = match[2].replaceAll('<i>', '').replaceAll('</i>', '');
+				}
+				ref.description = sanitizer(description, removeColorHTML, removeHashtag, replaceGenderM, replaceLayoutPC, replaceNonBreakSpace);
+				validateString(ref.description, 'talents.combatdescription', lang);
+				if (flavortext) {
+					ref.flavorText = global.sanitizer(flavortext, replaceGenderM, replaceNonBreakSpace);
+					validateString(ref.flavorText, 'talents.flavorText', lang);
+				}
+
+				data[`filename_${combatTypeProp}`] = talent.skillIcon;
+				if(combatTypeProp === 'combat3')
+					data[`filename_${combatTypeProp}`] = data[`filename_${combatTypeProp}`] + '_HD';
+
+				ref.attributes = {};
+				ref.attributes.labels = [];
 				// build the labels
 				let attTalent = xpassive.find(tal => (tal.proudSkillGroupId === talent.proudSkillGroupId && tal.level === 1));
 				for(let labelTextMap of attTalent.paramDescList) {
 					if(language[labelTextMap] === "" || language[labelTextMap] === undefined) continue;
-					ref.labels.push(replaceLayout(language[labelTextMap]));
+					ref.attributes.labels.push(replaceLayout(language[labelTextMap]));
 				}
 
 				parameters[combatTypeProp] = {};
@@ -70,12 +87,14 @@ function collateTalent(lang) {
 					});
 					if(lvl >= 2 && lvl <= 10) { // get upgrade costs
 						costs['lvl'+lvl] = [{
+							id: 202,
 							name: language[moraNameTextMapHash],
 							count: attTalent.coinCost
 						}];
 						for(let items of attTalent.costItems) {
 							if(items.id === undefined) continue;
 							costs['lvl'+lvl].push({
+								id: items.id,
 								name: language[xmat.find(ele => ele.id === items.id).nameTextMapHash],
 								count: items.count
 							})
@@ -84,13 +103,17 @@ function collateTalent(lang) {
 				}
 			});
 
+			// PASSIVES
 			passive.forEach((skId, index) => {
 				let talent = xpassive.find(pas => pas.proudSkillGroupId === skId);
 				let ref = data['passive'+(index+1)] = {}; // store reference in variable to make it easier to access
-				ref.id = skId;
+				// ref.id = skId;
 				ref.name = language[talent.nameTextMapHash];
-				ref.info = sanitizeDescription(language[talent.descTextMapHash]);
-				ref.icon = talent.icon;
+				validateString(ref.name, 'talents.passivename', lang);
+				ref.descriptionRaw = sanitizer(language[talent.descTextMapHash], replaceNewline);
+				ref.description = sanitizer(ref.descriptionRaw, removeColorHTML, removeHashtag, replaceGenderM, replaceLayoutPC, replaceNonBreakSpace);
+				validateString(ref.description, 'talents.passivedescription', lang);
+				data[`filename_passive${index+1}`] = talent.icon;
 			});
 			data.costs = costs;
 			data.parameters = parameters;
