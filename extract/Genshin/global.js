@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const config = require('../config.json');
+const config = require('../../config.json');
 
 global.getExcel = function(file) { return require(`${config.GenshinData_folder}/ExcelBinOutput/${file}.json`); }
 global.getTextMap = function(langcode) { return require(`${config.GenshinData_folder}/TextMap/TextMap${langcode}.json`); }
@@ -234,8 +234,8 @@ function exportCurve(folder, file) {
 		});
 		output[ele.level] = curveinfo;
 	});
-	fs.mkdirSync(`${config.export_folder}/curve`, { recursive: true });
-	fs.writeFileSync(`${config.export_folder}/curve/${folder}.json`, JSON.stringify(output, null, '\t'));
+	fs.mkdirSync(`${config.genshin_export_folder}/curve`, { recursive: true });
+	fs.writeFileSync(`${config.genshin_export_folder}/curve/${folder}.json`, JSON.stringify(output, null, '\t'));
 }
 
 function exportData(folder, collateFunc, englishonly, skipwrite) {
@@ -244,7 +244,7 @@ function exportData(folder, collateFunc, englishonly, skipwrite) {
 		let data = collateFunc(lang);
 		fs.mkdirSync(`./export/${lang}`, { recursive: true });
 		if(!skipwrite) {
-			fs.writeFileSync(`${config.export_folder}/${lang}/${folder}.json`, JSON.stringify(data, null, '\t'));
+			fs.writeFileSync(`${config.genshin_export_folder}/${lang}/${folder}.json`, JSON.stringify(data, null, '\t'));
 			if(JSON.stringify(data).search('undefined') !== -1) console.log('undefined found in '+folder);
 			if(data[""]) console.log('empty key found in '+folder);
 		}
