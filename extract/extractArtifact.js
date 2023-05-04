@@ -18,11 +18,12 @@ function collateArtifact(lang) {
 		let setname;
 		let filename;
 		let data = {};
+		data.id = obj.setId;
 
 		// get available rarities
-		data.rarity = xreliccodex.reduce((accum, relic) => {
+		data.rarityList = xreliccodex.reduce((accum, relic) => {
 			if(obj.setId !== relic.suitId) return accum;
-			relic.level = relic.level.toString();
+			relic.level = relic.level;
 			if(accum.indexOf(relic.level) === -1) accum.push(relic.level);
 			return accum;
 		}, []);
@@ -30,37 +31,38 @@ function collateArtifact(lang) {
 		// set bonus effects
 		obj.setNeedNum.forEach((ele, ind) => {
 			let effect = xrefine.find(e => e.affixId === obj.EquipAffixId*10 + ind);
-			data[ele+'pc'] = language[effect.descTextMapHash];
+			data['effect'+ele+'Pc'] = sanitizer(language[effect.descTextMapHash], removeHashtag, replaceNonBreakSpace);
+			validateString(data['effect'+ele+'Pc'], 'artifacts.seteffect', lang);
 			if(setname === undefined) {
 				setname = language[effect.nameTextMapHash];
 				filename = makeFileName(getLanguage('EN')[effect.nameTextMapHash]);
 			}
 		});
 
-		if(data.rarity.length === 0) {
-			if(lang === 'EN') console.log(`Artifact set: ${setname} not available`);
+		data.name = setname;
+
+		if(data.rarityList.length === 0) {
+			if(lang === 'EN') console.log(`Artifact set: ${setname} not available yet`);
 			return accum;
 		}
-
-		data.images = {};
 
 		// relic pieces
 		obj.containsList.forEach(ele => {
 			let relic = xrelics.find(e => e.id === ele);
 			let relicdata = {};
 			relicdata.name = language[relic.nameTextMapHash];
-			relicdata.relictype = xmanualtext.find(ele => ele.textMapId === relic.equipType).textMapContentTextMapHash;
-			relicdata.relictype = language[relicdata.relictype];
+			relicdata.relicType = relic.equipType;
+			const relicTypeTextMapHash = xmanualtext.find(ele => ele.textMapId === relic.equipType).textMapContentTextMapHash;
+			relicdata.relicText = language[relicTypeTextMapHash];
+			// validateString(relicdata.relicText, 'artifacts.relicText', lang);
 			relicdata.description = language[relic.descTextMapHash];
+			validateString(relicdata.description, 'artifacts.description', lang);
 			relicdata.story = getReadable(`Relic${obj.setId}_${relicTypeToIndex[relic.equipType]}${(lang != 'CHS') ? ('_' + lang) : ''}`, lang);
 			data[relicTypeToPropertyName[relic.equipType]] = relicdata;
-			data.images['name'+relicTypeToPropertyName[relic.equipType]] = relic.icon;
-			data.images[relicTypeToPropertyName[relic.equipType]] = `https://upload-os-bbs.mihoyo.com/game_record/genshin/equip/${relic.icon}.png`;
+			data['filename_'+relicTypeToPropertyName[relic.equipType]] = relic.icon;
+			data['mihoyo_'+relicTypeToPropertyName[relic.equipType]] = `https://upload-os-bbs.mihoyo.com/game_record/genshin/equip/${relic.icon}.png`;
 		});
 
-		
-
-		data.name = setname;
 		accum[filename] = data;
 		return accum;
 	}, {});

@@ -28,19 +28,22 @@ function collateFood(lang) {
 		//if(obj.id !== 1003) return accum;
 
 		let data = {};
+		data.id = obj.id;
 
 		data.name = language[obj.nameTextMapHash];
-		data.id = obj.id;
 		data.rarity = obj.rankLevel+'';
 		data.foodtype = 'NORMAL';
-		data.foodfilter = language[getManualTextMapHash(obj.foodType)];
+		data.filterType = obj.foodType;
+		data.filterText = language[getManualTextMapHash(obj.foodType)];
 		data.foodcategory = undefined;
 		data.effect = obj.effectDesc.reduce((accum, eff) => {
 			const tmp = replaceLayout(stripHTML(language[eff]));
 			if(tmp) accum.push(tmp);
 			return accum;
 		}, []).join('\n');
-		data.description = sanitizeDescription(language[obj.descTextMapHash]);
+		data.description = sanitizer(language[obj.descTextMapHash], removeHashtag, replaceGenderM);
+		validateString(data.description, 'foods.description', lang);
+
 		// check error
 		for(let i = 2; i <= 3; i++) { const tmp = language[obj.effectDesc[i]]; if(tmp) console.log(`${obj.id} ${data.name}: ${tmp}`); }
 
@@ -51,18 +54,19 @@ function collateFood(lang) {
 			if(language[xd.interactionTitleTextMapHash]) console.log(`food ${obj.id} has interaction`);
 			if(language[xd.specialDescTextMapHash]) console.log(`food ${obj.id} has special`);
 			subdata.effect = language[xd.effectDescTextMapHash];
-			subdata.description = sanitizeDescription(language[xd.descTextMapHash]);
+			subdata.description = sanitizer(language[xd.descTextMapHash], removeHashtag, replaceGenderM, replaceNonBreakSpace);
+			validateString(subdata.description, 'foods.subdescription', lang);
 			data[mapQualityToProp[xd.foodQuality]] = subdata;
-			data.foodcategory = xd.effectIcon.substring(13);
+			data.foodcategory = xd.effectIcon//.substring(13);
 		}
 		data.ingredients = obj.inputVec.reduce((accum, ing) => {
 			if(ing.id === undefined) return accum;
 			const mat = getMaterial(ing.id);
-			accum.push({ name: language[mat.nameTextMapHash], count: ing.count });
+			accum.push({ id: ing.id, name: language[mat.nameTextMapHash], count: ing.count });
 			return accum;
 		}, []);
 		// data.source = 
-		data.nameicon = obj.icon;
+		data.filename_icon = obj.icon;
 
 
 		let filename = makeFileName(getLanguage('EN')[obj.nameTextMapHash]);
@@ -89,13 +93,14 @@ function collateFood(lang) {
 		if(language[xd.interactionTitleTextMapHash]) console.log(`specialty ${obj.id} has interaction`);
 		if(language[xd.specialDescTextMapHash]) console.log(`specialty ${obj.id} has special`);
 		spdata.effect = replaceLayout(language[xd.effectDescTextMapHash]);
-		spdata.description = sanitizeDescription(language[xd.descTextMapHash]);
+		spdata.description = sanitizer(language[xd.descTextMapHash], replaceNewline, removeHashtag, replaceGenderM, replaceNonBreakSpace);
+		validateString(spdata.description, 'foods.spdatadescription', lang);
 
 		spdata.basedish = basedish;
 		spdata.character = language[getAvatar(myspec.avatarId).nameTextMapHash];
 		
 		spdata.ingredients = ingredients;
-		spdata.nameicon = xd.icon;
+		spdata.filename_icon = xd.icon;
 
 		filename = makeFileName(getLanguage('EN')[xd.nameTextMapHash]);
 		if(accum[filename] !== undefined) console.log('filename collision: ' + filename);

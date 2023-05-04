@@ -9,10 +9,10 @@ function exportData() {
 	// exportCurve('characters', 'AvatarCurveExcelConfigData');
 	// exportData('constellations', require('./extract/extractConstellation'));
 	// exportData('talents', require('./extract/extractTalent.js'));
-	exportData('weapons', require('./extract/extractWeapon.js'));
+	// exportData('weapons', require('./extract/extractWeapon.js'));
 	// exportCurve('weapons', 'WeaponCurveExcelConfigData')
 	// exportData('artifacts', require('./extract/extractArtifact.js'));
-	// exportData('foods', require('./extract/extractFood'));
+	exportData('foods', require('./extract/extractFood'));
 	// exportData('materials', require('./extract/extractMaterial')); // change: used both TextList/JumpList.
 	// exportData('domains', require('./extract/extractDomain'));
 	// exportData('enemies', require('./extract/extractEnemy'));
