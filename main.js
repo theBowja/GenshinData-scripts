@@ -12,7 +12,7 @@ function exportGenshinData() {
 	// exportData('weapons', require('./extract/Genshin/extractWeapon.js'));
 	// exportCurve('weapons', 'WeaponCurveExcelConfigData')
 	// exportData('artifacts', require('./extract/Genshin/extractArtifact.js'));
-	exportData('foods', require('./extract/Genshin/extractFood'));
+	// exportData('foods', require('./extract/Genshin/extractFood'));
 	// exportData('materials', require('./extract/Genshin/extractMaterial')); // change: used both TextList/JumpList.
 	// exportData('domains', require('./extract/Genshin/extractDomain'));
 	// exportData('enemies', require('./extract/Genshin/extractEnemy'));

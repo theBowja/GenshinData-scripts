@@ -203,10 +203,10 @@ function autocomplete(input, dict) {
     return result === undefined ? undefined : result.target;
 }
 
-const ENmonster = require(`${config.export_folder}/EN/enemies.json`);
+const ENmonster = require(`${config.genshin_export_folder}/EN/enemies.json`);
 const ENmonsterNames = Object.values(ENmonster).map(ele => ele.name);
 
-const ENdomain = require(`${config.export_folder}/EN/domains.json`);
+const ENdomain = require(`${config.genshin_export_folder}/EN/domains.json`);
 const ENdomainNames = Object.values(ENdomain).map(ele => ele.name);
 
 const autoMonsterMap = {};
@@ -219,7 +219,7 @@ for(let [dom, monList] of Object.entries(monsterMap)) {
 
 function collateDomainMonsterList(lang) {
 	const language = getLanguage(lang);
-	let mydomain = require(`${config.export_folder}/${lang}/domains.json`);
+	let mydomain = require(`${config.genshin_export_folder}/${lang}/domains.json`);
 
 	for(let [dom, monList] of Object.entries(autoMonsterMap)) {
 		const domId = Object.values(ENdomain).find(ele => ele.name === dom).id;

@@ -9,7 +9,7 @@ const xdeckcard = getExcel('GCGDeckCardExcelConfigData');
 const xtag = getExcel('GCGTagExcelConfigData');
 const xcardview = getExcel('GCGCardViewExcelConfigData');
 
-const propMaxEnergy = getPropNameWithMatch(xchar, 'id', 1101, 2);
+const propMaxEnergy = getPropNameWithMatch(xchar, 'id', 1101, 3);
 const propPlayable = getPropNameWithMatch(xchar, 'id', 1101, true);
 const propTags = getPropNameWithMatch(xchar, 'id', 1101, 'GCG_TAG_ELEMENT_CRYO');
 const propSwitch = getPropNameWithMatch(xchar, 'id', 1101, 'Switch_Ganyu');
@@ -59,14 +59,18 @@ function collate(lang) {
 			skill.id = skillId;
 			skill.name = sanitizeName(language[skillObj.nameTextMapHash]);
 			skill.descriptionraw = language[skillObj.descTextMapHash];
+			if (skill.descriptionraw === undefined) skill.descriptionraw = ''; // tartaglia Ranged Stance is missing description. im too lazy to figure this out
 			if (tcgSkillKeyMap[skillObj[propSkillKey]]) {
+				// console.log(skill)
 				if (skill.descriptionraw.includes('D__KEY__DAMAGE')) {
-					const dmglistnums = tcgSkillKeyMap[skillObj[propSkillKey]].filter(e => e.$type === 'GCGDeclaredValueDamage').map(e => e.value);
+					const dmglistnums = tcgSkillKeyMap[skillObj[propSkillKey]].filter(e => e.$type === tcgSkillKeyMap.DAMAGE).map(e => e.value);
 					if (dmglistnums.length > 1 && !checkBaseDamageIgnoreLog.includes(skillObj[propSkillKey])) console.log('Tcg character skill: Check base damage for ' + skillObj[propSkillKey])
 					skill.basedamage = Math.min(...dmglistnums);
 				}
-				if (skill.descriptionraw.includes('D__KEY__ELEMENT'))
-					skill.baseelement = tcgSkillKeyMap[skillObj[propSkillKey]].find(e => e.$type === 'GCGDeclaredValueElement').ratio || 'GCG_ELEMENT_NONE';
+				if (skill.descriptionraw.includes('D__KEY__ELEMENT')) {
+					// console.log(skill.descriptionraw);
+					skill.baseelement = tcgSkillKeyMap[skillObj[propSkillKey]].find(e => e.$type === tcgSkillKeyMap.ELEMENT)?.ratio || 'GCG_ELEMENT_NONE';
+				}
 			}
 			skill.descriptionreplaced = getDescriptionReplaced(skill, skill.descriptionraw, language);
 			skill.description = sanitizeDescription(skill.descriptionreplaced, true);

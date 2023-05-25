@@ -49,7 +49,7 @@ global.removeSprite = function(str) { return str.replace(/{SPRITE_PRESET.*?}/gi,
 global.sanitizeDescription = function(str, removeBold) { return removeSprite(replaceNewline(replaceLayout(stripHTML(convertBold(str || '', removeBold))))); }
 global.getMatSourceText = function(id, textmap) { return getExcel('MaterialSourceDataExcelConfigData').find(e => e.id === id).textList.map(e => textmap[e]).filter(e => e !== '' && e !== undefined); }
 global.getPropNameWithMatch = function(excel, idkey, idval, propval) { return Object.entries(excel.find(e => e[idkey] === idval)).find(e => e[1] === propval || e[1][0] === propval)[0]; };
-global.validName = function(name) { return !name === '' && !name.includes('</') && !/[|{}#]/.test(name)}
+global.validName = function(name) { return name !== '' && !name.includes('</') && !/[|{}#]/.test(name)}
 global.sanitizeName = function(str) { 
 	str = str.split('|s')[0];
 	if (str.includes('{NON_BREAK_SPACE}')) {
@@ -242,7 +242,7 @@ function exportData(folder, collateFunc, englishonly, skipwrite) {
 	langcodes.forEach(lang => {
 		if(englishonly && lang !== 'EN') return;
 		let data = collateFunc(lang);
-		fs.mkdirSync(`./export/${lang}`, { recursive: true });
+		fs.mkdirSync(`${config.genshin_export_folder}/${lang}`, { recursive: true });
 		if(!skipwrite) {
 			fs.writeFileSync(`${config.genshin_export_folder}/${lang}/${folder}.json`, JSON.stringify(data, null, '\t'));
 			if(JSON.stringify(data).search('undefined') !== -1) console.log('undefined found in '+folder);

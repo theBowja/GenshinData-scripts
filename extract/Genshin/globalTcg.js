@@ -15,6 +15,10 @@ global.loadTcgSkillKeyMap = function() {
 
 		try {
 			tcgSkillKeyMap[fileObj.name] = Object.values(Object.values(fileObj)[1]);
+			if (fileObj.name === 'Effect_Damage_Physic_4') {
+				tcgSkillKeyMap.DAMAGE = tcgSkillKeyMap[fileObj.name].find(e => e.value === 4).$type;
+				tcgSkillKeyMap.ELEMENT = tcgSkillKeyMap[fileObj.name].find(e => e.type === 'Element').$type;
+			}
 		} catch(e) {
 			continue;
 		}
@@ -123,7 +127,6 @@ global.getDescriptionReplaced = function(data, description, translation) {
 	}
 
 	if (description.indexOf('$') !== -1) console.log(`Tcg description has unreplaced text for:\n  ${description} `);
-
 	// Replace {PLURAL#1|pt.|pts.}
 	ind = description.indexOf('{PLURAL');
 	while (ind !== -1) {

@@ -41,7 +41,7 @@ function collateFood(lang) {
 			if(tmp) accum.push(tmp);
 			return accum;
 		}, []).join('\n');
-		data.description = sanitizer(language[obj.descTextMapHash], removeHashtag, replaceGenderM);
+		data.description = sanitizer(language[obj.descTextMapHash], removeHashtag, replaceGenderM, replaceNonBreakSpace);
 		validateString(data.description, 'foods.description', lang);
 
 		// check error
