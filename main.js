@@ -31,6 +31,7 @@ function exportGenshinData() {
 	// exportData('crafts', require('./extract/Genshin/extractCraft'));
 
 	// exportData('tcgcharactercards', require('./extract/Genshin/extractTcgCharacterCard'));
+	exportData('tcgenemycards', require('./extract/Genshin/extractTcgEnemyCard'));
 	// exportData('tcgactioncards', require('./extract/Genshin/extractTcgActionCard'));
 	// exportData('tcgstatuseffects', require('./extract/Genshin/extractTcgStatusEffect'));
 	// exportData('tcgsummons', require('./extract/Genshin/extractTcgSummon'));

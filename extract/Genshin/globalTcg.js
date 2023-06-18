@@ -14,7 +14,10 @@ global.loadTcgSkillKeyMap = function() {
 		if (!fileObj.name) continue;
 
 		try {
-			tcgSkillKeyMap[fileObj.name] = Object.values(Object.values(fileObj)[1]);
+			tcgSkillKeyMap[fileObj.name] = Object.entries(Object.values(fileObj)[1]).map(([key, value]) => {
+				value.hash = key;
+				return value;
+			});
 			if (fileObj.name === 'Effect_Damage_Physic_4') {
 				tcgSkillKeyMap.DAMAGE = tcgSkillKeyMap[fileObj.name].find(e => e.value === 4).$type;
 				tcgSkillKeyMap.ELEMENT = tcgSkillKeyMap[fileObj.name].find(e => e.type === 'Element').$type;
@@ -50,7 +53,12 @@ global.getDescriptionReplaced = function(data, description, translation) {
 			case 'D': // D__KEY__DAMAGE or D__KEY__ELEMENT
 				switch (description[ind+10]) {
 					case 'D': // DAMAGE
-						replacementText = data.basedamage+'';
+						if (description[ind+16] !== '_') {
+							replacementText = data.basedamage+'';
+						} else {
+							replacementText = description[ind+17]
+						}
+
 						break;
 
 					case 'E': // ELEMENT

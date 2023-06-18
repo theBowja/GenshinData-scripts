@@ -11,6 +11,7 @@ const xcardview = getExcel('GCGCardViewExcelConfigData');
 
 const propMaxEnergy = getPropNameWithMatch(xchar, 'id', 1101, 3);
 const propPlayable = getPropNameWithMatch(xchar, 'id', 1101, true);
+const propEnemy = getPropNameWithMatch(xchar, 'id', 3202, true);
 const propTags = getPropNameWithMatch(xchar, 'id', 1101, 'GCG_TAG_ELEMENT_CRYO');
 const propSwitch = getPropNameWithMatch(xchar, 'id', 1101, 'Switch_Ganyu');
 
@@ -25,14 +26,17 @@ const propCharacterSource = getPropNameWithMatch(xdeckcard, 'id', 1101, 14270703
 const propCardFace = getPropNameWithMatch(xcardview, 'id', 1101, 'Gcg_CardFace_Char_Avatar_Ganyu');
 
 const tcgSkillKeyMap = loadTcgSkillKeyMap();
-const checkBaseDamageIgnoreLog = ['Char_Skill_11013', 'Char_Skill_13012', 'Char_Skill_16013', 'Char_Skill_22014'];
+// const checkBaseDamageIgnoreLog = ['Char_Skill_11013', 'Char_Skill_13012', 'Char_Skill_16013', 'Char_Skill_22014', 'Char_Skill_13073', ''];
 
 const skipdupelog = [];
-function collate(lang) {
+function collate(lang, doEnemy=false) {
 	const language = getLanguage(lang);
 	const dupeCheck = {};
 	let mydata = xchar.reduce((accum, obj) => {
-		if (!obj[propPlayable]) return accum;
+		if (obj.skillList.includes(80)) return accum;
+		if (doEnemy && !obj[propEnemy]) return accum;
+		if (!doEnemy && !obj[propPlayable]) return accum;
+
 		let data = {};
 		data.id = obj.id;
 
@@ -48,9 +52,11 @@ function collate(lang) {
 		// data.nation = language[xtag.find(e => e.type === data.tags[2]).nameTextMapHash];
 
 		const deckcardObj = xdeckcard.find(e => e.id === obj.id);
-		data.storytitle = language[deckcardObj.storyTitleTextMapHash];
-		data.storytext = sanitizeDescription(language[deckcardObj[propStoryText]]);
-		data.source = language[deckcardObj[propCharacterSource]];
+		if (obj[propPlayable]) {
+			data.storytitle = language[deckcardObj.storyTitleTextMapHash];
+			data.storytext = sanitizeDescription(language[deckcardObj[propStoryText]]);
+			data.source = language[deckcardObj[propCharacterSource]];
+		}
 
 		data.skills = [];
 		for (const skillId of obj.skillList) {
@@ -63,9 +69,11 @@ function collate(lang) {
 			if (tcgSkillKeyMap[skillObj[propSkillKey]]) {
 				// console.log(skill)
 				if (skill.descriptionraw.includes('D__KEY__DAMAGE')) {
-					const dmglistnums = tcgSkillKeyMap[skillObj[propSkillKey]].filter(e => e.$type === tcgSkillKeyMap.DAMAGE).map(e => e.value);
-					if (dmglistnums.length > 1 && !checkBaseDamageIgnoreLog.includes(skillObj[propSkillKey])) console.log('Tcg character skill: Check base damage for ' + skillObj[propSkillKey])
-					skill.basedamage = Math.min(...dmglistnums);
+					// const dmglistnums = tcgSkillKeyMap[skillObj[propSkillKey]].filter(e => e.$type === tcgSkillKeyMap.DAMAGE).map(e => e.value);
+					// console.log(tcgSkillKeyMap[skillObj[propSkillKey]].find(e => e.hash === '-2060930438').value);
+					// if (dmglistnums.length > 1 && !checkBaseDamageIgnoreLog.includes(skillObj[propSkillKey])) console.log(`Tcg character skill ${skillId}: Check base damage for ` + skillObj[propSkillKey])
+					// skill.basedamage = Math.min(...dmglistnums);
+					skill.basedamage = tcgSkillKeyMap[skillObj[propSkillKey]].find(e => e.hash === '-2060930438').value;
 				}
 				if (skill.descriptionraw.includes('D__KEY__ELEMENT')) {
 					// console.log(skill.descriptionraw);
@@ -97,7 +105,7 @@ function collate(lang) {
 
 		let filename = makeUniqueFileName(obj.nameTextMapHash, accum);
 		if(filename === '') return accum;
-		checkDupeName(data, dupeCheck, skipdupelog);
+		checkDupeName(data, dupeCheck, skipdupelog, doEnemy);
 		accum[filename] = data;
 		if (!validName(data.name)) console.log(`${__filename.split(/[\\/]/).pop()} invalid data name: ${data.name}`);
 
