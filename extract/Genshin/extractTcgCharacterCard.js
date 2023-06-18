@@ -100,7 +100,7 @@ function collate(lang, doEnemy=false) {
 		data.filename_cardface_HD = `UI_${cardface}_HD`;
 		let parts = cardface.split('_');
 		parts.splice(1, 1); // remove CardFace
-		parts[3] = parts[3]+'Icon';
+		parts[2] = parts[2]+'Icon';
 		data.filename_icon = `UI_${parts.join('_')}`;
 
 		let filename = makeUniqueFileName(obj.nameTextMapHash, accum);
