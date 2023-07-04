@@ -1,5 +1,5 @@
 require('./globalTcg.js');
-const config = require('../config.json');
+const config = require('../../config.json');
 
 const xmat = getExcel('MaterialExcelConfigData');
 const xchar = getExcel('GCGCharExcelConfigData');
@@ -73,11 +73,11 @@ function collate(lang, doEnemy=false) {
 					// console.log(tcgSkillKeyMap[skillObj[propSkillKey]].find(e => e.hash === '-2060930438').value);
 					// if (dmglistnums.length > 1 && !checkBaseDamageIgnoreLog.includes(skillObj[propSkillKey])) console.log(`Tcg character skill ${skillId}: Check base damage for ` + skillObj[propSkillKey])
 					// skill.basedamage = Math.min(...dmglistnums);
-					skill.basedamage = tcgSkillKeyMap[skillObj[propSkillKey]].find(e => e.hash === '-2060930438').value;
+					skill.basedamage = tcgSkillKeyMap[skillObj[propSkillKey]].find(e => e.hash === '-2060930438')[tcgSkillKeyMap.DAMAGEVALUEPROP];
 				}
 				if (skill.descriptionraw.includes('D__KEY__ELEMENT')) {
 					// console.log(skill.descriptionraw);
-					skill.baseelement = tcgSkillKeyMap[skillObj[propSkillKey]].find(e => e.$type === tcgSkillKeyMap.ELEMENT)?.ratio || 'GCG_ELEMENT_NONE';
+					skill.baseelement = tcgSkillKeyMap[skillObj[propSkillKey]].find(e => e.$type === tcgSkillKeyMap.ELEMENT)?.[tcgSkillKeyMap.ELEMENTVALUEPROP] || 'GCG_ELEMENT_NONE';
 				}
 			}
 			skill.descriptionreplaced = getDescriptionReplaced(skill, skill.descriptionraw, language);

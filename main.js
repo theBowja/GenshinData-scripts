@@ -30,8 +30,8 @@ function exportGenshinData() {
 	// exportData('adventureranks', require('./extract/Genshin/extractAdventureRank'));
 	// exportData('crafts', require('./extract/Genshin/extractCraft'));
 
-	exportData('tcgcharactercards', require('./extract/Genshin/extractTcgCharacterCard'));
-	exportData('tcgenemycards', require('./extract/Genshin/extractTcgEnemyCard'));
+	// exportData('tcgcharactercards', require('./extract/Genshin/extractTcgCharacterCard'));
+	// exportData('tcgenemycards', require('./extract/Genshin/extractTcgEnemyCard'));
 	// exportData('tcgactioncards', require('./extract/Genshin/extractTcgActionCard'));
 	// exportData('tcgstatuseffects', require('./extract/Genshin/extractTcgStatusEffect'));
 	// exportData('tcgsummons', require('./extract/Genshin/extractTcgSummon'));
@@ -40,9 +40,9 @@ function exportGenshinData() {
 	// // exportData('tcgsprites', require('./extract/Genshin/extractTcgSprite'));
 	// // exportData('tcgshopitems', require('./extract/Genshin/extractTcgShopItem'));
 
-	// exportData('tcglevelrewards', require('./extract/Genshin/extractTcgLevelReward'));
-	// exportData('tcgcardboxes', require('./extract/Genshin/extractTcgCardBox'));
-	// exportData('tcgcardbacks', require('./extract/Genshin/extractTcgCardBack'));
+	exportData('tcglevelrewards', require('./extract/Genshin/extractTcgLevelReward'));
+	exportData('tcgcardboxes', require('./extract/Genshin/extractTcgCardBox'));
+	exportData('tcgcardbacks', require('./extract/Genshin/extractTcgCardBack'));
 
 
 	// exportData('commissions', require('./extract/Genshin/extractCommission'), true); // unfinished

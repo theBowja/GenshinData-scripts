@@ -1,32 +1,64 @@
 require('./global.js');
 const fs = require('fs');
-const config = require('../config.json');
+const config = require('../../config.json');
 
 // Goes through binoutput to get data on tcg skill's damage and element
 const tcgSkillKeyMap = {};
 global.loadTcgSkillKeyMap = function() {
 	if (tcgSkillKeyMap.loaded) return tcgSkillKeyMap;
 	const filelist = fs.readdirSync(`${config.GenshinData_folder}/BinOutput/_unknown_dir`);
+	let nameProp;
+
+	// find nameProp first
 	for (const filename of filelist) {
 		if (!filename.endsWith('.json')) continue;
 
 		const fileObj = require(`${config.GenshinData_folder}/BinOutput/_unknown_dir/${filename}`);
-		if (!fileObj.name) continue;
+		for (let [key, value] of Object.entries(fileObj)) {
+			if (value === 'Char_Skill_13023') {
+				nameProp = key;
+				break;
+			}
+		}
+		if (nameProp) break;
+	}
+
+	for (const filename of filelist) {
+		if (!filename.endsWith('.json')) continue;
+
+		const fileObj = require(`${config.GenshinData_folder}/BinOutput/_unknown_dir/${filename}`);
+		if (!fileObj[nameProp]) continue;
 
 		try {
-			tcgSkillKeyMap[fileObj.name] = Object.entries(Object.values(fileObj)[1]).map(([key, value]) => {
+			tcgSkillKeyMap[fileObj[nameProp]] = Object.entries(Object.values(fileObj)[1]).map(([key, value]) => {
 				value.hash = key;
 				return value;
 			});
-			if (fileObj.name === 'Effect_Damage_Physic_4') {
-				tcgSkillKeyMap.DAMAGE = tcgSkillKeyMap[fileObj.name].find(e => e.value === 4).$type;
-				tcgSkillKeyMap.ELEMENT = tcgSkillKeyMap[fileObj.name].find(e => e.type === 'Element').$type;
+
+			// get tcgSkillKeyMap.DAMAGEVALUEPROP etc.
+			if (fileObj[nameProp] === 'Char_Skill_13023') {
+				for (const component of tcgSkillKeyMap[fileObj[nameProp]]) {
+					for (let [key, value] of Object.entries(component)) {
+						if (value === 3) {
+							tcgSkillKeyMap.DAMAGEVALUEPROP = key;
+							tcgSkillKeyMap.DAMAGETYPE = component.$type;
+						}
+						else if (value === 'GCG_ELEMENT_PYRO') {
+							tcgSkillKeyMap.ELEMENTVALUEPROP = key;
+							tcgSkillKeyMap.ELEMENTTYPE = component.$type;
+						}
+
+					}
+				}
 			}
 		} catch(e) {
 			continue;
 		}
 	}
+	if (!tcgSkillKeyMap.DAMAGETYPE || !tcgSkillKeyMap.DAMAGEVALUEPROP || !tcgSkillKeyMap.ELEMENTTYPE || !tcgSkillKeyMap.ELEMENTVALUEPROP)
+		console.log('ERROR: loadTcgSkillKeyMap is missing a property map!');
 	tcgSkillKeyMap.loaded = true;
+	// console.log(tcgSkillKeyMap)
 	return tcgSkillKeyMap;
 }
 
@@ -178,6 +210,8 @@ global.getTcgTagImage = function(tag) {
 		return 'UI_Gcg_Tag_Card_Food';
 	case 'GCG_TAG_SHEILD':
 		return 'UI_Gcg_Tag_Card_Shield';
+	case 'GCG_TAG_LEGEND':
+		return 'UI_Gcg_Tag_Card_Legend';
 
 	case 'GCG_TAG_WEAPON_NONE':
 		return 'UI_Gcg_Tag_Weapon_None';
