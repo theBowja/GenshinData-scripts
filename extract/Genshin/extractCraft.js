@@ -18,18 +18,18 @@ function collateCraft(lang) {
 		const mat = xmat.find(ele => ele.id === obj.resultItemId);
 
 		data.name = language[mat.nameTextMapHash];
-		data.sortorder = getUniqueSortOrder(obj.subCombineType, obj.resultItemId, sortordermap);
-		data.filter = language[obj.effectDescTextMapHash];
+		data.sortOrder = getUniqueSortOrder(obj.subCombineType, obj.resultItemId, sortordermap);
+		data.filterText = language[obj.effectDescTextMapHash];
 
-		data.unlockrank = obj.playerLevel;
-		data.resultcount = obj.resultItemCount;
+		data.unlockRank = obj.playerLevel;
+		data.resultCount = obj.resultItemCount;
 
-		data.moracost = obj.scoinCost;
+		data.moraCost = obj.scoinCost;
 		data.recipe = [];
 		for (let matitem of obj.materialItems) {
 			if (!matitem.id) continue;
 			const item = xmat.find(ele => ele.id === matitem.id);
-			data.recipe.push({ name: language[item.nameTextMapHash], count: matitem.count })
+			data.recipe.push({ id: matitem.id, name: language[item.nameTextMapHash], count: matitem.count })
 		}
 
 		let filename = makeFileName(getLanguage('EN')[mat.nameTextMapHash]);

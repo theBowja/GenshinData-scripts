@@ -14,15 +14,17 @@ function collageGeography(lang) {
 		data.id = obj.Id;
 
 		data.name = language[obj.nameTextMapHash];
-		data.area = language[xarea.find(area => area.ID === obj.worldAreaId).AreaNameTextMapHash];
+		data.areaText = language[xarea.find(area => area.ID === obj.worldAreaId).AreaNameTextMapHash];
+		data.areaId = obj.worldAreaId;
 		data.description = sanitizeDescription(language[obj.descTextMapHash]);
-		data.region = language[xcity.find(city => city.cityId === obj.cityId).cityNameTextMapHash];
-		data.showonlyunlocked = obj.showOnlyUnlocked ? true : undefined;
-		data.sortorder = obj.SortOrder;
+		data.regionText = language[xcity.find(city => city.cityId === obj.cityId).cityNameTextMapHash];
+		data.regionId = obj.cityId;
+		data.showOnlyUnlocked = obj.showOnlyUnlocked ? true : undefined;
+		data.sortOrder = obj.SortOrder;
 
 		// console.log(obj.cityID);
 
-		data.nameimage = obj.image;
+		data.filename_image = obj.image;
 
 		let filename = makeFileName(getLanguage('EN')[obj.nameTextMapHash]);
 		if(filename === '') return accum;

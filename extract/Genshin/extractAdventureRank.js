@@ -14,9 +14,10 @@ function collateAdventureRank(lang) {
 		data.id = obj.id;
 		// data.rankLevel = obj.rankLevel; // all rarity 4
 
+		data.id = obj.level;
 		data.name = obj.level+"";
 		data.exp = obj.exp;
-		data.unlockdescription = sanitizeDescription(language[obj.unlockDescTextMapHash]);
+		data.unlockDescription = sanitizeDescription(language[obj.unlockDescTextMapHash]);
 
 		if(obj.rewardId) {
 			const rewards = xreward.find(e => e.rewardId === obj.rewardId).rewardItemList.filter(f => f.itemId);
@@ -30,6 +31,7 @@ function collateAdventureRank(lang) {
 				else if(item = xweapon.find(w => w.id === ele.itemId))
 					type = "WEAPON";
 			    return {
+			    	id: ele.itemId,
 					name: language[item.nameTextMapHash], 
 					count: ele.itemCount,
 					type: type

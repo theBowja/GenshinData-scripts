@@ -35,9 +35,10 @@ function collateAchievement(lang) {
 		data.name = language[obj.titleTextMapHash];
 		if(data.name === '') return accum;
 
-		data.achievementgroup = language[xgoal.find(e => e.id === obj.goalId).nameTextMapHash];
-		data.ishidden = obj.isShow === 'SHOWTYPE_HIDE' ? true : undefined;
-		data.sortorder = obj.orderId;
+		data.achievementGroupText = language[xgoal.find(e => e.id === obj.goalId).nameTextMapHash];
+		data.achievementGroupId = obj.goalId;
+		data.isHidden = obj.isShow === 'SHOWTYPE_HIDE' ? true : undefined;
+		data.sortOrder = obj.orderId;
 		data.stages = 1;
 
 		data['stage'+data.stages] = addStage(obj, language);
@@ -81,6 +82,7 @@ function addStage(obj, language) {
 	if(rewards[0].itemId !== 201) console.log(`achievement ${obj.id} has non-primogem reward`);
 	out.reward = rewards.map(ele => {
 		return {
+			id: ele.itemId,
 			name: language[xmat.find(mat => mat.id === ele.itemId).nameTextMapHash], 
 			count: ele.itemCount
 		}; 

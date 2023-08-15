@@ -31,11 +31,11 @@ function collateFood(lang) {
 		data.id = obj.id;
 
 		data.name = language[obj.nameTextMapHash];
-		data.rarity = obj.rankLevel+'';
+		data.rarity = obj.rankLevel;
 		data.foodtype = 'NORMAL';
 		data.filterType = obj.foodType;
 		data.filterText = language[getManualTextMapHash(obj.foodType)];
-		data.foodcategory = undefined;
+		// data.foodcategory = undefined;
 		data.effect = obj.effectDesc.reduce((accum, eff) => {
 			const tmp = replaceLayout(stripHTML(language[eff]));
 			if(tmp) accum.push(tmp);
@@ -57,7 +57,7 @@ function collateFood(lang) {
 			subdata.description = sanitizer(language[xd.descTextMapHash], removeHashtag, replaceGenderM, replaceNonBreakSpace);
 			validateString(subdata.description, 'foods.subdescription', lang);
 			data[mapQualityToProp[xd.foodQuality]] = subdata;
-			data.foodcategory = xd.effectIcon//.substring(13);
+			data.filename_buff = xd.effectIcon;
 		}
 		data.ingredients = obj.inputVec.reduce((accum, ing) => {
 			if(ing.id === undefined) return accum;
@@ -79,16 +79,17 @@ function collateFood(lang) {
 		if(myspec === undefined) return accum;
 		let xd = getMaterial(myspec.paramVec[0]);
 		// if(xd === undefined) return accum;
-		let foodfilter = data.foodfilter;
 		let basedish = data.name;
 		let ingredients = data.ingredients;
 
 		let spdata = {};
+		spdata.id = myspec.avatarId;
 		spdata.name = language[xd.nameTextMapHash];
-		spdata.rarity = xd.rankLevel+'';
+		spdata.rarity = xd.rankLevel;
 		spdata.foodtype = 'SPECIALTY';
-		spdata.foodfilter = foodfilter;
-		spdata.foodcategory = xd.effectIcon.substring(13);
+		spdata.filterType = obj.foodType;
+		spdata.filterText = language[getManualTextMapHash(obj.foodType)];
+		spdata.filename_buff = xd.effectIcon;
 
 		if(language[xd.interactionTitleTextMapHash]) console.log(`specialty ${obj.id} has interaction`);
 		if(language[xd.specialDescTextMapHash]) console.log(`specialty ${obj.id} has special`);
@@ -96,8 +97,10 @@ function collateFood(lang) {
 		spdata.description = sanitizer(language[xd.descTextMapHash], replaceNewline, removeHashtag, replaceGenderM, replaceNonBreakSpace);
 		validateString(spdata.description, 'foods.spdatadescription', lang);
 
-		spdata.basedish = basedish;
-		spdata.character = language[getAvatar(myspec.avatarId).nameTextMapHash];
+		spdata.baseDishText = basedish;
+		spdata.baseDishId = obj.id;
+		spdata.characterText = language[getAvatar(myspec.avatarId).nameTextMapHash];
+		spdata.characterId = myspec.avatarId;
 		
 		spdata.ingredients = ingredients;
 		spdata.filename_icon = xd.icon;

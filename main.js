@@ -14,11 +14,11 @@ function exportGenshinData() {
 	// exportData('artifacts', require('./extract/Genshin/extractArtifact.js'));
 	// exportData('foods', require('./extract/Genshin/extractFood'));
 	// exportData('materials', require('./extract/Genshin/extractMaterial')); // change: used both TextList/JumpList.
-	// exportData('domains', require('./extract/Genshin/extractDomain'));
+	// exportData('domains', require('./extract/Genshin/extractDomain')); // in the future use levelConfigMap to manually map to domain entrance name
 	// exportData('enemies', require('./extract/Genshin/extractEnemy'));
 	// exportCurve('enemies', 'MonsterCurveExcelConfigData');
 
-	// exportData('domains', require('./extract/Genshin/extractDomainMonsterList')); // run only after both domains and enemies have run. sync.
+	// //exportData('domains', require('./extract/Genshin/extractDomainMonsterList')); // run only after both domains and enemies have run. sync.
 
 	// exportData('outfits', require('./extract/Genshin/extractOutfit'));
 	// exportData('windgliders', require('./extract/Genshin/extractWindGlider'));
@@ -40,9 +40,9 @@ function exportGenshinData() {
 	// // exportData('tcgsprites', require('./extract/Genshin/extractTcgSprite'));
 	// // exportData('tcgshopitems', require('./extract/Genshin/extractTcgShopItem'));
 
-	exportData('tcglevelrewards', require('./extract/Genshin/extractTcgLevelReward'));
-	exportData('tcgcardboxes', require('./extract/Genshin/extractTcgCardBox'));
-	exportData('tcgcardbacks', require('./extract/Genshin/extractTcgCardBack'));
+	// exportData('tcglevelrewards', require('./extract/Genshin/extractTcgLevelReward'));
+	// exportData('tcgcardboxes', require('./extract/Genshin/extractTcgCardBox'));
+	// exportData('tcgcardbacks', require('./extract/Genshin/extractTcgCardBack'));
 
 
 	// exportData('commissions', require('./extract/Genshin/extractCommission'), true); // unfinished

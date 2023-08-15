@@ -14,15 +14,15 @@ function collateNamecard(lang) {
 
 		data.name = language[obj.nameTextMapHash];
 		data.description = sanitizeDescription(language[obj.descTextMapHash]);
-		data.sortorder = obj.id;
+		data.sortOrder = obj.id;
 
 		let sauce = xsource.find(ele => ele.id === obj.id);
 		data.source = sauce.textList.map(ele => language[ele]).filter(ele => ele !== '' && ele !== undefined);
 
 
-		data.nameicon = obj.icon;
-		data.namebanner = obj.picPath[0] !== "" ? obj.picPath[0] : undefined;
-		data.namebackground = obj.picPath[1];
+		data.filename_icon = obj.icon;
+		data.filename_banner = obj.picPath[0] !== "" ? obj.picPath[0] : undefined;
+		data.filename_background = obj.picPath[1];
 
 		let filename = makeFileName(getLanguage('EN')[obj.nameTextMapHash]);
 		if(filename === '') return accum;

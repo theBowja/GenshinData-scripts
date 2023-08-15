@@ -31,9 +31,9 @@ const filter = ['MATERIAL_EXCHANGE', 'MATERIAL_WOOD', 'MATERIAL_AVATAR_MATERIAL'
 // Adventure EXP, Mora, Primogems, Companionship EXP, Apple, Sunsettia, Starshroom, Activated Starshroom, Scorched Starshroom
 const includeMatId = [102, 202, 201, 105, 100001, 100002, 101212, 101226, 101227];
 // Crafted Items, Primordial Essence, Raw Meat (S), Fowl (S), Original Essence (Invalidated), Original Resin (Invalidated)
-// Scarlet Quartz, Scarlet Quartz, Test Stamina Growth Item, Test Temporary stamina Growth Item
+// Scarlet Quartz, Scarlet Quartz, Test Stamina Growth Item, Test Temporary stamina Growth Item, Fragrant Seasoning
 const excludeMatId = [110000, 112001, 100086, 100087, 210, 211,
-					  101005, 101007, 106000, 106001];
+					  101005, 101007, 106000, 106001, 141115];
 
 function sortMaterials(mata, matb) {
 	if(mata.rank === undefined) mata.rank = 99999999;
@@ -77,42 +77,43 @@ function collateMaterial(lang) {
 		data.id = obj.id;
 		data.name = language[obj.nameTextMapHash];
 		if(data.name === '') return accum;
-		data.sortorder = sortOrder;
+		data.sortRank = obj.rank;
 		data.description = sanitizeDescription(language[obj.descTextMapHash]);
 		data.category = obj.materialType ? obj.materialType.slice(9) : obj.itemType;
-		data.materialtype = language[obj.typeDescTextMapHash];
+		data.typeText = language[obj.typeDescTextMapHash];
 		// data.bagtab = 
-		if(obj.rankLevel) data.rarity = ''+obj.rankLevel;
+		if(obj.rankLevel) data.rarity = obj.rankLevel;
 
 		let tmp = xsource.find(ele => ele.id === obj.id);
 		let dungeonlist = tmp.dungeonList.filter(ele => ele !== 0);
 		if(dungeonlist > 0) {
 			if(dungeonlist.length > 1) console.log(`${data.name} drops from more than one dungeon!`);
 			if(xdungeon.find(ele => ele.id === dungeonlist[0])) {
-				data.dropdomain = language[xdungeon.find(ele => ele.id === dungeonlist[0]).displayNameTextMapHash]; // artifact domains don't have DisplayNameTextMapHash
-				data.daysofweek = getDayWeekList(dungeonlist[0], language); 
+				data.dropDomainText = language[xdungeon.find(ele => ele.id === dungeonlist[0]).displayNameTextMapHash]; // artifact domains don't have DisplayNameTextMapHash
+				data.dropDomainId = dungeonlist[0];
+				data.daysOfWeek = getDayWeekList(dungeonlist[0], language); 
 			}
 		}
 		// get fishing locations
-		if(getLanguage('EN')[obj.typeDescTextMapHash] === 'Fish') {
-			let fishId = xfish.find(ele => ele.itemId === obj.id).id;
-			let stockIds = xstock.reduce((stockAccum, stockObj) => {
-				if(stockObj.fishWeight[fishId] !== undefined) stockAccum.push(stockObj.id);
-				return stockAccum;
-			}, []);
-			data.fishinglocations = stockIds.reduce((poolAccum, stockId) => {
-				let pool = xpool.find(p => p.stockList.includes(stockId));
-				if(pool === undefined) return poolAccum;
-				if(!poolAccum.includes(language[pool.poolNameTextMapHash]))
-					poolAccum.push(language[pool.poolNameTextMapHash]);
-				return poolAccum;
-			}, []);
-		}
+		// if(getLanguage('EN')[obj.typeDescTextMapHash] === 'Fish') {
+			// let fishId = xfish.find(ele => ele.itemId === obj.id).id;
+			// let stockIds = xstock.reduce((stockAccum, stockObj) => {
+			// 	if(stockObj.fishWeight[fishId] !== undefined) stockAccum.push(stockObj.id);
+			// 	return stockAccum;
+			// }, []);
+			// data.fishinglocations = stockIds.reduce((poolAccum, stockId) => {
+			// 	let pool = xpool.find(p => p.stockList.includes(stockId));
+			// 	if(pool === undefined) return poolAccum;
+			// 	if(!poolAccum.includes(language[pool.poolNameTextMapHash]))
+			// 		poolAccum.push(language[pool.poolNameTextMapHash]);
+			// 	return poolAccum;
+			// }, []);
+		// }
 		const sourcelist = tmp.textList.concat(tmp.jumpList);
-		data.source = sourcelist.map(ele => language[ele]).filter(ele => ele !== '' && ele !== undefined); // TextList/JumpList
+		data.sources = sourcelist.map(ele => language[ele]).filter(ele => ele !== '' && ele !== undefined); // TextList/JumpList
 
-		data.imagename = obj.icon;
-		if(!data.imagename) console.log(data.name+' has no icon');
+		data.filename_icon = obj.icon;
+		if(!data.filename_icon) console.log(data.name+' has no icon');
 
 		let filename = makeUniqueFileName(obj.nameTextMapHash, accum, data);
 		if(filename === '') return accum;

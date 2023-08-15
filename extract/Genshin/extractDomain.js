@@ -7,6 +7,10 @@ const xdisplay = getExcel('DisplayItemExcelConfigData');
 const xdisorder = getExcel('DungeonLevelEntityConfigData'); // ley line disorder
 const xcity = getExcel('CityConfigData');
 
+const xmonster = getExcel('MonsterExcelConfigData');
+const xcodex = getExcel('AnimalCodexExcelConfigData');
+const xdescribe = getExcel('MonsterDescribeExcelConfigData');
+
 // something inside ManualTextMapConfigData
 const domainType = {
 	UI_ABYSSUS_RELIC: "UI_ABYSSUS_RELIC",
@@ -40,7 +44,7 @@ function getDomainTypeTextMapHash(domaintype) {
 "UI_DUNGEON_ENTRY_758", // "City of Gold"
 "UI_DUNGEON_ENTRY_803", // "Molten Iron Fortress"
 */
-function getDomainEntranceTextMapHash(englishname) {
+function getDomainEntranceTextMapHash(englishname, levelConfigMap) {
 	englishname = englishname.toLowerCase();
 	function mapping(textmapid) { return xmanualtext.find(ele => ele.textMapId === textmapid).textMapContentTextMapHash; }
 
@@ -86,6 +90,12 @@ function getDomainEntranceTextMapHash(englishname) {
 		return mapping("UI_DUNGEON_ENTRY_758");
 	else if(englishname.includes('forsaken rampart'))
 		return mapping("UI_DUNGEON_ENTRY_803");
+	else if(englishname.includes('rhyming rhythm') || englishname.includes('admonishing engraving') || englishname.includes('chiming recitation'))
+		return mapping("UI_DUNGEON_ENTRY_865");
+	else if(englishname.includes('robotic ruse') || englishname.includes('artisanship') || englishname.includes('curious contraptions'))
+		return mapping("UI_DUNGEON_ENTRY_859");
+	else if(englishname.includes('harmony'))
+		return mapping("UI_DUNGEON_ENTRY_982")
 	else
 		console.log('no domain entrance mapping found for '+englishname);
 }
@@ -109,7 +119,8 @@ function collateDomain(lang) {
 		data.id = obj.id;
 		data.name = language[obj.nameTextMapHash];
 		// data.displayname = language[obj.displayNameTextMapHash]; // doesn't exist for artifact domains
-		data.domainentrance = language[getDomainEntranceTextMapHash(getLanguage('EN')[obj.nameTextMapHash])];// obj.entryPicPath;
+		const levelConfigMap = Object.keys(obj.levelConfigMap)[0];
+		data.domainEntrance = language[getDomainEntranceTextMapHash(getLanguage('EN')[obj.nameTextMapHash], levelConfigMap)];// obj.entryPicPath;
 		data.description = sanitizeDescription(language[obj.descTextMapHash]);
 
 		// CITY FIX // fix no longer needed 2.7
@@ -124,34 +135,47 @@ function collateDomain(lang) {
 
 		data.region = language[xcity.find(city => city.cityId === obj.cityID).cityNameTextMapHash];
 
-		data.recommendedlevel = obj.showLevel;
+		data.recommendedLevel = obj.showLevel;
 		if(typeof obj.recommendElementTypes[0] === 'string')
-			data.recommendedelements = obj.recommendElementTypes.filter(ele => ele !== 'None').map(ele => language[xmanualtext.find(man => man.textMapId === ele).textMapContentTextMapHash]);
-		data.daysofweek = getDayWeekList(obj.id, language);
-		if(data.daysofweek.length === 0) delete data.daysofweek;
+			data.recommendedElements = obj.recommendElementTypes.filter(ele => ele !== 'None').map(ele => language[xmanualtext.find(man => man.textMapId === ele).textMapContentTextMapHash]);
+		data.daysOfWeek = getDayWeekList(obj.id, language);
+		if(data.daysOfWeek.length === 0) delete data.daysOfWeek;
 
-		data.unlockrank = obj.limitLevel;
+		data.unlockRank = obj.limitLevel;
 		let rewardpreview = xpreview.find(pre => pre.id === obj.passRewardPreviewID).previewItems.filter(pre => pre.id);
-		data.rewardpreview = rewardpreview.map(repre => {
+		data.rewardPreview = rewardpreview.map(repre => {
 			let mat = xmat.find(m => m.id === repre.id);
 			if(mat) { // is material
-				let reward = { name: language[mat.nameTextMapHash] };
+				let reward = { id: mat.id, name: language[mat.nameTextMapHash] };
 				if(mat.materialType !== 'MATERIAL_AVATAR_MATERIAL') reward.count = parseInt(repre.count);
 				if((getLanguage('EN')[mat.typeDescTextMapHash]).includes('Weapon')) {
-					data.domaintype = language[getDomainTypeTextMapHash(domainType.UI_ABYSSUS_WEAPON_PROMOTE)];
+					data.domainType = domainType.UI_ABYSSUS_WEAPON_PROMOTE;
+					data.domainText = language[getDomainTypeTextMapHash(domainType.UI_ABYSSUS_WEAPON_PROMOTE)];
 				} else {
-					data.domaintype = language[getDomainTypeTextMapHash(domainType.UI_ABYSSUS_AVATAR_PROUD)];
+					data.domainType = domainType.UI_ABYSSUS_AVATAR_PROUD;
+					data.domainText = language[getDomainTypeTextMapHash(domainType.UI_ABYSSUS_AVATAR_PROUD)];
 				}
 				return reward;
 			} else { // is artifact
 				let disp = xdisplay.find(d => d.id === repre.id);
-				data.domaintype = language[getDomainTypeTextMapHash(domainType.UI_ABYSSUS_RELIC)];
-				return { name: language[disp.nameTextMapHash], rarity: disp.rankLevel+'' };
+				data.domainType = domainType.UI_ABYSSUS_RELIC;
+				data.domainText = language[getDomainTypeTextMapHash(domainType.UI_ABYSSUS_RELIC)];
+				return { id: disp.id, name: language[disp.nameTextMapHash], rarity: disp.rankLevel+'' };
 			}
 		});
 		// if(obj.disorderoverride) data.disorder = obj.disorderoverride.map(d => language[d]); // fix not needed anymore
 		data.disorder = xdisorder.filter(d => d.id+'' === Object.keys(obj.levelConfigMap)[0]).map(d => language[d.descTextMapHash]).filter(ele => ele !== '' && ele !== undefined);
-		data.imagename = obj.entryPicPath;
+		
+		data.monsterList = obj.enterCostItems.map(monId => {
+			let monObj = xmonster.find(e => e.id === monId);
+			let des = xdescribe.find(d => d.id === monObj.describeId);
+			return {
+				id: xcodex.find(e => e.describeId === monObj.describeId).Id, // get codex id
+				name: language[des.nameTextMapHash],
+			}
+		});
+
+		data.filename_image = obj.entryPicPath;
 
 		let filename = makeFileName(getLanguage('EN')[obj.nameTextMapHash]);
 		if(filename === '') return accum;

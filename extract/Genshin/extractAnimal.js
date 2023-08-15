@@ -27,13 +27,16 @@ function collateAnimal(lang) {
 
 		data.name = language[mydescribe.nameTextMapHash];
 		data.description = sanitizeDescription(language[obj.descTextMapHash]);
-		data.category = language[xmanualtext.find(ele => ele.textMapId === `UI_CODEX_ANIMAL_CATEGORY_${obj.subType.substring(obj.subType.lastIndexOf('_')+1)}`).textMapContentTextMapHash]
+
+		const catType = obj.subType.substring(obj.subType.lastIndexOf('_')+1);
+		data.categoryType = catType;
+		data.categoryText = language[xmanualtext.find(ele => ele.textMapId === `UI_CODEX_ANIMAL_CATEGORY_${catType}`).textMapContentTextMapHash]
 		// data.capturable = xcapture.find(ele => ele.monsterID === obj.Id) ? true : undefined;
 		let counttype = obj[propCOUNTTYPE] || "_NONE";
-		data.counttype = counttype.substring(counttype.lastIndexOf('_')+1);
-		data.sortorder = obj.SortOrder;
+		data.countType = counttype.substring(counttype.lastIndexOf('_')+1);
+		data.sortOrder = obj.SortOrder;
 
-		data.nameicon = mydescribe.icon;
+		data.filename_icon = mydescribe.icon;
 
 
 		let filename = makeUniqueFileName(mydescribe.nameTextMapHash, accum);

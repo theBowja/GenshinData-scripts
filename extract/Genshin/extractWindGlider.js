@@ -18,16 +18,16 @@ function collateWindGlider(lang) {
 
 		let flymat = xmat.find(ele => ele.id === obj.materialId) || {};
 
-		data.rarity = flymat.rankLevel+"";
-		data.sortorder = obj.flycloakId;
-		data.ishidden = obj.hide ? true : undefined;
+		data.rarity = flymat.rankLevel;
+		// data.sortorder = obj.flycloakId;
+		data.isHidden = obj.hide ? true : undefined;
 
 		// let sauce = xsource.find(ele => ele.id === obj.id);
 		// data.source = sauce.textList.map(ele => language[ele]).filter(ele => ele !== '');
 		data.source = getMatSourceText(obj.materialId, language);
 
-		data.nameicon = flymat.icon;
-		data.namegacha = obj.icon;
+		data.filename_icon = flymat.icon;
+		data.filename_gacha = obj.icon;
 
 
 		let filename = makeFileName(getLanguage('EN')[obj.nameTextMapHash]);

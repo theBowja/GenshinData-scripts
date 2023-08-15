@@ -36,6 +36,7 @@ function collateEnemy(lang) {
 		if(obj.isDisuse) return accum;
 		if(obj.Id === 29010101) obj.Id = 29010104; // use correct stormterror
 		let mon = xmonster.find(m => m.id === obj.Id);
+		if (!mon) return accum;
 		let des = xdescribe.find(d => d.id === obj.describeId);
 		let spe = xspecial.find(s => s.specialNameLabID === des.specialNameLabID);
 		let inv = findInvestigation(obj.Id);
@@ -44,61 +45,61 @@ function collateEnemy(lang) {
 		let data = {};
 		data.id = obj.Id;
 
-		data.nameTextMapHash = des.nameTextMapHash;
+		// data.nameTextMapHash = des.nameTextMapHash;
 		data.name = language[des.nameTextMapHash];
-		data.specialname = language[spe.specialNameTextMapHash];
+		data.specialName = language[spe.specialNameTextMapHash];
 		if(inv) {
 			data.investigation = {};
 			data.investigation.name = language[inv.nameTextMapHash];
 			data.investigation.category = language[xmanualtext.find(e => e.textMapId === `INVESTIGATION_${inv.monsterCategory.toUpperCase()}_MONSTER`).textMapContentTextMapHash];
 			data.investigation.description = language[inv.descTextMapHash];
 			if(language[inv.lockDescTextMapHash] !== "") data.investigation.lockdesc = language[inv.lockDescTextMapHash];
-			data.investigationicon = inv.icon;
+			data.filename_investigationIcon = inv.icon;
 			// REWARD PREVIEW
 			let rewardpreview = xpreview.find(pre => pre.id === inv.rewardPreviewId).previewItems.filter(pre => pre.id);
-			data.rewardpreview = mapRewardList(rewardpreview, language);
+			data.rewardPreview = mapRewardList(rewardpreview, language);
 		} else {
 			if(obj.Id === 20020101) { // Eye of the Storm
-				data.rewardpreview = mapRewardList(eyestormreward, language);
+				data.rewardPreview = mapRewardList(eyestormreward, language);
 			} else if(obj.Id === 21011501) { // Unusual Hilichurl
-				data.rewardpreview = mapRewardList(unusualreward, language);
+				data.rewardPreview = mapRewardList(unusualreward, language);
 			} else if(obj.Id === 22030101 || obj.Id === 22020101 || obj.Id === 22030201 ||
 				      obj.Id === 26060201 || obj.Id === 26060101 || obj.Id === 26060301) {
 				// Abyss Lector: Violet Lightning, Abyss Herald: Wicked Torrents, Abyss Lector: Fathomless Flames
 				// Hydro Cicin, Electro Cicin, Cryo Cicin
-				data.rewardpreview = [];
+				data.rewardPreview = [];
 			} else if(obj.Id === 29010104) { // dvalin lvl90
 				let rewardpreview = xpreview.find(pre => pre.id === 15005).previewItems.filter(pre => pre.id);
-				data.rewardpreview = mapRewardList(rewardpreview, language);
+				data.rewardPreview = mapRewardList(rewardpreview, language);
 			} else if(obj.Id === 29020101) { // wolfboss lvl90
 				let rewardpreview = xpreview.find(pre => pre.id === 15010).previewItems.filter(pre => pre.id);
-				data.rewardpreview = mapRewardList(rewardpreview, language);
+				data.rewardPreview = mapRewardList(rewardpreview, language);
 			} else if(obj.Id === 29030101) { // childe lvl90
 				let rewardpreview = xpreview.find(pre => pre.id === 15014).previewItems.filter(pre => pre.id);
-				data.rewardpreview = mapRewardList(rewardpreview, language);
+				data.rewardPreview = mapRewardList(rewardpreview, language);
 			} else if(obj.Id === 29040101) { // azhdaha lvl90
 				let rewardpreview = xpreview.find(pre => pre.id === 15018).previewItems.filter(pre => pre.id);
-				data.rewardpreview = mapRewardList(rewardpreview, language);
+				data.rewardPreview = mapRewardList(rewardpreview, language);
 			} else if(obj.Id === 29050101) { // signora lvl90
 				let rewardpreview = xpreview.find(pre => pre.id === 15034).previewItems.filter(pre => pre.id);
-				data.rewardpreview = mapRewardList(rewardpreview, language);
+				data.rewardPreview = mapRewardList(rewardpreview, language);
 			} else if(obj.Id === 26050801) {
 				let rewardpreview = xpreview.find(pre => pre.id === 15177).previewItems.filter(pre => pre.id);
-				data.rewardpreview = mapRewardList(rewardpreview, language);
+				data.rewardPreview = mapRewardList(rewardpreview, language);
 			} else if(obj.Id === 29060201) { // raiden shogun lvl90
 				let rewardpreview = xpreview.find(pre => pre.id === 15038).previewItems.filter(pre => pre.id);
-				data.rewardpreview = mapRewardList(rewardpreview, language);
+				data.rewardPreview = mapRewardList(rewardpreview, language);
 			} else if(obj.Id === 29070101) { // scaramouche lvl90
 				let rewardpreview = xpreview.find(pre => pre.id === 15042).previewItems.filter(pre => pre.id);
-				data.rewardpreview = mapRewardList(rewardpreview, language);				
+				data.rewardPreview = mapRewardList(rewardpreview, language);				
 			} else if(obj.Id === 29080101) { // Guardian of Apep’s Oasis lvl90
 				let rewardpreview = xpreview.find(pre => pre.id === 15046).previewItems.filter(pre => pre.id);
-				data.rewardpreview = mapRewardList(rewardpreview, language);				
+				data.rewardPreview = mapRewardList(rewardpreview, language);				
 			}
 		}
-		if(!data.rewardpreview) {
+		if(!data.rewardPreview) {
 			if (lang === 'EN') console.log('no reward list for '+obj.Id+' : '+data.name); 
-			data.rewardpreview = [];
+			data.rewardPreview = [];
 		}
 
 		let sub = obj.subType || 'CODEX_SUBTYPE_ELEMENTAL';
@@ -106,12 +107,12 @@ function collateEnemy(lang) {
 		// console.log(obj.Id);
 		// console.log(sub);
 		sub = xmanualtext.find(m => m.textMapId === `UI_CODEX_ANIMAL_CATEGORY_${sub}`).textMapContentTextMapHash;
-		data.enemytype = mon.securityLevel || 'COMMON';
+		data.enemyType = mon.securityLevel || 'COMMON';
 		data.category = language[sub];
-		data.nameicon = des.icon;
+		data.filename_icon = des.icon;
 		data.description = sanitizeDescription(language[obj.descTextMapHash]);
 
-		data.aggrorange = mon.visionLevel;
+		data.aggroRange = mon.visionLevel;
 		data.bgm = mon.combatBGMLevel;
 		data.budget = mon.entityBudgetLevel;
 
@@ -151,6 +152,7 @@ function collateEnemy(lang) {
 
 		let filename = makeFileName(getLanguage('EN')[des.nameTextMapHash]);
 		if(filename === '') return accum;
+		if(accum[filename]) return accum;
 		checkDupeName(data, dupeCheck);
 
 		accum[filename] = data;
@@ -199,12 +201,12 @@ function mapRewardList(rewardlist, language) {
 	return rewardlist.map(repre => {
 		let mat = xmat.find(m => m.id === repre.id);
 		if(mat) { // is material
-			let reward = { name: language[mat.nameTextMapHash] };
+			let reward = { id: mat.id, name: language[mat.nameTextMapHash] };
 			if(repre.count && repre.count !== "") reward.count = parseFloat(repre.count);
 			return reward;
 		} else { // is artifact
 			let disp = xdisplay.find(d => d.id === repre.id);
-			return { name: language[disp.nameTextMapHash], rarity: disp.rankLevel+'' };
+			return { id: disp.id, name: language[disp.nameTextMapHash], rarity: disp.rankLevel+'' };
 		}
 	});
 }

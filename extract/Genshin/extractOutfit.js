@@ -32,30 +32,31 @@ function collateOutfit(lang) {
 		data.name = language[obj.nameTextMapHash];
 		data.description = sanitizeDescription(language[obj.descTextMapHash]);
 
-		data.isdefault = obj.isDefault === true;
+		data.isDefault = obj.isDefault === true;
 
 		const AvatarId = obj[propertyMap.avatarId];
 		if(playerIdToTextMapHash[AvatarId])
-			data.character = language[playerIdToTextMapHash[AvatarId]];
+			data.characterText = language[playerIdToTextMapHash[AvatarId]];
 		else
-			data.character = language[xavatar.find(ele => ele.id === obj[propertyMap.avatarId]).nameTextMapHash];
+			data.characterText = language[xavatar.find(ele => ele.id === obj[propertyMap.avatarId]).nameTextMapHash];
+		data.characterId = AvatarId;
 
 		if(obj.itemId) {
 			let sauce = xsource.find(ele => ele.id === obj.itemId);
 			data.source = sauce.textList.map(ele => language[ele]).filter(ele => ele !== '' && ele !== undefined);
 
-			data.namecard = xmat.find(ele => ele.id === obj.itemId).icon;
+			data.filename_card = xmat.find(ele => ele.id === obj.itemId).icon;
 		} else {
-			data.namecard = 'UI_AvatarIcon_Costume_Card';
+			data.filename_card = 'UI_AvatarIcon_Costume_Card';
 		}
 
 		if(obj[propertyMap.iconName]) {
-			data.nameicon = obj[propertyMap.iconName];
-			const name = data.nameicon.slice(data.nameicon.lastIndexOf('_')+1);
-			data.namesplash = `UI_Costume_${name}`;
+			data.filename_icon = obj[propertyMap.iconName];
+			const name = data.filename_icon.slice(data.filename_icon.lastIndexOf('_')+1);
+			data.filename_splash = `UI_Costume_${name}`;
 		}
 		if(obj.sideIconName)
-			data.namesideicon = obj.sideIconName;
+			data.filename_sideIcon = obj.sideIconName;
 
 
 

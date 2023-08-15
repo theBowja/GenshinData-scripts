@@ -77,7 +77,7 @@ function collate(lang, doEnemy=false) {
 				}
 				if (skill.descriptionraw.includes('D__KEY__ELEMENT')) {
 					// console.log(skill.descriptionraw);
-					skill.baseelement = tcgSkillKeyMap[skillObj[propSkillKey]].find(e => e.$type === tcgSkillKeyMap.ELEMENT)?.[tcgSkillKeyMap.ELEMENTVALUEPROP] || 'GCG_ELEMENT_NONE';
+					skill.baseelement = tcgSkillKeyMap[skillObj[propSkillKey]].find(e => e.$type === tcgSkillKeyMap.ELEMENTTYPE)?.[tcgSkillKeyMap.ELEMENTVALUEPROP] || 'GCG_ELEMENT_NONE';
 				}
 			}
 			skill.descriptionreplaced = getDescriptionReplaced(skill, skill.descriptionraw, language);
