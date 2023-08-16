@@ -17,6 +17,7 @@ const associationToCityId = {
 	'MAINACTOR': '',
 	'RANGER': '',
 	'SUMERU': 4,
+	FONTAINE: 5,
 }
 
 function collateCharacter(lang) {

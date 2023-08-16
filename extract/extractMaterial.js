@@ -31,9 +31,9 @@ const filter = ['MATERIAL_EXCHANGE', 'MATERIAL_WOOD', 'MATERIAL_AVATAR_MATERIAL'
 // Adventure EXP, Mora, Primogems, Companionship EXP, Apple, Sunsettia, Starshroom, Activated Starshroom, Scorched Starshroom
 const includeMatId = [102, 202, 201, 105, 100001, 100002, 101212, 101226, 101227];
 // Crafted Items, Primordial Essence, Raw Meat (S), Fowl (S), Original Essence (Invalidated), Original Resin (Invalidated)
-// Scarlet Quartz, Scarlet Quartz, Test Stamina Growth Item, Test Temporary stamina Growth Item
+// Scarlet Quartz, Scarlet Quartz, Test Stamina Growth Item, Test Temporary stamina Growth Item, Fragrant Seasoning
 const excludeMatId = [110000, 112001, 100086, 100087, 210, 211,
-					  101005, 101007, 106000, 106001];
+					  101005, 101007, 106000, 106001, 141115];
 
 function sortMaterials(mata, matb) {
 	if(mata.rank === undefined) mata.rank = 99999999;

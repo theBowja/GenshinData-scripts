@@ -7,6 +7,10 @@ const xdisplay = getExcel('DisplayItemExcelConfigData');
 const xdisorder = getExcel('DungeonLevelEntityConfigData'); // ley line disorder
 const xcity = getExcel('CityConfigData');
 
+const xmonster = getExcel('MonsterExcelConfigData');
+const xcodex = getExcel('AnimalCodexExcelConfigData');
+const xdescribe = getExcel('MonsterDescribeExcelConfigData');
+
 // something inside ManualTextMapConfigData
 const domainType = {
 	UI_ABYSSUS_RELIC: "UI_ABYSSUS_RELIC",
@@ -86,6 +90,12 @@ function getDomainEntranceTextMapHash(englishname) {
 		return mapping("UI_DUNGEON_ENTRY_758");
 	else if(englishname.includes('forsaken rampart'))
 		return mapping("UI_DUNGEON_ENTRY_803");
+	else if(englishname.includes('rhyming rhythm') || englishname.includes('admonishing engraving') || englishname.includes('chiming recitation'))
+		return mapping("UI_DUNGEON_ENTRY_865");
+	else if(englishname.includes('robotic ruse') || englishname.includes('artisanship') || englishname.includes('curious contraptions'))
+		return mapping("UI_DUNGEON_ENTRY_859");
+	else if(englishname.includes('harmony'))
+		return mapping("UI_DUNGEON_ENTRY_982")
 	else
 		console.log('no domain entrance mapping found for '+englishname);
 }
@@ -151,6 +161,12 @@ function collateDomain(lang) {
 		});
 		// if(obj.disorderoverride) data.disorder = obj.disorderoverride.map(d => language[d]); // fix not needed anymore
 		data.disorder = xdisorder.filter(d => d.id+'' === Object.keys(obj.levelConfigMap)[0]).map(d => language[d.descTextMapHash]).filter(ele => ele !== '' && ele !== undefined);
+		data.monsterlist = obj.enterCostItems.map(monId => {
+			let monObj = xmonster.find(e => e.id === monId);
+			let des = xdescribe.find(d => d.id === monObj.describeId);
+			return language[des.nameTextMapHash];
+		});
+
 		data.imagename = obj.entryPicPath;
 
 		let filename = makeFileName(getLanguage('EN')[obj.nameTextMapHash]);

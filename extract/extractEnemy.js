@@ -36,6 +36,7 @@ function collateEnemy(lang) {
 		if(obj.isDisuse) return accum;
 		if(obj.Id === 29010101) obj.Id = 29010104; // use correct stormterror
 		let mon = xmonster.find(m => m.id === obj.Id);
+		if (!mon) return accum;
 		let des = xdescribe.find(d => d.id === obj.describeId);
 		let spe = xspecial.find(s => s.specialNameLabID === des.specialNameLabID);
 		let inv = findInvestigation(obj.Id);
@@ -151,6 +152,7 @@ function collateEnemy(lang) {
 
 		let filename = makeFileName(getLanguage('EN')[des.nameTextMapHash]);
 		if(filename === '') return accum;
+		if(accum[filename]) return accum;
 		checkDupeName(data, dupeCheck);
 
 		accum[filename] = data;
