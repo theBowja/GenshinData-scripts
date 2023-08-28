@@ -5,30 +5,30 @@ exportGenshinData();
 function exportGenshinData() {
 	const { exportCurve, exportData } = require('./extract/Genshin/global.js');
 
-	// exportData('characters', require('./extract/Genshin/extractCharacter.js'));
-	// exportCurve('characters', 'AvatarCurveExcelConfigData');
-	// exportData('constellations', require('./extract/Genshin/extractConstellation'));
-	// exportData('talents', require('./extract/Genshin/extractTalent.js'));
-	// exportData('weapons', require('./extract/Genshin/extractWeapon.js'));
-	// exportCurve('weapons', 'WeaponCurveExcelConfigData')
-	// exportData('artifacts', require('./extract/Genshin/extractArtifact.js'));
-	// exportData('foods', require('./extract/Genshin/extractFood'));
-	// exportData('materials', require('./extract/Genshin/extractMaterial')); // change: used both TextList/JumpList.
-	// exportData('domains', require('./extract/Genshin/extractDomain')); // in the future use levelConfigMap to manually map to domain entrance name
-	// exportData('enemies', require('./extract/Genshin/extractEnemy'));
-	// exportCurve('enemies', 'MonsterCurveExcelConfigData');
+	exportData('characters', require('./extract/Genshin/extractCharacter.js'));
+	exportCurve('characters', 'AvatarCurveExcelConfigData');
+	exportData('constellations', require('./extract/Genshin/extractConstellation'));
+	exportData('talents', require('./extract/Genshin/extractTalent.js'));
+	exportData('weapons', require('./extract/Genshin/extractWeapon.js'));
+	exportCurve('weapons', 'WeaponCurveExcelConfigData')
+	exportData('artifacts', require('./extract/Genshin/extractArtifact.js'));
+	exportData('foods', require('./extract/Genshin/extractFood'));
+	exportData('materials', require('./extract/Genshin/extractMaterial')); // change: used both TextList/JumpList.
+	exportData('domains', require('./extract/Genshin/extractDomain')); // in the future use levelConfigMap to manually map to domain entrance name
+	exportData('enemies', require('./extract/Genshin/extractEnemy'));
+	exportCurve('enemies', 'MonsterCurveExcelConfigData');
 
-	// //exportData('domains', require('./extract/Genshin/extractDomainMonsterList')); // run only after both domains and enemies have run. sync.
+	//exportData('domains', require('./extract/Genshin/extractDomainMonsterList')); // run only after both domains and enemies have run. sync.
 
-	// exportData('outfits', require('./extract/Genshin/extractOutfit'));
-	// exportData('windgliders', require('./extract/Genshin/extractWindGlider'));
-	// exportData('animals', require('./extract/Genshin/extractAnimal'));
-	// exportData('namecards', require('./extract/Genshin/extractNamecard'));
-	// exportData('geographies', require('./extract/Genshin/extractGeography'));
-	// exportData('achievements', require('./extract/Genshin/extractAchievement'));
-	// exportData('achievementgroups', require('./extract/Genshin/extractAchievementGroup'));
-	// exportData('adventureranks', require('./extract/Genshin/extractAdventureRank'));
-	// exportData('crafts', require('./extract/Genshin/extractCraft'));
+	exportData('outfits', require('./extract/Genshin/extractOutfit'));
+	exportData('windgliders', require('./extract/Genshin/extractWindGlider'));
+	exportData('animals', require('./extract/Genshin/extractAnimal'));
+	exportData('namecards', require('./extract/Genshin/extractNamecard'));
+	exportData('geographies', require('./extract/Genshin/extractGeography'));
+	exportData('achievements', require('./extract/Genshin/extractAchievement'));
+	exportData('achievementgroups', require('./extract/Genshin/extractAchievementGroup'));
+	exportData('adventureranks', require('./extract/Genshin/extractAdventureRank'));
+	exportData('crafts', require('./extract/Genshin/extractCraft'));
 
 	// exportData('tcgcharactercards', require('./extract/Genshin/extractTcgCharacterCard'));
 	// exportData('tcgenemycards', require('./extract/Genshin/extractTcgEnemyCard'));
