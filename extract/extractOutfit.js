@@ -36,9 +36,9 @@ function collateOutfit(lang) {
 
 		const AvatarId = obj[propertyMap.avatarId];
 		if(playerIdToTextMapHash[AvatarId])
-			data.characterText = language[playerIdToTextMapHash[AvatarId]];
+			data.characterName = language[playerIdToTextMapHash[AvatarId]];
 		else
-			data.characterText = language[xavatar.find(ele => ele.id === obj[propertyMap.avatarId]).nameTextMapHash];
+			data.characterName = language[xavatar.find(ele => ele.id === obj[propertyMap.avatarId]).nameTextMapHash];
 		data.characterId = AvatarId;
 
 		if(obj.itemId) {

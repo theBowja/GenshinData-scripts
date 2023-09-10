@@ -97,9 +97,9 @@ function collateFood(lang) {
 		spdata.description = sanitizer(language[xd.descTextMapHash], replaceNewline, removeHashtag, replaceGenderM, replaceNonBreakSpace);
 		validateString(spdata.description, 'foods.spdatadescription', lang);
 
-		spdata.baseDishText = basedish;
+		spdata.baseDishName = basedish;
 		spdata.baseDishId = obj.id;
-		spdata.characterText = language[getAvatar(myspec.avatarId).nameTextMapHash];
+		spdata.characterName = language[getAvatar(myspec.avatarId).nameTextMapHash];
 		spdata.characterId = myspec.avatarId;
 		
 		spdata.ingredients = ingredients;

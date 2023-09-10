@@ -206,7 +206,7 @@ function mapRewardList(rewardlist, language) {
 			return reward;
 		} else { // is artifact
 			let disp = xdisplay.find(d => d.id === repre.id);
-			return { id: disp.id, name: language[disp.nameTextMapHash], rarity: disp.rankLevel+'' };
+			return { id: disp.id, name: language[disp.nameTextMapHash], rarity: disp.rankLevel };
 		}
 	});
 }

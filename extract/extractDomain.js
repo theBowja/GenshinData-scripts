@@ -20,6 +20,7 @@ const domainType = {
 function getDomainTypeTextMapHash(domaintype) {
 	return xmanualtext.find(ele => ele.textMapId === domaintype).textMapContentTextMapHash;
 }
+function mapping(textmapid) { return xmanualtext.find(ele => ele.textMapId === textmapid).textMapContentTextMapHash; }
 
 /*
 "UI_DUNGEON_ENTRY_27", // "Valley of Remembrance"
@@ -44,58 +45,57 @@ function getDomainTypeTextMapHash(domaintype) {
 "UI_DUNGEON_ENTRY_758", // "City of Gold"
 "UI_DUNGEON_ENTRY_803", // "Molten Iron Fortress"
 */
-function getDomainEntranceTextMapHash(englishname, levelConfigMap) {
+function getDomainEntranceTextMapId(englishname, levelConfigMap) {
 	englishname = englishname.toLowerCase();
-	function mapping(textmapid) { return xmanualtext.find(ele => ele.textMapId === textmapid).textMapContentTextMapHash; }
 
 	if(englishname.includes('dance of steel'))
-		return mapping("UI_DUNGEON_ENTRY_27");
+		return "UI_DUNGEON_ENTRY_27";
 	else if(englishname.includes('city of reflections') || englishname.includes('submerged valley') || englishname.includes('ruins of thirsting capital'))
-		return mapping("UI_DUNGEON_ENTRY_37");
+		return "UI_DUNGEON_ENTRY_37";
 	else if(englishname.includes('frosted altar') || englishname.includes('frozen abyss') || englishname.includes('realm of slumber'))
-		return mapping("UI_DUNGEON_ENTRY_29");
+		return "UI_DUNGEON_ENTRY_29";
 	else if(englishname.includes('fires of purification'))
-		return mapping("UI_DUNGEON_ENTRY_35");
+		return "UI_DUNGEON_ENTRY_35";
 	else if(englishname.includes('altar of flames') || englishname.includes('heart of the flames') || englishname.includes('circle of embers'))
-		return mapping("UI_DUNGEON_ENTRY_46");
+		return "UI_DUNGEON_ENTRY_46";
 	else if(englishname.includes('spring'))
-		return mapping("UI_DUNGEON_ENTRY_48");
+		return "UI_DUNGEON_ENTRY_48";
 	else if(englishname.includes('stone chamber'))
-		return mapping("UI_DUNGEON_ENTRY_50");
+		return "UI_DUNGEON_ENTRY_50";
 	else if(englishname.includes('thundercloud altar') || englishname.includes('thundering ruins') || englishname.includes('trial grounds of thunder'))
-		return mapping("UI_DUNGEON_ENTRY_52");
+		return "UI_DUNGEON_ENTRY_52";
 	else if(englishname.includes('frost'))
-		return mapping("UI_DUNGEON_ENTRY_54");
+		return "UI_DUNGEON_ENTRY_54";
 	else if(englishname.includes('unyielding'))
-		return mapping("UI_DUNGEON_ENTRY_282");
+		return "UI_DUNGEON_ENTRY_282";
 	else if(englishname.includes('elegiac rime'))
-		return mapping("UI_DUNGEON_ENTRY_221");
+		return "UI_DUNGEON_ENTRY_221";
 	else if(englishname.includes('autumn hunt'))
-		return mapping("UI_DUNGEON_ENTRY_361");
+		return "UI_DUNGEON_ENTRY_361";
 	else if(englishname.includes('reign of violet') || englishname.includes('thundering valley') || englishname.includes('vine-infested ruins'))
-		return mapping("UI_DUNGEON_ENTRY_310");
+		return "UI_DUNGEON_ENTRY_310";
 	else if(englishname.includes('sunken sands') || englishname.includes('altar of sands') || englishname.includes('sand burial'))
-		return mapping("UI_DUNGEON_ENTRY_368");
+		return "UI_DUNGEON_ENTRY_368";
 	else if(englishname.includes('necropolis'))
-		return mapping("UI_DUNGEON_ENTRY_433");
+		return "UI_DUNGEON_ENTRY_433";
 	else if(englishname.includes('machine nest'))
-		return mapping("UI_DUNGEON_ENTRY_516");
+		return "UI_DUNGEON_ENTRY_516";
 	else if(englishname.includes('seven sense'))
-		return mapping("UI_DUNGEON_ENTRY_507");
+		return "UI_DUNGEON_ENTRY_507";
 	else if(englishname.includes('full moon') || englishname.includes('witticism') || englishname.includes('basket of'))
-		return mapping("UI_DUNGEON_ENTRY_505");
+		return "UI_DUNGEON_ENTRY_505";
 	else if(englishname.includes('tainted cloud') || englishname.includes('leading karma') || englishname.includes('obsession'))
-		return mapping("UI_DUNGEON_ENTRY_509");
+		return "UI_DUNGEON_ENTRY_509";
 	else if(englishname.includes('desert citadel'))
-		return mapping("UI_DUNGEON_ENTRY_758");
+		return "UI_DUNGEON_ENTRY_758";
 	else if(englishname.includes('forsaken rampart'))
-		return mapping("UI_DUNGEON_ENTRY_803");
+		return "UI_DUNGEON_ENTRY_803";
 	else if(englishname.includes('rhyming rhythm') || englishname.includes('admonishing engraving') || englishname.includes('chiming recitation'))
-		return mapping("UI_DUNGEON_ENTRY_865");
+		return "UI_DUNGEON_ENTRY_865";
 	else if(englishname.includes('robotic ruse') || englishname.includes('artisanship') || englishname.includes('curious contraptions'))
-		return mapping("UI_DUNGEON_ENTRY_859");
+		return "UI_DUNGEON_ENTRY_859";
 	else if(englishname.includes('harmony'))
-		return mapping("UI_DUNGEON_ENTRY_982")
+		return "UI_DUNGEON_ENTRY_982";
 	else
 		console.log('no domain entrance mapping found for '+englishname);
 }
@@ -120,7 +120,9 @@ function collateDomain(lang) {
 		data.name = language[obj.nameTextMapHash];
 		// data.displayname = language[obj.displayNameTextMapHash]; // doesn't exist for artifact domains
 		const levelConfigMap = Object.keys(obj.levelConfigMap)[0];
-		data.domainEntrance = language[getDomainEntranceTextMapHash(getLanguage('EN')[obj.nameTextMapHash], levelConfigMap)];// obj.entryPicPath;
+		let entranceTextMapId = getDomainEntranceTextMapId(getLanguage('EN')[obj.nameTextMapHash], levelConfigMap);
+		data.entranceId = parseInt(entranceTextMapId.slice(entranceTextMapId.lastIndexOf('_')+1));
+		data.entranceName = language[mapping(entranceTextMapId)];// obj.entryPicPath;
 		data.description = sanitizeDescription(language[obj.descTextMapHash]);
 
 		// CITY FIX // fix no longer needed 2.7
@@ -132,8 +134,8 @@ function collateDomain(lang) {
 		if(obj.id >= 4330 && obj.id <= 4333) obj.cityID = 1; // "Cecilia Garden"
 		if(obj.id >= 4320 && obj.id <= 4323) obj.cityID = 1; // "Cecilia Garden"
 
-
-		data.region = language[xcity.find(city => city.cityId === obj.cityID).cityNameTextMapHash];
+		data.regionId = obj.cityID;
+		data.regionName = language[xcity.find(city => city.cityId === obj.cityID).cityNameTextMapHash];
 
 		data.recommendedLevel = obj.showLevel;
 		if(typeof obj.recommendElementTypes[0] === 'string')
@@ -160,7 +162,7 @@ function collateDomain(lang) {
 				let disp = xdisplay.find(d => d.id === repre.id);
 				data.domainType = domainType.UI_ABYSSUS_RELIC;
 				data.domainText = language[getDomainTypeTextMapHash(domainType.UI_ABYSSUS_RELIC)];
-				return { id: disp.id, name: language[disp.nameTextMapHash], rarity: disp.rankLevel+'' };
+				return { id: disp.id, name: language[disp.nameTextMapHash], rarity: disp.rankLevel };
 			}
 		});
 		// if(obj.disorderoverride) data.disorder = obj.disorderoverride.map(d => language[d]); // fix not needed anymore

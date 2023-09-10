@@ -89,7 +89,7 @@ function collateMaterial(lang) {
 		if(dungeonlist > 0) {
 			if(dungeonlist.length > 1) console.log(`${data.name} drops from more than one dungeon!`);
 			if(xdungeon.find(ele => ele.id === dungeonlist[0])) {
-				data.dropDomainText = language[xdungeon.find(ele => ele.id === dungeonlist[0]).displayNameTextMapHash]; // artifact domains don't have DisplayNameTextMapHash
+				data.dropDomainName = language[xdungeon.find(ele => ele.id === dungeonlist[0]).displayNameTextMapHash]; // artifact domains don't have DisplayNameTextMapHash
 				data.dropDomainId = dungeonlist[0];
 				data.daysOfWeek = getDayWeekList(dungeonlist[0], language); 
 			}

@@ -14,10 +14,10 @@ function collageGeography(lang) {
 		data.id = obj.Id;
 
 		data.name = language[obj.nameTextMapHash];
-		data.areaText = language[xarea.find(area => area.ID === obj.worldAreaId).AreaNameTextMapHash];
+		data.areaName = language[xarea.find(area => area.ID === obj.worldAreaId).AreaNameTextMapHash];
 		data.areaId = obj.worldAreaId;
 		data.description = sanitizeDescription(language[obj.descTextMapHash]);
-		data.regionText = language[xcity.find(city => city.cityId === obj.cityId).cityNameTextMapHash];
+		data.regionName = language[xcity.find(city => city.cityId === obj.cityId).cityNameTextMapHash];
 		data.regionId = obj.cityId;
 		data.showOnlyUnlocked = obj.showOnlyUnlocked ? true : undefined;
 		data.sortOrder = obj.SortOrder;
