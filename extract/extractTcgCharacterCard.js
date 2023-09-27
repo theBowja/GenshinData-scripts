@@ -9,7 +9,7 @@ const xdeckcard = getExcel('GCGDeckCardExcelConfigData');
 const xtag = getExcel('GCGTagExcelConfigData');
 const xcardview = getExcel('GCGCardViewExcelConfigData');
 
-const propMaxEnergy = getPropNameWithMatch(xchar, 'id', 1101, 2);
+const propMaxEnergy = getPropNameWithMatch(xchar, 'id', 1101, 3);
 const propPlayable = getPropNameWithMatch(xchar, 'id', 1101, true);
 const propTags = getPropNameWithMatch(xchar, 'id', 1101, 'GCG_TAG_ELEMENT_CRYO');
 const propSwitch = getPropNameWithMatch(xchar, 'id', 1101, 'Switch_Ganyu');

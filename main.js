@@ -20,16 +20,17 @@ function exportData() {
 
 	// exportData('domains', require('./extract/extractDomainMonsterList')); // run only after both domains and enemies have run. sync.
 
-	exportData('outfits', require('./extract/extractOutfit'));
-	exportData('windgliders', require('./extract/extractWindGlider'));
-	exportData('animals', require('./extract/extractAnimal'));
-	exportData('namecards', require('./extract/extractNamecard'));
-	exportData('geographies', require('./extract/extractGeography'));
-	exportData('achievements', require('./extract/extractAchievement'));
-	exportData('achievementgroups', require('./extract/extractAchievementGroup'));
-	exportData('adventureranks', require('./extract/extractAdventureRank'));
-	exportData('crafts', require('./extract/extractCraft'));
+	// exportData('outfits', require('./extract/extractOutfit'));
+	// exportData('windgliders', require('./extract/extractWindGlider'));
+	// exportData('animals', require('./extract/extractAnimal'));
+	// exportData('namecards', require('./extract/extractNamecard'));
+	// exportData('geographies', require('./extract/extractGeography'));
+	// exportData('achievements', require('./extract/extractAchievement'));
+	// exportData('achievementgroups', require('./extract/extractAchievementGroup'));
+	// exportData('adventureranks', require('./extract/extractAdventureRank'));
+	// exportData('crafts', require('./extract/extractCraft'));
 
+	// Only run tcg extracts in main branch
 	// exportData('tcgcharactercards', require('./extract/extractTcgCharacterCard'));
 	// exportData('tcgactioncards', require('./extract/extractTcgActionCard'));
 	// exportData('tcgstatuseffects', require('./extract/extractTcgStatusEffect'));

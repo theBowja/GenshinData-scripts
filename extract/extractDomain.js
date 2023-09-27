@@ -161,7 +161,7 @@ function collateDomain(lang) {
 		});
 		// if(obj.disorderoverride) data.disorder = obj.disorderoverride.map(d => language[d]); // fix not needed anymore
 		data.disorder = xdisorder.filter(d => d.id+'' === Object.keys(obj.levelConfigMap)[0]).map(d => language[d.descTextMapHash]).filter(ele => ele !== '' && ele !== undefined);
-		data.monsterlist = obj.enterCostItems.map(monId => {
+		data.monsterlist = obj.previewMonsterList.map(monId => {
 			let monObj = xmonster.find(e => e.id === monId);
 			let des = xdescribe.find(d => d.id === monObj.describeId);
 			return language[des.nameTextMapHash];
