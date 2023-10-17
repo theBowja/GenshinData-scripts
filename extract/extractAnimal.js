@@ -29,11 +29,11 @@ function collateAnimal(lang) {
 		data.description = sanitizeDescription(language[obj.descTextMapHash]);
 
 		const catType = obj.subType.substring(obj.subType.lastIndexOf('_')+1);
-		data.categoryType = catType;
+		data.categoryType = obj.subType.substring(obj.subType.indexOf('_')+1);
 		data.categoryText = language[xmanualtext.find(ele => ele.textMapId === `UI_CODEX_ANIMAL_CATEGORY_${catType}`).textMapContentTextMapHash]
 		// data.capturable = xcapture.find(ele => ele.monsterID === obj.Id) ? true : undefined;
-		let counttype = obj[propCOUNTTYPE] || "_NONE";
-		data.countType = counttype.substring(counttype.lastIndexOf('_')+1);
+		let counttype = obj[propCOUNTTYPE] || "_COUNT_TYPE_NONE";
+		data.countType = counttype.substring(counttype.indexOf('_')+1);
 		data.sortOrder = obj.SortOrder;
 
 		data.filename_icon = mydescribe.icon;
