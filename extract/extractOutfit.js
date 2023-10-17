@@ -53,8 +53,15 @@ function collateOutfit(lang) {
 		if(obj[propertyMap.iconName]) {
 			data.filename_icon = obj[propertyMap.iconName];
 			const name = data.filename_icon.slice(data.filename_icon.lastIndexOf('_')+1);
+
+			data.filename_iconCircle = `UI_AvatarIcon_${name}_Circle`;
 			data.filename_splash = `UI_Costume_${name}`;
+		} else {
+			const iconnametemp = xavatar.find(ele => ele.id === obj[propertyMap.avatarId]).iconName;
+			const name = iconnametemp.slice(iconnametemp.lastIndexOf('_')+1);
+			data.filename_iconCircle = `UI_AvatarIcon_${name}_Circle`;
 		}
+
 		if(obj.sideIconName)
 			data.filename_sideIcon = obj.sideIconName;
 
