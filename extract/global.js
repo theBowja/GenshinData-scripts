@@ -50,7 +50,12 @@ global.sanitizeDescription = function(str, removeBold) { return removeSprite(rep
 global.getMatSourceText = function(id, textmap) { return getExcel('MaterialSourceDataExcelConfigData').find(e => e.id === id).textList.map(e => textmap[e]).filter(e => e !== '' && e !== undefined); }
 global.getPropNameWithMatch = function(excel, idkey, idval, propval) { return Object.entries(excel.find(e => e[idkey] === idval)).find(e => e[1] === propval || e[1][0] === propval)[0]; };
 global.validName = function(name) { return name !== '' && !name.includes('</') && !/[|{}#]/.test(name)}
-global.sanitizeName = function(str) { 
+global.sanitizeName = function(str, id) { 
+	if (str === undefined) {
+		console.log(`Error: ${id} does not have a mapped name`);
+		return `!!!errorerror${id}`;
+	}
+
 	str = str.split('|s')[0];
 	if (str.includes('{NON_BREAK_SPACE}')) {
 		if (str[0] !== '#') console.log(`${str} REMOVING NON_BREAK_SPACE BUT IT DOESNT START WITH #`);

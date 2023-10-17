@@ -27,8 +27,8 @@ function collate(lang) {
 		let data = {};
 		data.id = obj.id;
 
-		data.name = sanitizeName(language[obj.nameTextMapHash]);
-		// if (data.name === undefined || data.name === '') return accum;
+		if (language[obj.nameTextMapHash] === undefined || language[obj.nameTextMapHash] === '') return accum;
+		data.name = sanitizeName(language[obj.nameTextMapHash], obj.id);
 		data.obtainable = obj[propCollectible];
 
 		data.cardtype = obj.cardType;

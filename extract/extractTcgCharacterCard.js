@@ -1,5 +1,5 @@
 require('./globalTcg.js');
-const config = require('../../config.json');
+const config = require('../config.json');
 
 const xmat = getExcel('MaterialExcelConfigData');
 const xchar = getExcel('GCGCharExcelConfigData');
@@ -8,6 +8,7 @@ const xskilltag = getExcel('GCGSkillTagExcelConfigData');
 const xdeckcard = getExcel('GCGDeckCardExcelConfigData');
 const xtag = getExcel('GCGTagExcelConfigData');
 const xcardview = getExcel('GCGCardViewExcelConfigData');
+const xavatar = getExcel('AvatarExcelConfigData');
 
 const propMaxEnergy = getPropNameWithMatch(xchar, 'id', 1101, 3);
 const propPlayable = getPropNameWithMatch(xchar, 'id', 1101, true);
@@ -37,10 +38,18 @@ function collate(lang, doEnemy=false) {
 		if (doEnemy && !obj[propEnemy]) return accum;
 		if (!doEnemy && !obj[propPlayable]) return accum;
 
+		let isWanderer = false;
+
 		let data = {};
 		data.id = obj.id;
 
-		data.name = sanitizeName(language[obj.nameTextMapHash]);
+		if (language[obj.nameTextMapHash].includes('ID(1)')) isWanderer = true;
+
+		if (isWanderer) {
+			data.name = sanitizeName(language[getWandererNameTextMapHash()]);
+		} else {
+			data.name = sanitizeName(language[obj.nameTextMapHash]);
+		}
 		data.hp = obj.hp;
 		data.maxenergy = obj[propMaxEnergy];
 
@@ -103,7 +112,7 @@ function collate(lang, doEnemy=false) {
 		parts[2] = parts[2]+'Icon';
 		data.filename_icon = `UI_${parts.join('_')}`;
 
-		let filename = makeUniqueFileName(obj.nameTextMapHash, accum);
+		let filename = makeUniqueFileName(isWanderer ? getWandererNameTextMapHash() : obj.nameTextMapHash, accum);
 		if(filename === '') return accum;
 		checkDupeName(data, dupeCheck, skipdupelog, doEnemy);
 		accum[filename] = data;
@@ -115,7 +124,9 @@ function collate(lang, doEnemy=false) {
 	return mydata;
 }
 
-
+function getWandererNameTextMapHash() {
+	return nameHashWanderer = xavatar.find(ele => ele.id === 10000075).nameTextMapHash;
+}
 
 
 module.exports = collate;
