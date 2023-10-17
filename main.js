@@ -1,6 +1,5 @@
 
 exportGenshinData();
-// copyStatsData();
 
 function exportGenshinData() {
 	const { exportCurve, exportData } = require('./extract/global.js');
@@ -49,31 +48,4 @@ function exportGenshinData() {
 	// exportData('voiceovers', require('./extract/extractVoiceover'), true); // unfinished
 
 	// // exportData('fishingpoints', require('./extractFishingPoint'));  // unfinished
-}
-
-
-// copy character/weapon stats data into the stats folder
-function copyStatsData() {
-	const fs = require('fs');
-	const config = require('./config.json');
-
-	if (fs.existsSync(`${config.export_folder}/EN/characters.json`)) {
-		const characterdata = require(`${config.export_folder}/EN/characters.json`);
-		const statsdata = Object.fromEntries(Object.entries(characterdata).map(([k, v]) => [k, v.stats]));
-		fs.mkdirSync(`./stats/data`, { recursive: true });
-		fs.writeFileSync(`./stats/data/charactersStats.json`, JSON.stringify(statsdata, null, '\t'))
-		if (fs.existsSync(`${config.export_folder}/curve/characters.json`)) {
-			fs.copyFileSync(`${config.export_folder}/curve/characters.json`, `./stats/data/charactersCurve.json`);
-		}
-	}
-
-	if (fs.existsSync(`${config.export_folder}/EN/weapons.json`)) {
-		const weapondata = require(`${config.export_folder}/EN/weapons.json`);
-		const statsdata = Object.fromEntries(Object.entries(weapondata).map(([k, v]) => [k, v.stats]));
-		fs.mkdirSync(`./stats/data`, { recursive: true });
-		fs.writeFileSync(`./stats/data/weaponsStats.json`, JSON.stringify(statsdata, null, '\t'))
-		if (fs.existsSync(`${config.export_folder}/curve/weapons.json`)) {
-			fs.copyFileSync(`${config.export_folder}/curve/weapons.json`, `./stats/data/weaponsCurve.json`);
-		}
-	}
 }

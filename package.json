@@ -6,7 +6,7 @@
   "main": "main.js",
   "scripts": {
     "start": "node main.js",
-    "buildstats": "npx webpack --config stats/webpack.all.config.js && npx webpack --config stats/webpack.characters.config.js && npx webpack --config stats/webpack.weapons.config.js"
+    "buildstats": "node stats/copyStatsData.js && npx webpack --config stats/webpack.all.config.js && npx webpack --config stats/webpack.characters.config.js && npx webpack --config stats/webpack.weapons.config.js"
   },
   "repository": {
     "type": "git",
