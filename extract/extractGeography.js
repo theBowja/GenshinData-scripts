@@ -1,7 +1,6 @@
 require('./global.js');
 
 const xview = getExcel('ViewCodexExcelConfigData');
-// const xsource = getExcel('MaterialSourceDataExcelConfigData');
 const xcity = getExcel('CityConfigData');
 const xarea = getExcel('WorldAreaConfigData');
 

@@ -25,7 +25,6 @@ require('./global.js');
 
 // function collateFishingPoint(lang) {
 // 	const language = getLanguage(lang);
-// 	const xsource = getExcel('MaterialSourceDataExcelConfigData');
 // 	const xmat = getExcel('MaterialExcelConfigData').sort(sortMaterials);
 // 	const xarchive = getExcel('MaterialCodexExcelConfigData');
 // 	const xdungeon = getExcel('DungeonExcelConfigData');

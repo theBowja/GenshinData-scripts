@@ -1,7 +1,6 @@
 require('./global.js');
 
 const xmat = getExcel('MaterialExcelConfigData');
-const xsource = getExcel('MaterialSourceDataExcelConfigData');
 const xcombine = getExcel('CombineExcelConfigData');
 
 function collateCraft(lang) {

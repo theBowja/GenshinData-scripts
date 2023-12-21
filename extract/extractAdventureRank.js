@@ -1,7 +1,6 @@
 require('./global.js');
 
 const xmat = getExcel('MaterialExcelConfigData');
-const xsource = getExcel('MaterialSourceDataExcelConfigData');
 const xplevel = getExcel('PlayerLevelExcelConfigData');
 const xreward = getExcel('RewardExcelConfigData');
 const xartifact = getExcel('ReliquaryExcelConfigData');

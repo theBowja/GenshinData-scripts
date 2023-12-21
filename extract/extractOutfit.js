@@ -42,8 +42,7 @@ function collateOutfit(lang) {
 		data.characterId = AvatarId;
 
 		if(obj.itemId) {
-			let sauce = xsource.find(ele => ele.id === obj.itemId);
-			data.source = sauce.textList.map(ele => language[ele]).filter(ele => ele !== '' && ele !== undefined);
+			data.source = getMatSourceText(obj.itemId, language);
 
 			data.filename_card = xmat.find(ele => ele.id === obj.itemId).icon;
 		} else {

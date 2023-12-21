@@ -1,7 +1,6 @@
 require('./global.js');
 
 const xmat = getExcel('MaterialExcelConfigData');
-const xsource = getExcel('MaterialSourceDataExcelConfigData');
 const xdaily = getExcel('DailyTaskExcelConfigData');
 const xcity = getExcel('CityConfigData');
 const xarea = getExcel('WorldAreaConfigData');

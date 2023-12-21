@@ -109,7 +109,7 @@ function collateMaterial(lang) {
 			// 	return poolAccum;
 			// }, []);
 		// }
-		const sourcelist = tmp.textList.concat(tmp.jumpList);
+		const sourcelist = tmp.textList.concat(tmp.jumpList).concat(tmp.jumpDescs);
 		data.sources = sourcelist.map(ele => language[ele]).filter(ele => ele !== '' && ele !== undefined); // TextList/JumpList
 
 		data.filename_icon = obj.icon;

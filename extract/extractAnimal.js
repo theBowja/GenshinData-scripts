@@ -1,7 +1,6 @@
 require('./global.js');
 
 const xmat = getExcel('MaterialExcelConfigData');
-const xsource = getExcel('MaterialSourceDataExcelConfigData');
 const xcodex = getExcel('AnimalCodexExcelConfigData');
 const xdescribe = getExcel('AnimalDescribeExcelConfigData');
 const xcapture = getExcel('CaptureExcelConfigData');

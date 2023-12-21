@@ -2,7 +2,6 @@ require('./global.js');
 
 const xrecipe = getExcel('CookRecipeExcelConfigData');
 const xmaterial = getExcel('MaterialExcelConfigData');
-const xsource = getExcel('MaterialSourceDataExcelConfigData');
 const xspecialty = getExcel('CookBonusExcelConfigData');
 const xavatar = getExcel('AvatarExcelConfigData');
 

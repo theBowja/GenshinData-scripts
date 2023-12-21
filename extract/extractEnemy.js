@@ -30,6 +30,7 @@ function collateEnemy(lang) {
 	const language = getLanguage(lang);
 	const xmat = getExcel('MaterialExcelConfigData');
 	const dupeCheck = {};
+	let bossRewardIndex = 0; // spaghetti
 
 	let mymonster = xcodex.reduce((accum, obj) => {
 		if(obj.type !== 'CODEX_MONSTER') return accum;
@@ -56,45 +57,46 @@ function collateEnemy(lang) {
 			if(language[inv.lockDescTextMapHash] !== "") data.investigation.lockdesc = language[inv.lockDescTextMapHash];
 			data.filename_investigationIcon = inv.icon;
 			// REWARD PREVIEW
-			let rewardpreview = xpreview.find(pre => pre.id === inv.rewardPreviewId).previewItems.filter(pre => pre.id);
+			let rewardpreview = xpreview.find(pre => pre.id === inv.rewardPreviewId).previewItems;
+			data.rewardPreviewId = inv.rewardPreviewId;
 			data.rewardPreview = mapRewardList(rewardpreview, language);
 		} else {
+			if (obj.subType === 'CODEX_SUBTYPE_BOSS') {
+				let rewardpreview = bossRewardQueue[bossRewardIndex].previewItems;
+				data.rewardPreviewId = bossRewardQueue[bossRewardIndex].id;
+				data.rewardPreview = mapRewardList(rewardpreview, language);
+				bossRewardIndex++;
+			}
+
 			if(obj.Id === 20020101) { // Eye of the Storm
+				// data.rewardPreviewId = 
 				data.rewardPreview = mapRewardList(eyestormreward, language);
 			} else if(obj.Id === 21011501) { // Unusual Hilichurl
 				data.rewardPreview = mapRewardList(unusualreward, language);
 			} else if(obj.Id === 22030101 || obj.Id === 22020101 || obj.Id === 22030201 ||
+					  obj.Id === 22020201 ||
 				      obj.Id === 26060201 || obj.Id === 26060101 || obj.Id === 26060301) {
 				// Abyss Lector: Violet Lightning, Abyss Herald: Wicked Torrents, Abyss Lector: Fathomless Flames
+				// Abyss Herald: Frost Fall
 				// Hydro Cicin, Electro Cicin, Cryo Cicin
 				data.rewardPreview = [];
-			} else if(obj.Id === 29010104) { // dvalin lvl90
-				let rewardpreview = xpreview.find(pre => pre.id === 15005).previewItems.filter(pre => pre.id);
+			} else if(obj.Id === 26050801) { // Bathysmal Vishap twins
+				data.rewardPreviewId = 15177;
+				let rewardpreview = xpreview.find(pre => pre.id === data.rewardPreviewId).previewItems;
 				data.rewardPreview = mapRewardList(rewardpreview, language);
-			} else if(obj.Id === 29020101) { // wolfboss lvl90
-				let rewardpreview = xpreview.find(pre => pre.id === 15010).previewItems.filter(pre => pre.id);
+			} else if(obj.Id === 24070301) { // Icewind Suite
+				data.rewardPreviewId = 15190;
+				let rewardpreview = xpreview.find(pre => pre.id === data.rewardPreviewId).previewItems;
 				data.rewardPreview = mapRewardList(rewardpreview, language);
-			} else if(obj.Id === 29030101) { // childe lvl90
-				let rewardpreview = xpreview.find(pre => pre.id === 15014).previewItems.filter(pre => pre.id);
+			} else if(obj.Id === 22100501) { // Iniquitous Baptist
+				data.rewardPreviewId = 15185;
+				let rewardpreview = xpreview.find(pre => pre.id === data.rewardPreviewId).previewItems;
 				data.rewardPreview = mapRewardList(rewardpreview, language);
-			} else if(obj.Id === 29040101) { // azhdaha lvl90
-				let rewardpreview = xpreview.find(pre => pre.id === 15018).previewItems.filter(pre => pre.id);
+			} else if(obj.Id === 24068801 || obj.Id === 24068901 || obj.Id === 24069001 || obj.Id === 24069201) {
+				// Assault/Suppression/AnnihilationConstruction Specialist Mek
+				data.rewardPreviewId = 16020;
+				let rewardpreview = xpreview.find(pre => pre.id === data.rewardPreviewId).previewItems;
 				data.rewardPreview = mapRewardList(rewardpreview, language);
-			} else if(obj.Id === 29050101) { // signora lvl90
-				let rewardpreview = xpreview.find(pre => pre.id === 15034).previewItems.filter(pre => pre.id);
-				data.rewardPreview = mapRewardList(rewardpreview, language);
-			} else if(obj.Id === 26050801) {
-				let rewardpreview = xpreview.find(pre => pre.id === 15177).previewItems.filter(pre => pre.id);
-				data.rewardPreview = mapRewardList(rewardpreview, language);
-			} else if(obj.Id === 29060201) { // raiden shogun lvl90
-				let rewardpreview = xpreview.find(pre => pre.id === 15038).previewItems.filter(pre => pre.id);
-				data.rewardPreview = mapRewardList(rewardpreview, language);
-			} else if(obj.Id === 29070101) { // scaramouche lvl90
-				let rewardpreview = xpreview.find(pre => pre.id === 15042).previewItems.filter(pre => pre.id);
-				data.rewardPreview = mapRewardList(rewardpreview, language);				
-			} else if(obj.Id === 29080101) { // Guardian of Apep’s Oasis lvl90
-				let rewardpreview = xpreview.find(pre => pre.id === 15046).previewItems.filter(pre => pre.id);
-				data.rewardPreview = mapRewardList(rewardpreview, language);				
 			}
 		}
 		if(!data.rewardPreview) {
@@ -162,6 +164,7 @@ function collateEnemy(lang) {
 }
 
 // mapping for monsters that don't have rewardlist to use another monster's rewardlist
+// FROM missing id TO monster id with rewardlist // Missing Monster Name
 const noRewardListMonsterMap = {
 	21011601: 21010601, // Electro Hilichurl Grenadier
 	21020701: 21020101, // Crackling Axe Mitachurl
@@ -173,6 +176,7 @@ const noRewardListMonsterMap = {
 	20060501: 20060201, // Electro Specter
 	20060401: 20060201, // Cryo Specter
 	22080101: 22070101, // Black Serpent Knight: Windcutter
+	22080201: 22070101, // Black Serpent Knight: Rockbreaker Ax
 	25010101: 25010201, // Treasure Hoarders: Liuliu
 	25020101: 25010201, // Treasure Hoarders: Raptor
 	25030101: 25010201, // Treasure Hoarders: Carmen
@@ -181,11 +185,23 @@ const noRewardListMonsterMap = {
 	25050201: 25010201, // Millelith Sergeant
 	25410201: 25210301, // Eremite Galehunter
 	25410101: 25210301, // Eremite Stone Enchanter
+	25410301: 25210301, // Eremite Scorching Loremaster
+	25410401: 25210301, // Eremite Floral Ring-Dancer
 	26090101: 26090201, // Floating Hydro Fungus
 	26090301: 26090201, // Floating Anemo Fungus
 	26090601: 26090401, // Whirling Pyro Fungus
 	26091001: 26090901, // Stretch Electro Fungus
-	26120401: 26120301 // Grounded Geoshroom
+	26120401: 26120301, // Grounded Geoshroom
+	26100101: 26100301, // Consecrated Horned Crocodile
+	26100201: 26100301, // Consecrated Fanged Beast
+	24068101: 24060401, // Recon Log Mek
+	24068201: 24060401, // Arithmetic Enhancer Mek
+	24068701: 24060401, // Nimble Harvester Mek
+	24069101: 24060401, // Area Alert Mek
+	24068301: 24060401, // Underwater Survey Mek
+	24068501: 24060401, // Underwater Patrol Mek
+	24068601: 24060401, // Deepwater Assault Mek
+
 }
 
 // makes sure each monster has a corresponding "investigation" data
@@ -198,7 +214,7 @@ function findInvestigation(monId) {
 function mapRewardList(rewardlist, language) {
 	const xmat = getExcel('MaterialExcelConfigData');
 	const xdisplay = getExcel('DisplayItemExcelConfigData');
-	return rewardlist.map(repre => {
+	return rewardlist.filter(pre => pre.id).map(repre => {
 		let mat = xmat.find(m => m.id === repre.id);
 		if(mat) { // is material
 			let reward = { id: mat.id, name: language[mat.nameTextMapHash] };
@@ -250,6 +266,26 @@ const unusualreward = [
     }
 ]
 
+// the reward list for bosses is not mapped so i'll have to figure it out myself
+let bossRewardIndex = 0;
+const bossRewardQueue = getBossRewardQueue();
+function getBossRewardQueue() {
+	let matidmap = {};
+
+	let bossrewardlists = xpreview.filter(obj => {
+		// filter by dream solvent
+		if (!obj.Desc.endsWith('_90级') || !obj.previewItems.some(item => item.id === 113021)) return false;
+
+		const matid = obj.previewItems[obj.previewItems.findIndex(item => item.id === 113021)+1].id;
+		if (matidmap[matid]) return false; // filter out lists with same drops we already looked at (for example Azhdaha has multiple reward lists)
+
+		matidmap[matid] = true;
+
+		return true; 
+	});
+
+	return bossrewardlists;
+}
 
 // commented out because this issue has been fixed
 // use id: 21010101

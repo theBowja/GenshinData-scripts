@@ -47,7 +47,6 @@ global.capitalizeFirst = function(str) { return str[0].toUpperCase() + str.toLow
 global.replaceLayout = function(str) { return str.replace(/{LAYOUT_MOBILE#.*?}{LAYOUT_PC#(.*?)}{LAYOUT_PS#.*?}/gi,'$1').replace('#','').replaceAll('{NON_BREAK_SPACE}', ' '); }
 global.removeSprite = function(str) { return str.replace(/{SPRITE_PRESET.*?}/gi, ''); }
 global.sanitizeDescription = function(str, removeBold) { return removeSprite(replaceNewline(replaceLayout(stripHTML(convertBold(str || '', removeBold))))); }
-global.getMatSourceText = function(id, textmap) { return getExcel('MaterialSourceDataExcelConfigData').find(e => e.id === id).textList.map(e => textmap[e]).filter(e => e !== '' && e !== undefined); }
 global.getPropNameWithMatch = function(excel, idkey, idval, propval) { return Object.entries(excel.find(e => e[idkey] === idval)).find(e => e[1] === propval || e[1][0] === propval)[0]; };
 global.validName = function(name) { return name !== '' && !name.includes('</') && !/[|{}#]/.test(name)}
 global.sanitizeName = function(str, id) { 
@@ -82,6 +81,12 @@ global.validateString = function(str, folder, lang, throwerror = true) {
 		return false;
 	}
 	return true;
+}
+
+global.getMatSourceText = function(id, textmap) {
+	let tmp = getExcel('MaterialSourceDataExcelConfigData').find(e => e.id === id);
+	tmp = tmp.textList.concat(tmp.jumpDescs);
+	return tmp.map(e => textmap[e]).filter(e => e !== '' && e !== undefined);
 }
 
 global.localeMap = {

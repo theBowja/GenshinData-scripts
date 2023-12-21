@@ -1,7 +1,6 @@
 require('./global.js');
 
 const xmat = getExcel('MaterialExcelConfigData');
-const xsource = getExcel('MaterialSourceDataExcelConfigData');
 const xfetter = getExcel('FettersExcelConfigData');
 
 // copied from collateCharacter
@@ -38,8 +37,6 @@ function collateVoiceover(lang) {
 		// data.description = sanitizeDescription(language[obj.descTextMapHash]);
 		// data.sortorder = obj.id;
 
-		// let sauce = xsource.find(ele => ele.id === obj.id);
-		// data.source = sauce.textList.map(ele => language[ele]).filter(ele => ele !== '');
 
 
 		let filename = makeFileName(getLanguage('EN')[isPlayer(obj) ? playerIdToTextMapHash[obj.id] : obj.nameTextMapHash]);

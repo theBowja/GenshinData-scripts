@@ -16,8 +16,7 @@ function collateNamecard(lang) {
 		data.description = sanitizeDescription(language[obj.descTextMapHash]);
 		data.sortOrder = obj.id;
 
-		let sauce = xsource.find(ele => ele.id === obj.id);
-		data.source = sauce.textList.map(ele => language[ele]).filter(ele => ele !== '' && ele !== undefined);
+		data.source = getMatSourceText(obj.id, language);
 
 
 		data.filename_icon = obj.icon;
