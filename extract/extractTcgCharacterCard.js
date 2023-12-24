@@ -70,9 +70,13 @@ function collate(lang, doEnemy=false) {
 		data.skills = [];
 		for (const skillId of obj.skillList) {
 			const skillObj = xskill.find(e => e.Id === skillId);
+			const stypetag = skillObj[propSkillType][0]
+			// if (stypetag === 'GCG_SKILL_TAG_NONE') continue; // i have no idea what these skills are but they dont seem to be important
+
 			const skill = {};
 			skill.id = skillId;
-			skill.name = sanitizeName(language[skillObj.nameTextMapHash]);
+			skill.name = language[skillObj.nameTextMapHash] || ''; 
+			if (skillId !== 23035) skill.name = sanitizeName(skill.name); // that one random _none skill has undefined skill name
 			skill.descriptionraw = language[skillObj.descTextMapHash];
 			if (skill.descriptionraw === undefined) skill.descriptionraw = ''; // tartaglia Ranged Stance is missing description. im too lazy to figure this out
 			if (tcgSkillKeyMap[skillObj[propSkillKey]]) {
@@ -91,8 +95,11 @@ function collate(lang, doEnemy=false) {
 			}
 			skill.descriptionreplaced = getDescriptionReplaced(skill, skill.descriptionraw, language);
 			skill.description = sanitizeDescription(skill.descriptionreplaced, true);
-			skill.typetag = skillObj[propSkillType][0];
-			skill.type = language[xskilltag.find(e => e.type === skill.typetag).nameTextMapHash];
+			skill.typetag = stypetag;
+			if (skill.typetag === 'GCG_SKILL_TAG_NONE')
+				skill.type = '';
+			else
+				skill.type = language[xskilltag.find(e => e.type === skill.typetag).nameTextMapHash];
 			if (skillObj[propSkillType][1] !== "GCG_SKILL_TAG_NONE") console.log(`tcg character skill ${skillId} ${skill.name} does not have a second skill tag of NONE`);
 
 			skill.playcost = skillObj[propSkillCost].filter(e => e.count).map(e => ({ costtype: e[propSkillCostDice], count: e.count }));

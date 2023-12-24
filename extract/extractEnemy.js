@@ -276,7 +276,8 @@ function getBossRewardQueue() {
 		// filter by dream solvent
 		if (!obj.Desc.endsWith('_90级') || !obj.previewItems.some(item => item.id === 113021)) return false;
 
-		const matid = obj.previewItems[obj.previewItems.findIndex(item => item.id === 113021)+1].id;
+		// const matid = obj.previewItems[obj.previewItems.findIndex(item => item.id === 113021)+1].id; // 4.2 and before
+		const matid = obj.previewItems[3].id;
 		if (matidmap[matid]) return false; // filter out lists with same drops we already looked at (for example Azhdaha has multiple reward lists)
 
 		matidmap[matid] = true;

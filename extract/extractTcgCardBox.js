@@ -4,8 +4,9 @@ const xmat = getExcel('MaterialExcelConfigData');
 const xbox = getExcel('GCGDeckFieldExcelConfigData');
 xbox[0].id = 100;
 const xcardback = getExcel('GCGDeckBackExcelConfigData');
+const xcity = getExcel('CityConfigData');
 
-const propBackImage = getPropNameWithMatch(xcardback, 'id', 101, 'Gcg_CardBack_Mengde');
+// const propBackImage = getPropNameWithMatch(xcardback, 'id', 101, 'Gcg_CardBack_Mengde');
 
 const propMap = {};
 const propMatch = {
@@ -40,8 +41,9 @@ function collate(lang) {
 		data.rarity = mat.rankLevel;
 		data.filename_icon = mat.icon;
 
-		const backimage = xcardback.find(e => e.id === obj.id+1)[propBackImage];
-		data.filename_bg = `UI_Gcg_Bg_${backimage.substring(backimage.lastIndexOf('_')+1)}`;
+		// get city name to make bg image
+		const city = xcity.find(e => e.cityId === obj.id-100+1).ExpeditionWaterMark;
+		data.filename_bg = `UI_Gcg_Bg_${city.substring(city.lastIndexOf('_')+1)}`;
 
 		let filename = makeUniqueFileName(obj.nameTextMapHash, accum);
 		if(filename === '') return accum;

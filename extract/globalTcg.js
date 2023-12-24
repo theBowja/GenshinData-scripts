@@ -136,9 +136,16 @@ global.getDescriptionReplaced = function(data, description, translation) {
 			case 'S': // GCGSkill
 				const skillId = parseInt(description.substring(ind+3, description.indexOf(']', ind)), 10);
 				const skillObj = xskill.find(e => e.Id === skillId);
-				const skillName = translation[skillObj.nameTextMapHash];
 
-				replacementText = skillName;
+				if (skillObj === undefined) {
+					console.log(`No skillObj found to replace in description:`);
+					console.log('  '+description);
+				} else {
+
+					const skillName = translation[skillObj.nameTextMapHash];
+
+					replacementText = skillName;
+				}
 				break;
 
 			// case 'S':
@@ -252,6 +259,13 @@ global.getTcgTagImage = function(tag) {
 		return 'UI_Gcg_Tag_Faction_Inazuma';
 	case 'GCG_TAG_NATION_SUMERU':
 		return 'UI_Gcg_Tag_Faction_Sumeru';
+	case 'GCG_TAG_NATION_FONTAINE':
+		return 'UI_Gcg_Tag_Faction_Fontaine';
+
+	case 'GCG_TAG_ARKHE_OUSIA':
+		return 'UI_Gcg_Tag_Faction_Ousia';
+	case 'GCG_TAG_ARKHE_PNEUMA':
+		return 'UI_Gcg_Tag_Faction_Pneuma';
 
 	case 'GCG_TAG_CAMP_MONSTER':
 		return 'UI_Gcg_Tag_Faction_Monster';
@@ -261,6 +275,8 @@ global.getTcgTagImage = function(tag) {
 		return 'UI_Gcg_Tag_Faction_Fatui';
 	case 'GCG_TAG_CAMP_KAIRAGI':
 		return 'UI_Gcg_Tag_Faction_Kairagi';
+	case 'GCG_TAG_CAMP_EREMITE':
+		return 'UI_Gcg_Tag_Faction_Eremite';
 	default:
 		console.log(`Tag ${tag} does not have an image mapped in global.getTcgTagImage(tag)`);
 	}
