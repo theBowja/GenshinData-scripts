@@ -22,8 +22,8 @@ global.xskilldepot = getExcel('AvatarSkillDepotExcelConfigData');
 global.xmanualtext = getExcel('ManualTextMapConfigData');
 
 // if you're adding a new language code, remember to add a translation for Snezhnaya below
-// const langcodes = ['CHS', 'CHT', 'DE', 'EN', 'ES', 'FR', 'ID', 'IT', 'JP', 'KR', 'PT', 'RU', 'TH', 'TR', 'VI'];
-const langcodes = ['EN'];
+const langcodes = ['CHS', 'CHT', 'DE', 'EN', 'ES', 'FR', 'ID', 'IT', 'JP', 'KR', 'PT', 'RU', 'TH', 'TR', 'VI'];
+// const langcodes = ['EN'];
 
 /* ========================================================================================== */
 
