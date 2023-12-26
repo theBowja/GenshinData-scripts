@@ -43,6 +43,7 @@ function getDomainTypeTextMapHash(domaintype) {
 "UI_DUNGEON_ENTRY_509", // "Tower of Abject Pride"
 "UI_DUNGEON_ENTRY_758", // "City of Gold"
 "UI_DUNGEON_ENTRY_803", // "Molten Iron Fortress"
+"UI_DUNGEON_ENTRY_1142", // "Waterfall Wen"
 */
 function getDomainEntranceTextMapHash(englishname) {
 	englishname = englishname.toLowerCase();
@@ -96,6 +97,8 @@ function getDomainEntranceTextMapHash(englishname) {
 		return mapping("UI_DUNGEON_ENTRY_859");
 	else if(englishname.includes('harmony'))
 		return mapping("UI_DUNGEON_ENTRY_982")
+	else if(englishname.includes('crumbling assembly'))
+		return "UI_DUNGEON_ENTRY_1142";
 	else
 		console.log('no domain entrance mapping found for '+englishname);
 }
