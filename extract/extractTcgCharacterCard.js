@@ -29,14 +29,17 @@ const propCardFace = getPropNameWithMatch(xcardview, 'id', 1101, 'Gcg_CardFace_C
 const tcgSkillKeyMap = loadTcgSkillKeyMap();
 // const checkBaseDamageIgnoreLog = ['Char_Skill_11013', 'Char_Skill_13012', 'Char_Skill_16013', 'Char_Skill_22014', 'Char_Skill_13073', ''];
 
-const skipdupelog = [];
+const skipdupelog = [2602]; // Azhdaha
 function collate(lang, doEnemy=false) {
 	const language = getLanguage(lang);
 	const dupeCheck = {};
+	let includeTfs = [];
 	let mydata = xchar.reduce((accum, obj) => {
 		if (obj.skillList.includes(80)) return accum;
-		if (doEnemy && !obj[propEnemy]) return accum;
-		if (!doEnemy && !obj[propPlayable]) return accum;
+		if (!includeTfs.includes(obj.id)) {
+			if (doEnemy && !obj[propEnemy]) return accum; // enemy cards only
+			if (!doEnemy && !obj[propPlayable]) return accum; // playable characters cards only
+		}
 
 		let isWanderer = false;
 
@@ -50,6 +53,15 @@ function collate(lang, doEnemy=false) {
 		} else {
 			data.name = sanitizeName(language[obj.nameTextMapHash]);
 		}
+
+		if (tfMap[obj.id] !== undefined) {
+			data.transformsinto = tfMap[obj.id];
+			includeTfs = includeTfs.concat(tfMap[obj.id]);
+		}
+		if (tfList.includes(obj.id)) {
+			data.istransformation = true; 
+		}
+
 		data.hp = obj.hp;
 		data.maxenergy = obj[propMaxEnergy];
 
@@ -119,8 +131,15 @@ function collate(lang, doEnemy=false) {
 		parts[2] = parts[2]+'Icon';
 		data.filename_icon = `UI_${parts.join('_')}`;
 
-		let filename = makeUniqueFileName(isWanderer ? getWandererNameTextMapHash() : obj.nameTextMapHash, accum);
-		if(filename === '') return accum;
+		let filename;
+		if ([6601, 6602, 6603, 6604].includes(obj.id)) { // if Azhdaha clones, then give better filename
+			filename = getAzhdahaFilename(obj);
+			if(filename === '') return accum;
+			if(accum[filename] !== undefined) console.log(`ERROR: tcg character cards this Azhdaha element clone already exists`);
+		} else {
+			filename = makeUniqueFileName(isWanderer ? getWandererNameTextMapHash() : obj.nameTextMapHash, accum);
+			if(filename === '') return accum;
+		}
 		checkDupeName(data, dupeCheck, skipdupelog, doEnemy);
 		accum[filename] = data;
 		if (!validName(data.name)) console.log(`${__filename.split(/[\\/]/).pop()} invalid data name: ${data.name}`);
@@ -135,5 +154,98 @@ function getWandererNameTextMapHash() {
 	return nameHashWanderer = xavatar.find(ele => ele.id === 10000075).nameTextMapHash;
 }
 
+function getAzhdahaFilename(obj) {
+	let name = getLanguage('EN')[obj.nameTextMapHash];
+	if (name === "" || name === undefined) return "";
+	let filename = makeFileName(name);
+	if (obj.id === 6601) return `${filename}-cryo`;
+	else if (obj.id === 6602) return `${filename}-hydro`;
+	else if (obj.id === 6603) return `${filename}-pyro`;
+	else if (obj.id === 6604) return `${filename}-electro`;
+}
+
+/**
+* Some characters cards can transform into a different character card which usually has different tags, skills, and images.
+*   Example: Signora and Azhdaha.
+* We can use image names to map characters to their different transformation targets that have the same hp and same playable/enemy tag.
+*   Example: UI_Gcg_CardFace_Char_Monster_Dahaka to ...DahakaElec, ...DahakaFire, ...DahakaIce, etc.
+* It's not foolproof but it's the best way I've got to do this automatically.
+*
+* Note: Hili does not actually transform into HiliClub or HiliElectric.
+* Note: Pneuma/Ousia enemies transform into their base version and must be reversed.
+*/
+let tfMap = {}; // mapping from base card ids to a list of their transformed card ids. see below this function
+let tfList = []; // list of transformed card ids
+function buildTransformationMap() {
+	const language = getLanguage('EN');
+	const data = xchar.filter(obj => !obj.skillList.includes(80)).map(obj => {
+		const cardface = xcardview.find(e => e.id === obj.id)[propCardFace]; // example: Gcg_CardFace_Char_Avatar_Qin
+		const imagebase = cardface.substring(cardface.lastIndexOf('_')+1); // example: Ganyu
+
+		const hasArkhe = obj.skillList.some(skillId => {
+			const skillObj = xskill.find(e => e.Id === skillId);
+			const description = language[skillObj.descTextMapHash];
+			return description && description.includes('[K1014]'); // K1014, enemy can be Deactivated
+		});
+
+		return {
+			id: obj.id,
+			name: language[obj.nameTextMapHash],
+			enemy: obj[propEnemy],
+			arkhe: hasArkhe, // boolean
+			playable: obj[propPlayable],
+			hp: obj.hp,
+			imagebase: imagebase
+		}
+	});
+
+	// build the transformation map and list
+	for (let base of data) {
+		for (let target of data) {
+			if (base.imagebase === 'Hili') continue; // skip hilichurls
+
+			if (base.imagebase !== target.imagebase &&
+				target.imagebase.startsWith(base.imagebase) &&
+				base.hp === target.hp &&
+				base.enemy === target.enemy) {
+
+				// if base is Pneuma/Ousia, then we must reverse the mapping
+				if (target.arkhe) {
+					if (tfMap[target.id] === undefined) tfMap[target.id] = [];
+					tfMap[target.id].push(base.id);
+					tfList.push(base.id);
+				} else {
+					if (tfMap[base.id] === undefined) tfMap[base.id] = [];
+					tfMap[base.id].push(target.id);
+					tfList.push(target.id);
+				}
+			}
+		}
+	}
+	tfList = tfList.sort();
+}
+buildTransformationMap();
+
+// sanity checking tfList
+const correctTfList = '3006,3006,3007,3007,6301,6302,6303,6304,6601,6602,6603,6604';
+if (correctTfList !== tfList.sort()+'') {
+	console.log(`WARNING: tcg character/enemy cards has an unverified transformation-exclusive card`);
+	console.log('new tfMap:');
+	console.log(tfMap);
+	console.log(tfList.sort()+'');
+}
+/*
+tfMap = {
+  '2102': [ 6301 ], // signora character
+  '2602': [ 6601, 6602, 6603, 6604 ], // azdahah character
+  '3307': [ 3006 ], // pneuma enemy
+  '3308': [ 3007 ], // ousia enemy
+  '3408': [ 3006 ], // pneuma enemy
+  '3704': [ 3007 ], // ousia enemy
+  '4103': [ 6302 ], // signora boss 35 hp
+  '4104': [ 6303 ], // signora boss 50 hp
+  '4105': [ 6304 ] // signora enemy
+}
+*/
 
 module.exports = collate;
