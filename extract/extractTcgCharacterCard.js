@@ -21,6 +21,7 @@ const propSkillType = getPropNameWithMatch(xskill, 'Id', 11011, 'GCG_SKILL_TAG_A
 const propSkillCost = Object.entries(xskill.find(e => e.Id === 11011)).find(([k, v]) => Array.isArray(v) && v[0].count)[0];
 const propSkillCostDice = Object.entries(xskill.find(e => e.Id === 11011)[propSkillCost][0]).find(([k, v]) => v === 'GCG_COST_DICE_CRYO')[0];
 
+const propShareId = getPropNameWithMatch(xdeckcard, 'id', 1101, 1);
 const propStoryText = getPropNameWithMatch(xdeckcard, 'id', 1101, 753619631);
 const propCharacterSource = getPropNameWithMatch(xdeckcard, 'id', 1101, 142707039);
 
@@ -40,6 +41,7 @@ function collate(lang, doEnemy=false) {
 			if (doEnemy && !obj[propEnemy]) return accum; // enemy cards only
 			if (!doEnemy && !obj[propPlayable]) return accum; // playable characters cards only
 		}
+		const deckcardObj = xdeckcard.find(e => e.id === obj.id);
 
 		let isWanderer = false;
 
@@ -53,6 +55,9 @@ function collate(lang, doEnemy=false) {
 		} else {
 			data.name = sanitizeName(language[obj.nameTextMapHash]);
 		}
+
+		if (deckcardObj) data.shareid = deckcardObj[propShareId];
+		if (data.id === data.shareid) console.log(`tcg character card ${deck.id} has same shareid`);
 
 		if (tfMap[obj.id] !== undefined) {
 			data.transformsinto = tfMap[obj.id];
@@ -72,7 +77,6 @@ function collate(lang, doEnemy=false) {
 		// data.weapon = language[xtag.find(e => e.type === data.tags[1]).nameTextMapHash];
 		// data.nation = language[xtag.find(e => e.type === data.tags[2]).nameTextMapHash];
 
-		const deckcardObj = xdeckcard.find(e => e.id === obj.id);
 		if (obj[propPlayable]) {
 			data.storytitle = language[deckcardObj.storyTitleTextMapHash];
 			data.storytext = sanitizeDescription(language[deckcardObj[propStoryText]]);

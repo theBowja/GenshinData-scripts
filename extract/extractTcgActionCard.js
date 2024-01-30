@@ -12,6 +12,7 @@ const propPlayCostDice = Object.entries(xcard.find(e => e.id === 211011)[propPla
 const propTags = getPropNameWithMatch(xcard, 'id', 211011, 'GCG_TAG_TALENT');
 const propInPlayDescription = getPropNameWithMatch(xcard, 'id', 213011, 3010026165);
 
+const propShareId = getPropNameWithMatch(xdeckcard, 'id', 1101, 1);
 const propStoryText = getPropNameWithMatch(xdeckcard, 'id', 1101, 753619631);
 const propCharacterSource = getPropNameWithMatch(xdeckcard, 'id', 1101, 142707039);
 
@@ -24,12 +25,17 @@ function collate(lang) {
 	let mydata = xcard.reduce((accum, obj) => {
 		if (!['GCG_CARD_EVENT', 'GCG_CARD_MODIFY', 'GCG_CARD_ASSIST'].includes(obj.cardType)) return accum;
 		// else if (!obj[propCollectible]) return accum;
+
 		let data = {};
 		data.id = obj.id;
 
 		if (language[obj.nameTextMapHash] === undefined || language[obj.nameTextMapHash] === '') return accum;
 		data.name = sanitizeName(language[obj.nameTextMapHash], obj.id);
+		const deckcardObj = xdeckcard.find(e => e.id === obj.id);
+
 		data.obtainable = obj[propCollectible];
+		if (deckcardObj) data.shareid = deckcardObj[propShareId];
+		if (data.id === data.shareid) console.log(`tcg action card ${deck.id} has same shareid`);
 
 		data.cardtype = obj.cardType;
 		let cardTypeSuffix = data.cardtype.substring(data.cardtype.lastIndexOf('_')+1);
@@ -54,7 +60,6 @@ function collate(lang) {
 			// data.inplaydescription
 		}
 
-		const deckcardObj = xdeckcard.find(e => e.id === obj.id);
 		if (deckcardObj) {
 			// Keqing's Lightning Stiletto doesn't have a story because it is a created card.
 			data.storytitle = language[deckcardObj.storyTitleTextMapHash];
