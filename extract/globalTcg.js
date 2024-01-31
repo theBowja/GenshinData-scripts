@@ -6,64 +6,56 @@ const config = require('../config.json');
 const tcgSkillKeyMap = {};
 global.loadTcgSkillKeyMap = function() {
 	if (tcgSkillKeyMap.loaded) return tcgSkillKeyMap;
-	const filelist = fs.readdirSync(`${config.GenshinData_folder}/BinOutput/_unknown_dir`);
-	let nameProp;
+	const filelist = fs.readdirSync(`${config.GenshinData_folder}/BinOutput/GCG/Gcg_DeclaredValueSet`);
 
-	// find nameProp first
-	for (const filename of filelist) {
-		if (!filename.endsWith('.json')) continue;
-
-		const fileObj = require(`${config.GenshinData_folder}/BinOutput/_unknown_dir/${filename}`);
-		for (let [key, value] of Object.entries(fileObj)) {
-			if (value === 'Char_Skill_13023') {
-				nameProp = key;
-				break;
-			}
-		}
-		if (nameProp) break;
-	}
+	// Find DAMAGEVALUEPROP and ELEMENTVALUEPROP
+	const tmpf = require(`${config.GenshinData_folder}/BinOutput/GCG/Gcg_DeclaredValueSet/Char_Skill_13023.json`);
+	const tmpo = Object.values(tmpf)[1];
+	tcgSkillKeyMap.DAMAGEVALUEPROP = Object.entries(tmpo['-2060930438']).find(([key, val]) => typeof val === 'number')[0];
+	tcgSkillKeyMap.ELEMENTVALUEPROP = Object.entries(tmpo['476224977']).find(([key, val]) => val.startsWith('GCG'))[0];
+	// console.log(tcgSkillKeyMap);
+	if (!tcgSkillKeyMap.DAMAGEVALUEPROP || !tcgSkillKeyMap.ELEMENTVALUEPROP)
+		console.log('ERROR: loadTcgSkillKeyMap is missing a property map!');
 
 	for (const filename of filelist) {
 		if (!filename.endsWith('.json')) continue;
 
-		const fileObj = require(`${config.GenshinData_folder}/BinOutput/_unknown_dir/${filename}`);
-		if (!fileObj[nameProp]) continue;
+		const fileObj = require(`${config.GenshinData_folder}/BinOutput/GCG/Gcg_DeclaredValueSet/${filename}`);
 
 		try {
-			tcgSkillKeyMap[fileObj[nameProp]] = Object.entries(Object.values(fileObj)[1]).map(([key, value]) => {
-				value.hash = key;
-				return value;
-			});
+			const dataname = filename.replace('.json', '');
+			const uncutmap = Object.values(fileObj)[1];
 
-			// get tcgSkillKeyMap.DAMAGEVALUEPROP etc.
-			if (fileObj[nameProp] === 'Char_Skill_13023') {
-				for (const component of tcgSkillKeyMap[fileObj[nameProp]]) {
-					for (let [key, value] of Object.entries(component)) {
-						if (value === 3) {
-							tcgSkillKeyMap.DAMAGEVALUEPROP = key;
-							tcgSkillKeyMap.DAMAGETYPE = component.$type;
-						}
-						else if (value === 'GCG_ELEMENT_PYRO') {
-							tcgSkillKeyMap.ELEMENTVALUEPROP = key;
-							tcgSkillKeyMap.ELEMENTTYPE = component.$type;
-						}
+			tcgSkillKeyMap[dataname] = {};
 
-					}
+			for (let [key, kobj] of Object.entries(uncutmap)) {
+				switch (key) {
+				case '-2060930438': // extract basedamage
+					tcgSkillKeyMap[dataname].basedamage = kobj['value'] || kobj[tcgSkillKeyMap.DAMAGEVALUEPROP];
+					if (tcgSkillKeyMap[dataname].basedamage === undefined) console.log('loadTcgSkillKeyMap failed to extract basedamage');
+					break;
+				case '476224977': // extract baseelement
+					tcgSkillKeyMap[dataname].baseelement = kobj['ratio'] || kobj[tcgSkillKeyMap.ELEMENTVALUEPROP] || 'GCG_ELEMENT_NONE';
+					if (tcgSkillKeyMap[dataname].baseelement === undefined) console.log('loadTcgSkillKeyMap failed to extract baseelement');
+					break;
+				// case '-1197212178': // effectnum
+				// 	tcgSkillKeyMap[dataname].effectnum = kobj['value'] || kobj[tcgSkillKeyMap.EFFECTNUMVALUEPROP];
+				// 	if (tcgSkillKeyMap[dataname].effectnum === undefined) console.log('loadTcgSkillKeyMap failed to extract effectnum');
+				// 	break;
 				}
 			}
+
 		} catch(e) {
 			continue;
 		}
 	}
-	if (!tcgSkillKeyMap.DAMAGETYPE || !tcgSkillKeyMap.DAMAGEVALUEPROP || !tcgSkillKeyMap.ELEMENTTYPE || !tcgSkillKeyMap.ELEMENTVALUEPROP)
-		console.log('ERROR: loadTcgSkillKeyMap is missing a property map!');
+
 	tcgSkillKeyMap.loaded = true;
 	// console.log(tcgSkillKeyMap)
 	return tcgSkillKeyMap;
 }
 
-
-global.getDescriptionReplaced = function(data, description, translation) {
+global.getDescriptionReplaced = function(data, description, translation, errormessage) {
 	const xcard = getExcel('GCGCardExcelConfigData');
 	const xchar = getExcel('GCGCharExcelConfigData');
 	const xskill = getExcel('GCGSkillExcelConfigData');
@@ -85,6 +77,9 @@ global.getDescriptionReplaced = function(data, description, translation) {
 			case 'D': // D__KEY__DAMAGE or D__KEY__ELEMENT
 				switch (description[ind+10]) {
 					case 'D': // DAMAGE
+						if (data.basedamage === undefined) {
+							console.log(`Tcg object is missing skill base damage for skill ${errormessage} for data id ${data.id}`);
+						}
 						if (description[ind+16] !== '_') {
 							replacementText = data.basedamage+'';
 						} else {

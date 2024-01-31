@@ -98,18 +98,13 @@ function collate(lang, doEnemy=false) {
 			if (tcgSkillKeyMap[skillObj[propSkillKey]]) {
 				// console.log(skill)
 				if (skill.descriptionraw.includes('D__KEY__DAMAGE')) {
-					// const dmglistnums = tcgSkillKeyMap[skillObj[propSkillKey]].filter(e => e.$type === tcgSkillKeyMap.DAMAGE).map(e => e.value);
-					// console.log(tcgSkillKeyMap[skillObj[propSkillKey]].find(e => e.hash === '-2060930438').value);
-					// if (dmglistnums.length > 1 && !checkBaseDamageIgnoreLog.includes(skillObj[propSkillKey])) console.log(`Tcg character skill ${skillId}: Check base damage for ` + skillObj[propSkillKey])
-					// skill.basedamage = Math.min(...dmglistnums);
-					skill.basedamage = tcgSkillKeyMap[skillObj[propSkillKey]].find(e => e.hash === '-2060930438')[tcgSkillKeyMap.DAMAGEVALUEPROP];
+					skill.basedamage = tcgSkillKeyMap[skillObj[propSkillKey]].basedamage;
 				}
 				if (skill.descriptionraw.includes('D__KEY__ELEMENT')) {
-					// console.log(skill.descriptionraw);
-					skill.baseelement = tcgSkillKeyMap[skillObj[propSkillKey]].find(e => e.$type === tcgSkillKeyMap.ELEMENTTYPE)?.[tcgSkillKeyMap.ELEMENTVALUEPROP] || 'GCG_ELEMENT_NONE';
+					skill.baseelement = tcgSkillKeyMap[skillObj[propSkillKey]].baseelement;
 				}
 			}
-			skill.descriptionreplaced = getDescriptionReplaced(skill, skill.descriptionraw, language);
+			skill.descriptionreplaced = getDescriptionReplaced(skill, skill.descriptionraw, language, skillObj[propSkillKey]);
 			skill.description = sanitizeDescription(skill.descriptionreplaced, true);
 			skill.typetag = stypetag;
 			if (skill.typetag === 'GCG_SKILL_TAG_NONE')

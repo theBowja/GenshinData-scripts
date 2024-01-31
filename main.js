@@ -44,8 +44,11 @@ function exportGenshinData() {
 	// exportData('tcgcardbacks', require('./extract/extractTcgCardBack'));
 
 
-	// exportData('commissions', require('./extract/extractCommission'), true); // unfinished
-	// exportData('voiceovers', require('./extract/extractVoiceover'), true); // unfinished
+
+
+
+	// // exportData('commissions', require('./extract/extractCommission'), true); // unfinished
+	// // exportData('voiceovers', require('./extract/extractVoiceover'), true); // unfinished
 
 	// // exportData('fishingpoints', require('./extractFishingPoint'));  // unfinished
 }
