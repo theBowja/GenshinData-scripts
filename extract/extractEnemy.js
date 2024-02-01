@@ -11,6 +11,7 @@ const xmonster = getExcel('MonsterExcelConfigData');
 const xcodex = getExcel('AnimalCodexExcelConfigData');
 const xdescribe = getExcel('MonsterDescribeExcelConfigData');
 const xspecial = getExcel('MonsterSpecialNameExcelConfigData');
+const xtitle = getExcel('MonsterTitleExcelConfigData');
 
 //xmanualtext
 /*
@@ -35,24 +36,33 @@ function collateEnemy(lang) {
 	let mymonster = xcodex.reduce((accum, obj) => {
 		if(obj.type !== 'CODEX_MONSTER') return accum;
 		if(obj.isDisuse) return accum;
-		if(obj.Id === 29010101) obj.Id = 29010104; // use correct stormterror
-		let mon = xmonster.find(m => m.id === obj.Id);
+
+		let mon = xmonster.find(m => m.describeId === obj.describeId);
 		if (!mon) return accum;
+		if(obj.Id === 29010101) { // use correct stormterror
+			mon = xmonster.find(m => m.id === 29010104);
+		}
+
 		let des = xdescribe.find(d => d.id === obj.describeId);
-		let spe = xspecial.find(s => s.specialNameLabID === des.specialNameLabID);
-		let inv = findInvestigation(obj.Id);
-		if(!spe) console.log('no special for '+obj.Id);
+		let spe = xspecial.filter(s => s.specialNameLabID === des.specialNameLabID);
+		let inv = findInvestigation(mon.id);
+		if(spe.length === 0) console.log('no special names for monsterId:'+mon.Id);
 
 		let data = {};
 		data.id = obj.Id;
+		data.monsterId = mon.id;
 
-		// data.nameTextMapHash = des.nameTextMapHash;
 		data.name = language[des.nameTextMapHash];
-		data.specialName = language[spe.specialNameTextMapHash];
+		// let tit = xtitle.find(t => t.titleID === des.titleId);
+		// data.title = tit ? language[tit.titleNameTextMapHash] : data.name; // this is unused because title is the same as name
+		// if (data.name !== data.title) console.log(`enemy has different name ${data.name} than title ${data.title}`);
+		data.specialNames = spe.map(s => language[s.specialNameTextMapHash]);
 		if(inv) {
 			data.investigation = {};
+			data.investigation.investigationId = inv.id;
 			data.investigation.name = language[inv.nameTextMapHash];
-			data.investigation.category = language[xmanualtext.find(e => e.textMapId === `INVESTIGATION_${inv.monsterCategory.toUpperCase()}_MONSTER`).textMapContentTextMapHash];
+			data.investigation.categoryType = inv.monsterCategory;
+			data.investigation.categoryText = language[xmanualtext.find(e => e.textMapId === `INVESTIGATION_${inv.monsterCategory.toUpperCase()}_MONSTER`).textMapContentTextMapHash];
 			data.investigation.description = language[inv.descTextMapHash];
 			if(language[inv.lockDescTextMapHash] !== "") data.investigation.lockdesc = language[inv.lockDescTextMapHash];
 			data.filename_investigationIcon = inv.icon;
@@ -100,7 +110,7 @@ function collateEnemy(lang) {
 			}
 		}
 		if(!data.rewardPreview) {
-			if (lang === 'EN') console.log('no reward list for '+obj.Id+' : '+data.name); 
+			if (lang === 'EN') console.log(`no reward list for codexId:${obj.Id} monId:${data.monsterId} ${data.name}`); 
 			data.rewardPreview = [];
 		}
 
@@ -109,8 +119,10 @@ function collateEnemy(lang) {
 		// console.log(obj.Id);
 		// console.log(sub);
 		sub = xmanualtext.find(m => m.textMapId === `UI_CODEX_ANIMAL_CATEGORY_${sub}`).textMapContentTextMapHash;
+		data.monsterType = mon.type;
 		data.enemyType = mon.securityLevel || 'COMMON';
-		data.category = language[sub];
+		data.categoryType = obj.subType || 'CODEX_SUBTYPE_ELEMENTAL';
+		data.categoryText = language[sub];
 		data.filename_icon = des.icon;
 		data.description = sanitizeDescription(language[obj.descTextMapHash]);
 
@@ -142,12 +154,11 @@ function collateEnemy(lang) {
 		stats.base.defense = mon.defenseBase;
 		stats.curve = {};
 		try {
-			// if(obj.Id === 29010101) console.log(mon.propGrowCurves);
 			stats.curve.hp = mon.propGrowCurves.find(ele => ele.type === 'FIGHT_PROP_BASE_HP').growCurve;
 			stats.curve.attack = mon.propGrowCurves.find(ele => ele.type === 'FIGHT_PROP_BASE_ATTACK').growCurve;
 			stats.curve.defense = mon.propGrowCurves.find(ele => ele.type === 'FIGHT_PROP_BASE_DEFENSE').growCurve;
 		} catch(e) {
-			console.log(obj.Id + " - " + data.name + " - failed PropGrowCurves");
+			console.log(`codexId:${obj.Id} - monId:${data.monsterId} - ${data.name} - failed PropGrowCurves`);
 		}
 
 		data.stats = stats;
@@ -165,6 +176,7 @@ function collateEnemy(lang) {
 
 // mapping for monsters that don't have rewardlist to use another monster's rewardlist
 // FROM missing id TO monster id with rewardlist // Missing Monster Name
+// USE id FROM MonsterExcelConfigData! monObj is mapped from AnimalCodexExcelConfigData using describeId
 const noRewardListMonsterMap = {
 	21011601: 21010601, // Electro Hilichurl Grenadier
 	21020701: 21020101, // Crackling Axe Mitachurl
@@ -177,12 +189,13 @@ const noRewardListMonsterMap = {
 	20060401: 20060201, // Cryo Specter
 	22080101: 22070101, // Black Serpent Knight: Windcutter
 	22080201: 22070101, // Black Serpent Knight: Rockbreaker Ax
-	25010101: 25010201, // Treasure Hoarders: Liuliu
-	25020101: 25010201, // Treasure Hoarders: Raptor
-	25030101: 25010201, // Treasure Hoarders: Carmen
-	25040101: 25010201, // Treasure Hoarders: Boss
-	25050101: 25010201, // Millelith Soldier
-	25050201: 25010201, // Millelith Sergeant
+	25100202: 25100101, // Kairagi: Fiery Might
+	// 25010101: 25010201, // Treasure Hoarders: Liuliu
+	// 25020101: 25010201, // Treasure Hoarders: Raptor
+	// 25030101: 25010201, // Treasure Hoarders: Carmen
+	// 25040101: 25010201, // Treasure Hoarders: Boss
+	// 25050101: 25010201, // Millelith Soldier
+	// 25050201: 25010201, // Millelith Sergeant
 	25410201: 25210301, // Eremite Galehunter
 	25410101: 25210301, // Eremite Stone Enchanter
 	25410301: 25210301, // Eremite Scorching Loremaster
@@ -194,14 +207,7 @@ const noRewardListMonsterMap = {
 	26120401: 26120301, // Grounded Geoshroom
 	26100101: 26100301, // Consecrated Horned Crocodile
 	26100201: 26100301, // Consecrated Fanged Beast
-	24068101: 24060401, // Recon Log Mek
-	24068201: 24060401, // Arithmetic Enhancer Mek
-	24068701: 24060401, // Nimble Harvester Mek
-	24069101: 24060401, // Area Alert Mek
-	24068301: 24060401, // Underwater Survey Mek
-	24068501: 24060401, // Underwater Patrol Mek
-	24068601: 24060401, // Deepwater Assault Mek
-
+	24060601: 24060401, // Deepwater Assault Mek
 }
 
 // makes sure each monster has a corresponding "investigation" data
