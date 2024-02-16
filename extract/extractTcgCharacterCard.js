@@ -1,5 +1,4 @@
 require('./globalTcg.js');
-const config = require('../config.json');
 
 const xmat = getExcel('MaterialExcelConfigData');
 const xchar = getExcel('GCGCharExcelConfigData');

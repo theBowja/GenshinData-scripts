@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const config = require('../config.json');
+global.config = require('../config.json');
 
 global.getExcel = function(file) { return require(`${config.GenshinData_folder}/ExcelBinOutput/${file}.json`); }
 global.getTextMap = function(langcode) { return require(`${config.GenshinData_folder}/TextMap/TextMap${langcode}.json`); }
@@ -250,6 +250,7 @@ function exportCurve(folder, file) {
 }
 
 function exportData(folder, collateFunc, englishonly, skipwrite) {
+	const starttime = Date.now();
 	langcodes.forEach(lang => {
 		if(englishonly && lang !== 'EN') return;
 		let data = collateFunc(lang);
@@ -260,7 +261,8 @@ function exportData(folder, collateFunc, englishonly, skipwrite) {
 			if(data[""]) console.log('empty key found in '+folder);
 		}
 	});
-	console.log("done "+folder);
+	
+	console.log(`done ${folder} in ${(Date.now()-starttime) / 1000} seconds`);
 }
 
 module.exports = {

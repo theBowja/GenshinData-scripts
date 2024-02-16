@@ -1,7 +1,6 @@
 require('./global.js');
 
 const fuzzysort = require('fuzzysort');
-const config = require('../../config.json');
 
 const xdungeon = getExcel('DungeonExcelConfigData');
 
@@ -238,7 +237,7 @@ function collateDomainMonsterList(lang) {
 
 	}
 
-	return mydomain
+	return mydomain;
 }
 
 module.exports = collateDomainMonsterList;

@@ -1,6 +1,5 @@
 require('./global.js');
 const fs = require('fs');
-const config = require('../config.json');
 
 // Goes through binoutput to get data on tcg skill's damage and element
 const tcgSkillKeyMap = {};

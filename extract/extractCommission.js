@@ -1,11 +1,11 @@
 require('./global.js');
 
-const xmat = getExcel('MaterialExcelConfigData');
+// const xmat = getExcel('MaterialExcelConfigData');
 const xdaily = getExcel('DailyTaskExcelConfigData');
 const xcity = getExcel('CityConfigData');
 const xarea = getExcel('WorldAreaConfigData');
-const xtaskreward = getExcel('DailyTaskRewardExcelConfigData');
-const xpreview = getExcel('RewardPreviewExcelConfigData');
+// const xtaskreward = getExcel('DailyTaskRewardExcelConfigData');
+// const xpreview = getExcel('RewardPreviewExcelConfigData');
 
 const mapRewardToAR = [
 	'AR1to5',
@@ -23,11 +23,13 @@ const mapRewardToAR = [
 ]
 
 
+const skipdupelog = [];
 function collateCommission(lang) {
 	const language = getLanguage(lang);
+	const dupeCheck = {};
 	let mydata = xdaily.reduce((accum, obj) => {
 		let data = {};
-		data.id = obj.iD;
+		data.id = obj.ID;
 
 		data.name = language[obj.titleTextMapHash];
 		data.description = sanitizeDescription(language[obj.descriptionTextMapHash]);
@@ -35,32 +37,30 @@ function collateCommission(lang) {
 
 		data.city = language[xcity.find(e => e.cityId === obj.cityId).cityNameTextMapHash];
 
-		const taskreward = xtaskreward.find(e => e.iD === obj.taskRewardId);
-		data.rewardpreviews = {};
-		for(let i = 0; i < 12; i++) {
-			let rewardpreview = xpreview.find(pre => pre.id === taskreward.dropVec[i].previewRewardId).previewItems.filter(pre => pre.id);
-			data.rewardpreviews[mapRewardToAR[i]] = rewardpreview.map(repre => {
-				let mat = xmat.find(m => m.id === repre.id);
-				let reward = { name: language[mat.nameTextMapHash] };
-				reward.count = parseInt(repre.count);
-				if(repre.count.includes(';')) reward.countmax = parseInt(repre.count.substring(repre.count.indexOf(';')+1));
-				return reward;
-			});
-		}
-
-
-		data.taskRewardId = obj.taskRewardId
-
-
-		let filename = makeFileName(getLanguage('EN')[obj.titleTextMapHash]);
-		if(filename === '') return accum;
-		while(accum[filename] !== undefined) {
-			filename += 'a';
-		}
-		// if(accum[filename] !== undefined) {
-		// 	console.log('filename collision: ' + filename);
+		// const taskreward = xtaskreward.find(e => e.iD === obj.taskRewardId);
+		// data.rewardpreviews = {};
+		// for(let i = 0; i < 12; i++) {
+		// 	let rewardpreview = xpreview.find(pre => pre.id === taskreward.dropVec[i].previewRewardId).previewItems.filter(pre => pre.id);
+		// 	data.rewardpreviews[mapRewardToAR[i]] = rewardpreview.map(repre => {
+		// 		let mat = xmat.find(m => m.id === repre.id);
+		// 		let reward = { name: language[mat.nameTextMapHash] };
+		// 		reward.count = parseInt(repre.count);
+		// 		if(repre.count.includes(';')) reward.countmax = parseInt(repre.count.substring(repre.count.indexOf(';')+1));
+		// 		return reward;
+		// 	});
 		// }
+
+
+		// data.taskRewardId = obj.taskRewardId
+
+
+
+		let filename = makeUniqueFileName(obj.titleTextMapHash, accum);
+		if(filename === '') return accum;
+		checkDupeName(data, dupeCheck, skipdupelog);
 		accum[filename] = data;
+		if (!validName(data.name)) console.log(`${__filename.split(/[\\/]/).pop()} invalid data name: ${data.name}`);
+
 		return accum;
 	}, {});
 

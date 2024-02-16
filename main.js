@@ -28,6 +28,9 @@ function exportGenshinData() {
 	// exportData('achievementgroups', require('./extract/extractAchievementGroup'));
 	// exportData('adventureranks', require('./extract/extractAdventureRank'));
 	// exportData('crafts', require('./extract/extractCraft'));
+	// exportData('emojis', require('./extract/extractEmoji'));
+	// exportData('emojisets', require('./extract/extractEmojiSet')); // dont release this. waste of space
+	// exportData('voiceovers', require('./extract/extractVoiceover'));
 
 	// exportData('tcgcharactercards', require('./extract/extractTcgCharacterCard'));
 	// exportData('tcgenemycards', require('./extract/extractTcgEnemyCard'));
@@ -36,8 +39,8 @@ function exportGenshinData() {
 	// exportData('tcgsummons', require('./extract/extractTcgSummon'));
 	// exportData('tcgkeywords', require('./extract/extractTcgKeyword'));
 	// exportData('tcgdetailedrules', require('./extract/extractTcgDetailedRule'));
-	// // exportData('tcgsprites', require('./extract/extractTcgSprite'));
-	// // exportData('tcgshopitems', require('./extract/extractTcgShopItem'));
+	// // // exportData('tcgsprites', require('./extract/extractTcgSprite'));
+	// // // exportData('tcgshopitems', require('./extract/extractTcgShopItem'));
 
 	// exportData('tcglevelrewards', require('./extract/extractTcgLevelReward'));
 	// exportData('tcgcardboxes', require('./extract/extractTcgCardBox'));
@@ -46,9 +49,7 @@ function exportGenshinData() {
 
 
 
-
 	// // exportData('commissions', require('./extract/extractCommission'), true); // unfinished
-	// // exportData('voiceovers', require('./extract/extractVoiceover'), true); // unfinished
 
 	// // exportData('fishingpoints', require('./extractFishingPoint'));  // unfinished
 }
