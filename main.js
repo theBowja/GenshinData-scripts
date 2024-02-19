@@ -31,6 +31,7 @@ function exportGenshinData() {
 	// exportData('emojis', require('./extract/extractEmoji'));
 	// exportData('emojisets', require('./extract/extractEmojiSet')); // dont release this. waste of space
 	// exportData('voiceovers', require('./extract/extractVoiceover'));
+	writeVOFile();
 
 	// exportData('tcgcharactercards', require('./extract/extractTcgCharacterCard'));
 	// exportData('tcgenemycards', require('./extract/extractTcgEnemyCard'));
@@ -52,4 +53,27 @@ function exportGenshinData() {
 	// // exportData('commissions', require('./extract/extractCommission'), true); // unfinished
 
 	// // exportData('fishingpoints', require('./extractFishingPoint'));  // unfinished
+}
+
+function writeVOFile() {
+	const fs = require('fs');
+	const config = require('./config.json');
+	const voiceovers = require(`${config.genshin_export_folder}/EN/voiceovers.json`);
+
+	let vofiles = Object.values(voiceovers).flatMap(voiceover => {
+		const friendFiles = voiceover.friendLines.flatMap(line => {
+			if (line.hasGenderedVoicefile) return [line.voicefile, line.voicefile_male];
+			else return line.voicefile;
+		});
+		const actionFiles = voiceover.actionLines.flatMap(line => {
+			if (line.hasGenderedVoicefile) return [line.voicefile, line.voicefile_male];
+			else return line.voicefile;
+		});
+
+		return friendFiles.concat(actionFiles);
+	});
+
+	vofiles = vofiles.map(file => file.replaceAll('/', '\\')+'.wem');
+
+	fs.writeFileSync('./voice/db-vo.txt', vofiles.join('\n'));
 }

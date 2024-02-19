@@ -1,3 +1,7 @@
 /node_modules
 /export/*
-/voice/*
+/voice/English(US)
+/voice/Japanese
+/voice/Korean
+/voice/Chinese
+/.vscode

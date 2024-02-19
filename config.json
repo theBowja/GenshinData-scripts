@@ -2,5 +2,14 @@
 	"GenshinData_folder": "D:\\Workspace\\Node\\GenshinData",
 	"StarRailData_folder": "D:\\Workspace\\Node\\StarRailData",
 
-	"genshin_export_folder": "D:\\Workspace\\Node\\GenshinData-scripts\\export"
+	"genshin_export_folder": "D:\\Workspace\\Node\\GenshinData-scripts\\export",
+
+	"list_audio_languages": ["English(US)", "Japanese", "Chinese", "Korean"],
+	"list_output_format": ["TODO"],
+
+	"AudioAssets_folder": "C:\\Program Files\\Genshin Impact\\Genshin Impact Game\\GenshinImpact_Data\\StreamingAssets\\AudioAssets",
+	"read_audio_languages": ["English(US)"],
+	"output_folder": "TODO",
+	"output_format": "TODO"
+
 }
