@@ -31,7 +31,7 @@ function exportGenshinData() {
 	// exportData('emojis', require('./extract/extractEmoji'));
 	// exportData('emojisets', require('./extract/extractEmojiSet')); // dont release this. waste of space
 	// exportData('voiceovers', require('./extract/extractVoiceover'));
-	writeVOFile();
+	// writeVOFile();
 
 	// exportData('tcgcharactercards', require('./extract/extractTcgCharacterCard'));
 	// exportData('tcgenemycards', require('./extract/extractTcgEnemyCard'));
