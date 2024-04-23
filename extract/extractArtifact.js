@@ -30,7 +30,8 @@ function collateArtifact(lang) {
 
 		// set bonus effects
 		obj.setNeedNum.forEach((ele, ind) => {
-			let effect = xrefine.find(e => e.affixId === obj.EquipAffixId*10 + ind);
+			let effect = xrefine.find(e => e.affixId === obj.equipAffixId*10 + ind);
+			if (!effect) console.log(`Artifact set ${data.id} has no effect`);
 			data['effect'+ele+'Pc'] = sanitizer(language[effect.descTextMapHash], removeHashtag, replaceNonBreakSpace);
 			validateString(data['effect'+ele+'Pc'], 'artifacts.seteffect', lang);
 			if(setname === undefined) {

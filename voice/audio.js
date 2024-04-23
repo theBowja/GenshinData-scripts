@@ -5,9 +5,10 @@ const config = require('../config');
 let offset;
 
 const voMap = {};
-loadVO('./db-vo.txt');
+loadVO(config.vo_file);
 
 readAudioAssets(config.AudioAssets_folder);
+
 
 
 function loadVO(path) {
@@ -18,13 +19,20 @@ function loadVO(path) {
 	fnv.useUTF8(true);
 	for (let vofile of vofiles) {
 		for (let lang of config.read_audio_languages) {
-			const file = `${lang}\\${vofile}`;
+			const file = includesLanguage(vofile) ? vofile : `${lang}\\${vofile}`;
 			const hashValue = fnv.hash(file.toLowerCase(), 64).dec();
 			voMap[hashValue] = file;
 		}
 	}
 	const t1 = performance.now();
 	console.log(`loaded in ${(t1-t0)/1000} seconds`);
+}
+
+function includesLanguage(vofile) {
+	for (const lang of config.list_audio_languages) {
+		if (vofile.startsWith(lang)) return true;
+	}
+	return false;
 }
 
 function readAudioAssets(directory) {

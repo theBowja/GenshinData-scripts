@@ -42,7 +42,7 @@ function collate(lang) {
 		data.filename_icon = mat.icon;
 
 		// get city name to make bg image
-		const city = xcity.find(e => e.cityId === obj.id-100+1).ExpeditionWaterMark;
+		const city = xcity.find(e => e.cityId === obj.id-100+1).expeditionWaterMark;
 		data.filename_bg = `UI_Gcg_Bg_${city.substring(city.lastIndexOf('_')+1)}`;
 
 		let filename = makeUniqueFileName(obj.nameTextMapHash, accum);

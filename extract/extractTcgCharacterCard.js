@@ -15,10 +15,10 @@ const propEnemy = getPropNameWithMatch(xchar, 'id', 3202, true);
 const propTags = getPropNameWithMatch(xchar, 'id', 1101, 'GCG_TAG_ELEMENT_CRYO');
 const propSwitch = getPropNameWithMatch(xchar, 'id', 1101, 'Switch_Ganyu');
 
-const propSkillKey = getPropNameWithMatch(xskill, 'Id', 11011, 'Effect_Damage_Physic_2');
-const propSkillType = getPropNameWithMatch(xskill, 'Id', 11011, 'GCG_SKILL_TAG_A');
-const propSkillCost = Object.entries(xskill.find(e => e.Id === 11011)).find(([k, v]) => Array.isArray(v) && v[0].count)[0];
-const propSkillCostDice = Object.entries(xskill.find(e => e.Id === 11011)[propSkillCost][0]).find(([k, v]) => v === 'GCG_COST_DICE_CRYO')[0];
+const propSkillKey = getPropNameWithMatch(xskill, 'id', 11011, 'Effect_Damage_Physic_2');
+const propSkillType = getPropNameWithMatch(xskill, 'id', 11011, 'GCG_SKILL_TAG_A');
+const propSkillCost = Object.entries(xskill.find(e => e.id === 11011)).find(([k, v]) => Array.isArray(v) && v[0].count)[0];
+const propSkillCostDice = Object.entries(xskill.find(e => e.id === 11011)[propSkillCost][0]).find(([k, v]) => v === 'GCG_COST_DICE_CRYO')[0];
 
 const propShareId = getPropNameWithMatch(xdeckcard, 'id', 1101, 1);
 const propStoryText = getPropNameWithMatch(xdeckcard, 'id', 1101, 753619631);
@@ -84,7 +84,7 @@ function collate(lang, doEnemy=false) {
 
 		data.skills = [];
 		for (const skillId of obj.skillList) {
-			const skillObj = xskill.find(e => e.Id === skillId);
+			const skillObj = xskill.find(e => e.id === skillId);
 			const stypetag = skillObj[propSkillType][0]
 			// if (stypetag === 'GCG_SKILL_TAG_NONE') continue; // i have no idea what these skills are but they dont seem to be important
 
@@ -181,7 +181,7 @@ function buildTransformationMap() {
 		const imagebase = cardface.substring(cardface.lastIndexOf('_')+1); // example: Ganyu
 
 		const hasArkhe = obj.skillList.some(skillId => {
-			const skillObj = xskill.find(e => e.Id === skillId);
+			const skillObj = xskill.find(e => e.id === skillId);
 			const description = language[skillObj.descTextMapHash];
 			return description && description.includes('[K1014]'); // K1014, enemy can be Deactivated
 		});

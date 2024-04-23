@@ -23,7 +23,7 @@ function collateConstellation(lang) {
 					descriptionRaw: sanitizer(language[stars[i-1].descTextMapHash], replaceNewline)
 				};
 				data['c'+i].description = sanitizer(data['c'+i].descriptionRaw, replaceNonBreakSpace, removeColorHTML, replaceLayoutPC, replaceGenderM, removeHashtag);
-				validateString(data['c'+i].name, 'constellations.name', lang);
+				validateString(data['c'+i].name, 'constellations.name', lang, false);
 				validateString(data['c'+i].description, 'constellations.description', lang);
 
 				data['filename_c'+i] = stars[i-1].icon;

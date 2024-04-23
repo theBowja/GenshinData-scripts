@@ -120,9 +120,9 @@ function loadVoiceMap() {
 
 		const fileObj = require(`${config.GenshinData_folder}/BinOutput/Voice/Items/${voiceitemfile}`);
 
-		const fetterObjList = Object.values(fileObj).filter(value => value.GameTrigger === "Fetter");
+		const fetterObjList = Object.values(fileObj).filter(value => (value.GameTrigger||value.gameTrigger) === "Fetter");
 		for (const fetterObj of fetterObjList) {
-			for (const source of fetterObj.SourceNames||[]) {
+			for (const source of fetterObj.sourceNames||fetterObj.SourceNames||[]) {
 				const avatarId = mapAvatarNameToAvatarId(source.avatarName);
 				if (!voiceMap[avatarId]) voiceMap[avatarId] = {};
 				if (!voiceMap[avatarId][fetterObj.gameTriggerArgs]) voiceMap[avatarId][fetterObj.gameTriggerArgs] = [];

@@ -29,7 +29,7 @@ function collateCommission(lang) {
 	const dupeCheck = {};
 	let mydata = xdaily.reduce((accum, obj) => {
 		let data = {};
-		data.id = obj.ID;
+		data.id = obj.id;
 
 		data.name = language[obj.titleTextMapHash];
 		data.description = sanitizeDescription(language[obj.descriptionTextMapHash]);

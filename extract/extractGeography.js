@@ -10,16 +10,16 @@ function collageGeography(lang) {
 	let mygeography = xview.reduce((accum, obj) => {
 
 		let data = {};
-		data.id = obj.Id;
+		data.id = obj.id;
 
 		data.name = language[obj.nameTextMapHash];
-		data.areaName = language[xarea.find(area => area.ID === obj.worldAreaId).AreaNameTextMapHash];
+		data.areaName = language[xarea.find(area => area.id === obj.worldAreaId).areaNameTextMapHash];
 		data.areaId = obj.worldAreaId;
 		data.description = sanitizeDescription(language[obj.descTextMapHash]);
 		data.regionName = language[xcity.find(city => city.cityId === obj.cityId).cityNameTextMapHash];
 		data.regionId = obj.cityId;
 		data.showOnlyUnlocked = obj.showOnlyUnlocked ? true : undefined;
-		data.sortOrder = obj.SortOrder;
+		data.sortOrder = obj.sortOrder;
 
 		// console.log(obj.cityID);
 

@@ -26,6 +26,10 @@ if(out === null) console.log('enemy null resistance rounding');
 	return out;
 }
 
+// const la = getLanguage('EN');
+// let tmp = xspecial.filter(s => s.specialNameLabID === 5002).map(s => la[s.specialNameTextMapHash]);
+// console.log(tmp);
+
 
 function collateEnemy(lang) {
 	const language = getLanguage(lang);
@@ -39,17 +43,17 @@ function collateEnemy(lang) {
 
 		let mon = xmonster.find(m => m.describeId === obj.describeId);
 		if (!mon) return accum;
-		if(obj.Id === 29010101) { // use correct stormterror
+		if(obj.id === 29010101) { // use correct stormterror
 			mon = xmonster.find(m => m.id === 29010104);
 		}
 
 		let des = xdescribe.find(d => d.id === obj.describeId);
 		let spe = xspecial.filter(s => s.specialNameLabID === des.specialNameLabID);
 		let inv = findInvestigation(mon.id);
-		if(spe.length === 0) console.log('no special names for monsterId:'+mon.Id);
+		if(spe.length === 0) console.log('no special names for monsterId:'+mon.id);
 
 		let data = {};
-		data.id = obj.Id;
+		data.id = obj.id;
 		data.monsterId = mon.id;
 
 		data.name = language[des.nameTextMapHash];
@@ -78,31 +82,31 @@ function collateEnemy(lang) {
 				bossRewardIndex++;
 			}
 
-			if(obj.Id === 20020101) { // Eye of the Storm
+			if(obj.id === 20020101) { // Eye of the Storm
 				// data.rewardPreviewId = 
 				data.rewardPreview = mapRewardList(eyestormreward, language);
-			} else if(obj.Id === 21011501) { // Unusual Hilichurl
+			} else if(obj.id === 21011501) { // Unusual Hilichurl
 				data.rewardPreview = mapRewardList(unusualreward, language);
-			} else if(obj.Id === 22030101 || obj.Id === 22020101 || obj.Id === 22030201 ||
-					  obj.Id === 22020201 ||
-				      obj.Id === 26060201 || obj.Id === 26060101 || obj.Id === 26060301) {
+			} else if(obj.id === 22030101 || obj.id === 22020101 || obj.id === 22030201 ||
+					  obj.id === 22020201 ||
+				      obj.id === 26060201 || obj.id === 26060101 || obj.id === 26060301) {
 				// Abyss Lector: Violet Lightning, Abyss Herald: Wicked Torrents, Abyss Lector: Fathomless Flames
 				// Abyss Herald: Frost Fall
 				// Hydro Cicin, Electro Cicin, Cryo Cicin
 				data.rewardPreview = [];
-			} else if(obj.Id === 26050801) { // Bathysmal Vishap twins
+			} else if(obj.id === 26050801) { // Bathysmal Vishap twins
 				data.rewardPreviewId = 15177;
 				let rewardpreview = xpreview.find(pre => pre.id === data.rewardPreviewId).previewItems;
 				data.rewardPreview = mapRewardList(rewardpreview, language);
-			} else if(obj.Id === 24070301) { // Icewind Suite
+			} else if(obj.id === 24070301) { // Icewind Suite
 				data.rewardPreviewId = 15190;
 				let rewardpreview = xpreview.find(pre => pre.id === data.rewardPreviewId).previewItems;
 				data.rewardPreview = mapRewardList(rewardpreview, language);
-			} else if(obj.Id === 22100501) { // Iniquitous Baptist
+			} else if(obj.id === 22100501) { // Iniquitous Baptist
 				data.rewardPreviewId = 15185;
 				let rewardpreview = xpreview.find(pre => pre.id === data.rewardPreviewId).previewItems;
 				data.rewardPreview = mapRewardList(rewardpreview, language);
-			} else if(obj.Id === 24068801 || obj.Id === 24068901 || obj.Id === 24069001 || obj.Id === 24069201) {
+			} else if(obj.id === 24068801 || obj.id === 24068901 || obj.id === 24069001 || obj.id === 24069201) {
 				// Assault/Suppression/AnnihilationConstruction Specialist Mek
 				data.rewardPreviewId = 16020;
 				let rewardpreview = xpreview.find(pre => pre.id === data.rewardPreviewId).previewItems;
@@ -110,13 +114,13 @@ function collateEnemy(lang) {
 			}
 		}
 		if(!data.rewardPreview) {
-			if (lang === 'EN') console.log(`no reward list for codexId:${obj.Id} monId:${data.monsterId} ${data.name}`); 
+			if (lang === 'EN') console.log(`no reward list for codexId:${obj.id} monId:${data.monsterId} ${data.name}`); 
 			data.rewardPreview = [];
 		}
 
 		let sub = obj.subType || 'CODEX_SUBTYPE_ELEMENTAL';
 		sub = sub.slice(sub.lastIndexOf('_')+1);
-		// console.log(obj.Id);
+		// console.log(obj.id);
 		// console.log(sub);
 		sub = xmanualtext.find(m => m.textMapId === `UI_CODEX_ANIMAL_CATEGORY_${sub}`).textMapContentTextMapHash;
 		data.monsterType = mon.type;
@@ -158,7 +162,7 @@ function collateEnemy(lang) {
 			stats.curve.attack = mon.propGrowCurves.find(ele => ele.type === 'FIGHT_PROP_BASE_ATTACK').growCurve;
 			stats.curve.defense = mon.propGrowCurves.find(ele => ele.type === 'FIGHT_PROP_BASE_DEFENSE').growCurve;
 		} catch(e) {
-			console.log(`codexId:${obj.Id} - monId:${data.monsterId} - ${data.name} - failed PropGrowCurves`);
+			console.log(`codexId:${obj.id} - monId:${data.monsterId} - ${data.name} - failed PropGrowCurves`);
 		}
 
 		data.stats = stats;
@@ -280,7 +284,7 @@ function getBossRewardQueue() {
 
 	let bossrewardlists = xpreview.filter(obj => {
 		// filter by dream solvent
-		if (!obj.Desc.endsWith('_90级') || !obj.previewItems.some(item => item.id === 113021)) return false;
+		if (!obj.desc.endsWith('_90级') || !obj.previewItems.some(item => item.id === 113021)) return false;
 
 		// const matid = obj.previewItems[obj.previewItems.findIndex(item => item.id === 113021)+1].id; // 4.2 and before
 		const matid = obj.previewItems[3].id;
@@ -305,9 +309,9 @@ function getBossRewardQueue() {
 // 		match.subType = ob.JKOLEMPKHMI; // replace with CODEX_SUBTYPE_HILICHURL
 // 	}
 // 	// manual fixes for 2.6 update
-// 	out.find(ele => ele.Id === 22080101).subType = "CODEX_SUBTYPE_ABYSS";
-// 	out.find(ele => ele.Id === 24010401).subType = "CODEX_SUBTYPE_AUTOMATRON";
-// 	out.find(ele => ele.Id === 26090101).subType = "CODEX_SUBTYPE_BEAST";
+// 	out.find(ele => ele.id === 22080101).subType = "CODEX_SUBTYPE_ABYSS";
+// 	out.find(ele => ele.id === 24010401).subType = "CODEX_SUBTYPE_AUTOMATRON";
+// 	out.find(ele => ele.id === 26090101).subType = "CODEX_SUBTYPE_BEAST";
 
 // 	out = JSON.stringify(out, null, '\t');
 // 	fs.writeFileSync('../ExcelBinOutput/AnimalCodexExcelConfigData.json', out);

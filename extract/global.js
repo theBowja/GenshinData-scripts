@@ -48,7 +48,11 @@ global.capitalizeFirst = function(str) { return str[0].toUpperCase() + str.toLow
 global.replaceLayout = function(str) { return str.replace(/{LAYOUT_MOBILE#.*?}{LAYOUT_PC#(.*?)}{LAYOUT_PS#.*?}/gi,'$1').replace('#','').replaceAll('{NON_BREAK_SPACE}', ' '); }
 global.removeSprite = function(str) { return str.replace(/{SPRITE_PRESET.*?}/gi, ''); }
 global.sanitizeDescription = function(str, removeBold) { return removeSprite(replaceNewline(replaceLayout(stripHTML(convertBold(str || '', removeBold))))); }
-global.getPropNameWithMatch = function(excel, idkey, idval, propval) { return Object.entries(excel.find(e => e[idkey] === idval)).find(e => e[1] === propval || e[1][0] === propval)[0]; };
+global.getPropNameWithMatch = function(excel, idkey, idval, propval) {
+	const tmp = excel.find(e => e[idkey] === idval);
+	if (!tmp) throw new Error(`getPropNameWithMatch: Did not find value for key`);
+	return Object.entries(tmp).find(e => e[1] === propval || e[1][0] === propval)[0];
+};
 global.validName = function(name) { return name !== '' && !name.includes('</') && !/[|{}#]/.test(name)}
 global.sanitizeName = function(str, id) { 
 	if (str === undefined) {
@@ -194,6 +198,7 @@ global.checkDupeName = function(data, namemap, skipdupelog=[], donotconsolelog =
 		namemap[key].dupealias = namemap[key].name + ' 0';
 		id = namemap[key].id || namemap[key].id[0] || -1;
 	} else {
+		if (data.id === undefined) console.log(`Error: data has no id. Name: ${data.name}`);
 		namemap[key] = data;
 		return false;
 	}

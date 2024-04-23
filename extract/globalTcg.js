@@ -129,7 +129,7 @@ global.getDescriptionReplaced = function(data, description, translation, errorme
 
 			case 'S': // GCGSkill
 				const skillId = parseInt(description.substring(ind+3, description.indexOf(']', ind)), 10);
-				const skillObj = xskill.find(e => e.Id === skillId);
+				const skillObj = xskill.find(e => e.id === skillId);
 
 				if (skillObj === undefined) {
 					console.log(`No skillObj found to replace in description:`);

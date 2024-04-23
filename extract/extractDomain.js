@@ -45,6 +45,7 @@ function mapping(textmapid) { return xmanualtext.find(ele => ele.textMapId === t
 "UI_DUNGEON_ENTRY_758", // "City of Gold"
 "UI_DUNGEON_ENTRY_803", // "Molten Iron Fortress"
 "UI_DUNGEON_ENTRY_1142", // "Waterfall Wen"
+"UI_DUNGEON_ENTRY_1151", // "Faded Theater"
 */
 function getDomainEntranceTextMapId(englishname, levelConfigMap) {
 	englishname = englishname.toLowerCase();
@@ -99,6 +100,8 @@ function getDomainEntranceTextMapId(englishname, levelConfigMap) {
 		return "UI_DUNGEON_ENTRY_982";
 	else if(englishname.includes('crumbling assembly'))
 		return "UI_DUNGEON_ENTRY_1142";
+	else if(englishname.includes('variation'))
+		return "UI_DUNGEON_ENTRY_1151";
 	else
 		console.log('no domain entrance mapping found for '+englishname);
 }
@@ -175,7 +178,7 @@ function collateDomain(lang) {
 			let monObj = xmonster.find(e => e.id === monId);
 			let des = xdescribe.find(d => d.id === monObj.describeId);
 			return {
-				id: xcodex.find(e => e.describeId === monObj.describeId).Id, // get codex id
+				id: xcodex.find(e => e.describeId === monObj.describeId).id, // get codex id
 				name: language[des.nameTextMapHash],
 			}
 		});

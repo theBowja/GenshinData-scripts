@@ -17,7 +17,7 @@ function exportGenshinData() {
 	// exportData('enemies', require('./extract/extractEnemy'));
 	// exportCurve('enemies', 'MonsterCurveExcelConfigData');
 
-	// // //exportData('domains', require('./extract/extractDomainMonsterList')); // run only after both domains and enemies have run. sync.
+	// no // //exportData('domains', require('./extract/extractDomainMonsterList')); // run only after both domains and enemies have run. sync.
 
 	// exportData('outfits', require('./extract/extractOutfit'));
 	// exportData('windgliders', require('./extract/extractWindGlider'));
