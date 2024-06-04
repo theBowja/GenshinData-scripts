@@ -22,7 +22,7 @@ global.loadTcgSkillKeyMap = function() {
 		const fileObj = require(`${config.GenshinData_folder}/BinOutput/GCG/Gcg_DeclaredValueSet/${filename}`);
 
 		try {
-			const dataname = filename.replace('.json', '');
+			const dataname = fileObj.name; //filename.replace('.json', '');
 			const uncutmap = Object.values(fileObj)[1];
 
 			tcgSkillKeyMap[dataname] = {};
@@ -76,14 +76,14 @@ global.getDescriptionReplaced = function(data, description, translation, errorme
 			case 'D': // D__KEY__DAMAGE or D__KEY__ELEMENT
 				switch (description[ind+10]) {
 					case 'D': // DAMAGE
+						if (description[ind+16] === '_') { // D__KEY__DAMAGE_2
+							data.basedamage = parseInt(description[ind+17]);
+						}
+
 						if (data.basedamage === undefined) {
 							console.log(`Tcg object is missing skill base damage for skill ${errormessage} for data id ${data.id}`);
 						}
-						if (description[ind+16] !== '_') {
-							replacementText = data.basedamage+'';
-						} else {
-							replacementText = description[ind+17]
-						}
+						replacementText = data.basedamage+'';
 
 						break;
 
@@ -167,7 +167,10 @@ global.getDescriptionReplaced = function(data, description, translation, errorme
 		ind = description.indexOf('$[', ind+1);
 	}
 
-	if (description.indexOf('$') !== -1) console.log(`Tcg description has unreplaced text for:\n  ${description} `);
+	description = description.replaceAll('${[GCG_TOKEN_SHIELD]}', '{GCG_TOKEN_SHIELD}');
+
+	if (description.indexOf('$') !== -1) 
+		console.log(`Tcg description has unreplaced text for:\n  ${description} `);
 	// Replace {PLURAL#1|pt.|pts.}
 	ind = description.indexOf('{PLURAL');
 	while (ind !== -1) {
@@ -271,6 +274,8 @@ global.getTcgTagImage = function(tag) {
 		return 'UI_Gcg_Tag_Faction_Kairagi';
 	case 'GCG_TAG_CAMP_EREMITE':
 		return 'UI_Gcg_Tag_Faction_Eremite';
+	case 'GCG_TAG_CAMP_SACREAD':
+		return 'UI_Gcg_Tag_Faction_Sacred';
 	default:
 		console.log(`Tag ${tag} does not have an image mapped in global.getTcgTagImage(tag)`);
 	}

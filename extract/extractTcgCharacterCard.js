@@ -29,7 +29,7 @@ const propCardFace = getPropNameWithMatch(xcardview, 'id', 1101, 'Gcg_CardFace_C
 const tcgSkillKeyMap = loadTcgSkillKeyMap();
 // const checkBaseDamageIgnoreLog = ['Char_Skill_11013', 'Char_Skill_13012', 'Char_Skill_16013', 'Char_Skill_22014', 'Char_Skill_13073', ''];
 
-const skipdupelog = [2602]; // Azhdaha
+const skipdupelog = [2602, 1211]; // Azhdaha, Furina
 function collate(lang, doEnemy=false) {
 	const language = getLanguage(lang);
 	const dupeCheck = {};
@@ -172,7 +172,9 @@ function getAzhdahaFilename(obj) {
 * Note: Hili does not actually transform into HiliClub or HiliElectric.
 * Note: Pneuma/Ousia enemies transform into their base version and must be reversed.
 */
-let tfMap = {}; // mapping from base card ids to a list of their transformed card ids. see below this function
+let tfMap = {
+	1212: [ 1211 ] // furina
+}; // mapping from base card ids to a list of their transformed card ids. see below this function
 let tfList = []; // list of transformed card ids
 function buildTransformationMap() {
 	const language = getLanguage('EN');
@@ -225,7 +227,7 @@ function buildTransformationMap() {
 buildTransformationMap();
 
 // sanity checking tfList
-const correctTfList = '3006,3006,3007,3007,6301,6302,6303,6304,6601,6602,6603,6604';
+const correctTfList = '1212,3006,3006,3007,3007,3008,3008,3011,3011,6301,6302,6303,6304,6601,6602,6603,6604'
 if (correctTfList !== tfList.sort()+'') {
 	console.log(`WARNING: tcg character/enemy cards has an unverified transformation-exclusive card`);
 	console.log('new tfMap:');

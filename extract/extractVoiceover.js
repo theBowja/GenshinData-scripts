@@ -22,6 +22,14 @@ function collateVoiceover(lang) {
 		data.actionLines = [];
 
 		xvoices.forEach(fetterObj => {
+			// sethos and clorinde. mihoyo really likes to surprise us
+			if (voiceMap[data.id][fetterObj.voiceFile] === undefined && fetterObj.voiceFile.includes(',')) {
+				const madge = fetterObj.voiceFile.split(',');
+				voiceMap[data.id][madge[0]][0].gender = 2;
+				voiceMap[data.id][madge[1]][0].gender = 1;
+				voiceMap[data.id][fetterObj.voiceFile] = [voiceMap[data.id][madge[0]][0], voiceMap[data.id][madge[1]][0]];
+			}
+
 			const voiceMapData = voiceMap[data.id][fetterObj.voiceFile].sort((a,b) => a.gender-b.gender);
 
 			const voiceData = {

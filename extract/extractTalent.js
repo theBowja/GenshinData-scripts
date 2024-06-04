@@ -77,9 +77,11 @@ function collateTalent(lang) {
 					if(lvl !== 1 && index === 2) continue; // sprint skills don't have level-up
 					let attTalent = xpassive.find(tal => (tal.proudSkillGroupId === talent.proudSkillGroupId && tal.level === lvl));
 					attTalent.paramList.forEach((value, paramIndex) => {
+						if (paramIndex === 19 && attTalent.proudSkillGroupId === 9539) // sigewinne's burst definitely does not have a 20th parameter >:(
+							return;
 						const name = `param${paramIndex+1}`;
-						if(value === 0) { // exclude those with values of 0
-							if(lvl !== 1 && parameters[combatTypeProp][name] !== undefined) console.log(`talent ${ref.name} value 0`);
+						if(value === 0) { // exclude those with values of 0 // ProudSkillExcelConfigData
+							if(lvl !== 1 && parameters[combatTypeProp][name] !== undefined) console.log(`talent ${attTalent.proudSkillId} ${ref.name} value 0`);
 							return;
 						}
 						if(parameters[combatTypeProp][name] === undefined) parameters[combatTypeProp][name] = [];
