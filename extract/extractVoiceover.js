@@ -86,7 +86,8 @@ const switchMap = {
 	// 'Switch_ayaka': 10000002,
 	'Switch_heroine': 10000007,
 	'Switch_hero': 10000005,
-	'Switch_heizou': 10000059
+	'Switch_heizou': 10000059,
+	'Switch_emelie': 10000099
 };
 function mapAvatarNameToAvatarId(avatarName) {
 	if (switchMap[avatarName]) return switchMap[avatarName];

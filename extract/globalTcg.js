@@ -77,13 +77,17 @@ global.getDescriptionReplaced = function(data, description, translation, errorme
 				switch (description[ind+10]) {
 					case 'D': // DAMAGE
 						if (description[ind+16] === '_') { // D__KEY__DAMAGE_2
-							data.basedamage = parseInt(description[ind+17]);
+							if (data.basedamage === undefined)
+								data.basedamage = parseInt(description[ind+17]);
+							replacementText = description[ind+17];
+
+						} else {
+							replacementText = data.basedamage+'';
 						}
 
 						if (data.basedamage === undefined) {
 							console.log(`Tcg object is missing skill base damage for skill ${errormessage} for data id ${data.id}`);
 						}
-						replacementText = data.basedamage+'';
 
 						break;
 

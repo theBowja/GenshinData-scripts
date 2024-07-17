@@ -66,7 +66,7 @@ function getDomainEntranceTextMapId(englishname, levelConfigMap) {
 		return "UI_DUNGEON_ENTRY_50";
 	else if(englishname.includes('thundercloud altar') || englishname.includes('thundering ruins') || englishname.includes('trial grounds of thunder'))
 		return "UI_DUNGEON_ENTRY_52";
-	else if(englishname.includes('frost'))
+	else if(englishname.includes('frost') || englishname.includes('roaring fire'))
 		return "UI_DUNGEON_ENTRY_54";
 	else if(englishname.includes('unyielding'))
 		return "UI_DUNGEON_ENTRY_282";
