@@ -33,8 +33,18 @@ global.loadTcgSkillKeyMap = function() {
 					tcgSkillKeyMap[dataname].basedamage = kobj['value'] || kobj[tcgSkillKeyMap.DAMAGEVALUEPROP];
 					if (tcgSkillKeyMap[dataname].basedamage === undefined) console.log('loadTcgSkillKeyMap failed to extract basedamage');
 					break;
+				case '1428448537': // D__KEY__DAMAGE_2
+				case '1428448538':
+				case '1428448539':
+				case '1428448540':
+				case '1428448541':
+				case '1428448542':
+					const damagekey = `damage_${parseInt(key)-1428448535}`;
+					tcgSkillKeyMap[dataname][damagekey] = kobj['value'] || kobj[tcgSkillKeyMap.DAMAGEVALUEPROP];
+					if (tcgSkillKeyMap[dataname][damagekey] === undefined) console.log(`loadTcgSkillKeyMap failed to extract damage key: ${key}`);
+					break;
 				case '476224977': // extract baseelement
-					tcgSkillKeyMap[dataname].baseelement = kobj['ratio'] || kobj[tcgSkillKeyMap.ELEMENTVALUEPROP] || 'GCG_ELEMENT_NONE';
+					tcgSkillKeyMap[dataname].baseelement = kobj['value'] || kobj[tcgSkillKeyMap.ELEMENTVALUEPROP] || 'GCG_ELEMENT_NONE';
 					if (tcgSkillKeyMap[dataname].baseelement === undefined) console.log('loadTcgSkillKeyMap failed to extract baseelement');
 					break;
 				// case '-1197212178': // effectnum
@@ -54,7 +64,7 @@ global.loadTcgSkillKeyMap = function() {
 	return tcgSkillKeyMap;
 }
 
-global.getDescriptionReplaced = function(data, description, translation, errormessage) {
+global.getDescriptionReplaced = function(data, description, translation, errormessage, skillkeydata) {
 	const xcard = getExcel('GCGCardExcelConfigData');
 	const xchar = getExcel('GCGCharExcelConfigData');
 	const xskill = getExcel('GCGSkillExcelConfigData');
@@ -77,16 +87,26 @@ global.getDescriptionReplaced = function(data, description, translation, errorme
 				switch (description[ind+10]) {
 					case 'D': // DAMAGE
 						if (description[ind+16] === '_') { // D__KEY__DAMAGE_2
-							if (data.basedamage === undefined)
-								data.basedamage = parseInt(description[ind+17]);
-							replacementText = description[ind+17];
+							const damagekey = `damage_`+description[ind+17];
+
+							if (!skillkeydata[damagekey]) {
+								console.log(`skillkeydata ${errormessage} is missing damage key ${damagekey}`);
+								console.log(skillkeydata)
+							}
+							replacementText = skillkeydata[damagekey]+'';
 
 						} else {
-							replacementText = data.basedamage+'';
-						}
+							if (data.basedamage === undefined && skillkeydata.damage_2 && data.id === 22042) {
+								replacementText = skillkeydata.damage_2+'';
 
-						if (data.basedamage === undefined) {
-							console.log(`Tcg object is missing skill base damage for skill ${errormessage} for data id ${data.id}`);
+							} else { // idk what im even doing
+								replacementText = data.basedamage+'';
+
+								if (data.basedamage === undefined) {
+									console.log(description)
+									console.log(`Tcg object is missing skill base damage for skill ${errormessage} for data id ${data.id}`);
+								}
+							}
 						}
 
 						break;

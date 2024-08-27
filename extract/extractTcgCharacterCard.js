@@ -103,7 +103,7 @@ function collate(lang, doEnemy=false) {
 					skill.baseelement = tcgSkillKeyMap[skillObj[propSkillKey]].baseelement;
 				}
 			}
-			skill.descriptionreplaced = getDescriptionReplaced(skill, skill.descriptionraw, language, skillObj[propSkillKey]);
+			skill.descriptionreplaced = getDescriptionReplaced(skill, skill.descriptionraw, language, skillObj[propSkillKey], tcgSkillKeyMap[skillObj[propSkillKey]]);
 			skill.description = sanitizeDescription(skill.descriptionreplaced, true);
 			skill.typetag = stypetag;
 			if (skill.typetag === 'GCG_SKILL_TAG_NONE')

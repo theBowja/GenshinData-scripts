@@ -46,6 +46,9 @@ function mapping(textmapid) { return xmanualtext.find(ele => ele.textMapId === t
 "UI_DUNGEON_ENTRY_803", // "Molten Iron Fortress"
 "UI_DUNGEON_ENTRY_1142", // "Waterfall Wen"
 "UI_DUNGEON_ENTRY_1151", // "Faded Theater"
+"UI_DUNGEON_ENTRY_1186", // "Blazing Ruins"
+"UI_DUNGEON_ENTRY_1188", // "Ancient Watchtower"
+"UI_DUNGEON_ENTRY_1190", // "Sanctum of Rainbow Spirits"
 */
 function getDomainEntranceTextMapId(englishname, levelConfigMap) {
 	englishname = englishname.toLowerCase();
@@ -102,6 +105,12 @@ function getDomainEntranceTextMapId(englishname, levelConfigMap) {
 		return "UI_DUNGEON_ENTRY_1142";
 	else if(englishname.includes('variation'))
 		return "UI_DUNGEON_ENTRY_1151";
+	else if(englishname.includes('sublime turning') || englishname.includes('myriad illusions') || englishname.includes('return'))
+		return "UI_DUNGEON_ENTRY_1186";
+	else if(englishname.includes('scrying shadows') || englishname.includes('attentive observation') || englishname.includes('estimation'))
+		return "UI_DUNGEON_ENTRY_1188";
+	else if(englishname.includes('the burning gauntlet'))
+		return "UI_DUNGEON_ENTRY_1190";
 	else
 		console.log('no domain entrance mapping found for '+englishname);
 }
