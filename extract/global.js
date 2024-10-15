@@ -80,6 +80,8 @@ global.sanitizer = function(str, ...sanfunctions) {
 	return str;
 }
 global.validateString = function(str, folder, lang, throwerror = true) {
+	// thoma's talent string has an empty color tag for some reason
+	str = str.replace('<color=#FF9999FF></color>', '');
 	if (str === undefined || str === '' ||  /\||{|}|#|<\/|\\n/.test(str)) {
 		// console.log(`${folder} ${lang} invalid string: ${str}`);
 		if (throwerror) throw `${folder} ${lang} invalid string: ${str}`;
