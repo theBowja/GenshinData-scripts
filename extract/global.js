@@ -3,7 +3,14 @@ const fs = require('fs');
 global.config = require('../config.json');
 
 global.getExcel = function(file) { return require(`${config.GenshinData_folder}/ExcelBinOutput/${file}.json`); }
-global.getTextMap = function(langcode) { return require(`${config.GenshinData_folder}/TextMap/TextMap${langcode}.json`); }
+global.getTextMap = function(langcode) {
+	if (langcode === 'TH') {
+		return Object.assign(require(`${config.GenshinData_folder}/TextMap/TextMap${langcode}_1.json`),
+			require(`${config.GenshinData_folder}/TextMap/TextMap${langcode}_2.json`))
+	} else {
+		return require(`${config.GenshinData_folder}/TextMap/TextMap${langcode}.json`);
+	}
+}
 
 global.getReadable = function(name, langcode) { 
 	let path = `${config.GenshinData_folder}/Readable/${langcode}/${name}.txt`;

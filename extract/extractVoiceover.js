@@ -11,6 +11,7 @@ function collateVoiceover(lang) {
 
 	if (!mycharacter) mycharacter = require(`${config.genshin_export_folder}/EN/characters.json`);
 	loadVoiceMap();
+	// console.log(voiceMap);
 	return Object.entries(mycharacter).reduce((accum, [filename, charObj]) => {
 		let data = {};
 		data.id = charObj.id;
@@ -30,7 +31,18 @@ function collateVoiceover(lang) {
 				voiceMap[data.id][fetterObj.voiceFile] = [voiceMap[data.id][madge[0]][0], voiceMap[data.id][madge[1]][0]];
 			}
 
-			const voiceMapData = voiceMap[data.id][fetterObj.voiceFile].sort((a,b) => a.gender-b.gender);
+			let voiceMapData;
+			try {
+				voiceMapData = voiceMap[data.id][fetterObj.voiceFile].sort((a,b) => a.gender-b.gender);
+			} catch(e) {
+				console.log(`Could not find voice data for character ${data.id} fetterId ${fetterObj.fetterId} voiceFile ${fetterObj.voiceFile}`);
+				return;
+				// console.log(voiceMap[data.id])
+				// console.log('data.id: ' + data.id);
+				// console.log('fetterid: ' + fetterObj.fetterId)
+				// console.log('voicefile: ' + fetterObj.voiceFile);
+				// throw e;
+			}
 
 			const voiceData = {
 				voicelineId: fetterObj.fetterId,
@@ -87,7 +99,8 @@ const switchMap = {
 	'Switch_heroine': 10000007,
 	'Switch_hero': 10000005,
 	'Switch_heizou': 10000059,
-	'Switch_emelie': 10000099
+	'Switch_emelie': 10000099,
+	'Switch_olorun': 10000105
 };
 function mapAvatarNameToAvatarId(avatarName) {
 	if (switchMap[avatarName]) return switchMap[avatarName];

@@ -4,7 +4,7 @@ const xtalent = getExcel('AvatarSkillExcelConfigData'); // combat talents
 const xpassive = getExcel('ProudSkillExcelConfigData'); // passive talents. also talent upgrade costs
 
 // object map that converts index to the talent type
-const talentCombatTypeMap = { '0': 'combat1', '1': 'combat2', '2': 'combatsp', '4': 'combat3' };
+const talentCombatTypeMap = { '0': 'combat1', '1': 'combat2', '2': 'combatsp', '3': 'combatju', '4': 'combat3' };
 
 const moraNameTextMapHash = getExcel('MaterialExcelConfigData').find(ele => ele.id === 202).nameTextMapHash;
 
@@ -38,6 +38,9 @@ function collateTalent(lang) {
 				if(skId === 0) return;
 				let talent = xtalent.find(tal => tal.id === skId);
 				let combatTypeProp = talentCombatTypeMap[index];
+				if (combatTypeProp === undefined) {
+					console.log(`combat talent missing index ${index}`)
+				}
 				let ref = data[combatTypeProp] = {};
 				// ref.id = talent.id;
 				ref.name = language[talent.nameTextMapHash];
@@ -66,40 +69,44 @@ function collateTalent(lang) {
 				ref.attributes = {};
 				ref.attributes.labels = [];
 				// build the labels
-				let attTalent = xpassive.find(tal => (tal.proudSkillGroupId === talent.proudSkillGroupId && tal.level === 1));
-				for(let labelTextMap of attTalent.paramDescList) {
-					if(language[labelTextMap] === "" || language[labelTextMap] === undefined) continue;
-					ref.attributes.labels.push(replaceLayout(language[labelTextMap]));
+				if (talent.proudSkillGroupId) { // special jump doesn't have this
+					let attTalent = xpassive.find(tal => (tal.proudSkillGroupId === talent.proudSkillGroupId && tal.level === 1));
+					for(let labelTextMap of attTalent.paramDescList) {
+						if(language[labelTextMap] === "" || language[labelTextMap] === undefined) continue;
+						ref.attributes.labels.push(replaceLayout(language[labelTextMap]));
+					}
 				}
 
 				parameters[combatTypeProp] = {};
-				for(let lvl = 1; lvl <= 15; lvl++) {
-					if(lvl !== 1 && index === 2) continue; // sprint skills don't have level-up
-					let attTalent = xpassive.find(tal => (tal.proudSkillGroupId === talent.proudSkillGroupId && tal.level === lvl));
-					attTalent.paramList.forEach((value, paramIndex) => {
-						if (paramIndex === 19 && attTalent.proudSkillGroupId === 9539) // sigewinne's burst definitely does not have a 20th parameter >:(
-							return;
-						const name = `param${paramIndex+1}`;
-						if(value === 0) { // exclude those with values of 0 // ProudSkillExcelConfigData
-							if(lvl !== 1 && parameters[combatTypeProp][name] !== undefined) console.log(`talent ${attTalent.proudSkillId} ${ref.name} value 0`);
-							return;
-						}
-						if(parameters[combatTypeProp][name] === undefined) parameters[combatTypeProp][name] = [];
-						parameters[combatTypeProp][name].push(value);
-					});
-					if(lvl >= 2 && lvl <= 10) { // get upgrade costs
-						costs['lvl'+lvl] = [{
-							id: 202,
-							name: language[moraNameTextMapHash],
-							count: attTalent.coinCost
-						}];
-						for(let items of attTalent.costItems) {
-							if(items.id === undefined) continue;
-							costs['lvl'+lvl].push({
-								id: items.id,
-								name: language[xmat.find(ele => ele.id === items.id).nameTextMapHash],
-								count: items.count
-							})
+				if (talent.proudSkillGroupId) {
+					for(let lvl = 1; lvl <= 15; lvl++) {
+						if(lvl !== 1 && (index === 2 || index === 3)) continue; // sprint and jump skills don't have level-up
+						let attTalent = xpassive.find(tal => (tal.proudSkillGroupId === talent.proudSkillGroupId && tal.level === lvl));
+						attTalent.paramList.forEach((value, paramIndex) => {
+							if (paramIndex === 19 && attTalent.proudSkillGroupId === 9539) // sigewinne's burst definitely does not have a 20th parameter >:(
+								return;
+							const name = `param${paramIndex+1}`;
+							if(value === 0) { // exclude those with values of 0 // ProudSkillExcelConfigData
+								if(lvl !== 1 && parameters[combatTypeProp][name] !== undefined) console.log(`talent ${attTalent.proudSkillId} ${ref.name} value 0`);
+								return;
+							}
+							if(parameters[combatTypeProp][name] === undefined) parameters[combatTypeProp][name] = [];
+							parameters[combatTypeProp][name].push(value);
+						});
+						if(lvl >= 2 && lvl <= 10) { // get upgrade costs
+							costs['lvl'+lvl] = [{
+								id: 202,
+								name: language[moraNameTextMapHash],
+								count: attTalent.coinCost
+							}];
+							for(let items of attTalent.costItems) {
+								if(items.id === undefined) continue;
+								costs['lvl'+lvl].push({
+									id: items.id,
+									name: language[xmat.find(ele => ele.id === items.id).nameTextMapHash],
+									count: items.count
+								})
+							}
 						}
 					}
 				}

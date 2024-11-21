@@ -31,7 +31,7 @@ global.loadTcgSkillKeyMap = function() {
 				switch (key) {
 				case '-2060930438': // extract basedamage
 					tcgSkillKeyMap[dataname].basedamage = kobj['value'] || kobj[tcgSkillKeyMap.DAMAGEVALUEPROP];
-					if (tcgSkillKeyMap[dataname].basedamage === undefined) console.log('loadTcgSkillKeyMap failed to extract basedamage');
+					if (tcgSkillKeyMap[dataname].basedamage === undefined) console.log(`loadTcgSkillKeyMap failed to extract basedamage from ${filename}`);
 					break;
 				case '1428448537': // D__KEY__DAMAGE_2
 				case '1428448538':
@@ -240,6 +240,8 @@ global.getTcgTagImage = function(tag) {
 		return 'UI_Gcg_Tag_Card_Shield';
 	case 'GCG_TAG_LEGEND':
 		return 'UI_Gcg_Tag_Card_Legend';
+	// case 'GCG_TAG_VEHICLE':
+	// 	return ''; // i dont know what the image name for this is
 
 	case 'GCG_TAG_WEAPON_NONE':
 		return 'UI_Gcg_Tag_Weapon_None';

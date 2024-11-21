@@ -42,6 +42,14 @@ function collate(lang, doEnemy=false) {
 		}
 		const deckcardObj = xdeckcard.find(e => e.id === obj.id);
 
+		// console.log(`obj.id ${obj.id} isplayble: ${obj[propPlayable]}`)
+		if (!doEnemy && obj[propEnemy] && obj[propPlayable]) {
+			if (![4607, 4608].includes(obj.id)) {
+				console.log(`playable enemy card detected ${obj.id}. please verify is this should be playable character or not`);
+			}
+			return accum;
+		}
+
 		let isWanderer = false;
 
 		let data = {};
@@ -76,10 +84,14 @@ function collate(lang, doEnemy=false) {
 		// data.weapon = language[xtag.find(e => e.type === data.tags[1]).nameTextMapHash];
 		// data.nation = language[xtag.find(e => e.type === data.tags[2]).nameTextMapHash];
 
-		if (obj[propPlayable]) {
-			data.storytitle = language[deckcardObj.storyTitleTextMapHash];
-			data.storytext = sanitizeDescription(language[deckcardObj[propStoryText]]);
-			data.source = language[deckcardObj[propCharacterSource]];
+		try {
+			if (!doEnemy && obj[propPlayable]) {
+				data.storytitle = language[deckcardObj.storyTitleTextMapHash];
+				data.storytext = sanitizeDescription(language[deckcardObj[propStoryText]]);
+				data.source = language[deckcardObj[propCharacterSource]];
+			}
+		} catch(e) {
+			console.log('wtf asdf '+obj.id);
 		}
 
 		data.skills = [];
