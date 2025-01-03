@@ -44,6 +44,7 @@ function collateTalent(lang) {
 				let ref = data[combatTypeProp] = {};
 				// ref.id = talent.id;
 				ref.name = language[talent.nameTextMapHash];
+				if (ref.name === undefined) return; // citlali jump talent doesn't have a name/description
 				validateString(ref.name, 'talents.combatname', lang);
 
 				ref.descriptionRaw = global.sanitizer(language[talent.descTextMapHash], replaceNewline);
@@ -58,7 +59,7 @@ function collateTalent(lang) {
 				ref.description = sanitizer(description, removeColorHTML, removeHashtag, replaceGenderM, replaceLayoutPC, replaceNonBreakSpace);
 				validateString(ref.description, 'talents.combatdescription', lang);
 				if (flavortext) {
-					ref.flavorText = global.sanitizer(flavortext, replaceGenderM, replaceNonBreakSpace);
+					ref.flavorText = global.sanitizer(flavortext, replaceGenderM, replaceNonBreakSpace, removeColorHTML);
 					validateString(ref.flavorText, 'talents.flavorText', lang);
 				}
 
