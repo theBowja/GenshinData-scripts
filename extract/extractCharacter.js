@@ -152,7 +152,7 @@ function collateCharacter(lang) {
 			if(ele.avatarPromoteId !== obj.avatarPromoteId) return accum;
 			let promotelevel = ele[getPromoteLevel()] || 0;
 			accum[promotelevel] = {
-				maxlevel: ele.unlockMaxLevel,
+				maxlevel: ele[getPropUnlockMaxLevel()],
 				hp: ele.addProps.find(ele => ele.propType === 'FIGHT_PROP_BASE_HP').value || 0,
 				attack: ele.addProps.find(ele => ele.propType === 'FIGHT_PROP_BASE_ATTACK').value || 0,
 				defense: ele.addProps.find(ele => ele.propType === 'FIGHT_PROP_BASE_DEFENSE').value || 0,
@@ -186,6 +186,17 @@ function getPromoteLevel() {
 		if (typeof value === 'number' && value === 1) {
 			promoteLevel = key;
 			return promoteLevel;
+		}
+	}
+}
+
+let propUnlockMaxLevel = undefined;
+function getPropUnlockMaxLevel() {
+	if(propUnlockMaxLevel !== undefined) return propUnlockMaxLevel;
+	for (let [key, value] of Object.entries(xsubstat[0])) {
+		if (typeof value === 'number' && value === 20) {
+			propUnlockMaxLevel = key;
+			return propUnlockMaxLevel;
 		}
 	}
 }
