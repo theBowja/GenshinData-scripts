@@ -33,19 +33,19 @@ function exportGenshinData() {
 	// exportData('voiceovers', require('./extract/extractVoiceover'));
 	// writeVOFile();
 
-	exportData('tcgcharactercards', require('./extract/extractTcgCharacterCard'));
-	exportData('tcgenemycards', require('./extract/extractTcgEnemyCard'));
-	exportData('tcgactioncards', require('./extract/extractTcgActionCard'));
-	exportData('tcgstatuseffects', require('./extract/extractTcgStatusEffect'));
-	exportData('tcgsummons', require('./extract/extractTcgSummon'));
-	exportData('tcgkeywords', require('./extract/extractTcgKeyword'));
-	exportData('tcgdetailedrules', require('./extract/extractTcgDetailedRule'));
-	// // exportData('tcgsprites', require('./extract/extractTcgSprite'));
-	// // exportData('tcgshopitems', require('./extract/extractTcgShopItem'));
+	// exportData('tcgcharactercards', require('./extract/extractTcgCharacterCard'));
+	// exportData('tcgenemycards', require('./extract/extractTcgEnemyCard'));
+	// exportData('tcgactioncards', require('./extract/extractTcgActionCard'));
+	// exportData('tcgstatuseffects', require('./extract/extractTcgStatusEffect'));
+	// exportData('tcgsummons', require('./extract/extractTcgSummon'));
+	// exportData('tcgkeywords', require('./extract/extractTcgKeyword'));
+	// exportData('tcgdetailedrules', require('./extract/extractTcgDetailedRule'));
+	// // // exportData('tcgsprites', require('./extract/extractTcgSprite'));
+	// // // exportData('tcgshopitems', require('./extract/extractTcgShopItem'));
 
-	exportData('tcglevelrewards', require('./extract/extractTcgLevelReward'));
-	exportData('tcgcardboxes', require('./extract/extractTcgCardBox'));
-	exportData('tcgcardbacks', require('./extract/extractTcgCardBack'));
+	// exportData('tcglevelrewards', require('./extract/extractTcgLevelReward'));
+	// exportData('tcgcardboxes', require('./extract/extractTcgCardBox'));
+	// exportData('tcgcardbacks', require('./extract/extractTcgCardBack'));
 
 
 

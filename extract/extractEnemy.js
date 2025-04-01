@@ -136,7 +136,7 @@ function collateEnemy(lang) {
 
 		// particle drops
 		let drops = [];
-		for(let x of mon.hpDrops) {
+		for(let x of mon[getPropHpDrops()]) {
 			if(x.dropId) drops.push(x.dropId);
 		}
 		drops.push(mon.killDropId);
@@ -176,6 +176,17 @@ function collateEnemy(lang) {
 		return accum;
 	}, {});
 	return mymonster;
+}
+
+let propHpDrops = undefined;
+function getPropHpDrops() {
+	if(propHpDrops !== undefined) return propHpDrops;
+	for (let [key, value] of Object.entries(xmonster[0])) {
+		if (Array.isArray(value) && value[0].dropId !== undefined) {
+			propHpDrops = key;
+			return propHpDrops;
+		}
+	}
 }
 
 // mapping for monsters that don't have rewardlist to use another monster's rewardlist

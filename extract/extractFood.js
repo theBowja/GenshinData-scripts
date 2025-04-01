@@ -59,6 +59,7 @@ function collateFood(lang) {
 			data.filename_buff = xd.effectIcon;
 		}
 		data.ingredients = obj.inputVec.reduce((accum, ing) => {
+			if(ing.id === 0) return accum;
 			if(ing.id === undefined) return accum;
 			const mat = getMaterial(ing.id);
 			accum.push({ id: ing.id, name: language[mat.nameTextMapHash], count: ing.count });

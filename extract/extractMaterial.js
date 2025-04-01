@@ -132,11 +132,10 @@ function collateMaterial(lang) {
 // format returned is translated and sorted array ["Monday", "Thursday", "Sunday"]
 function getDayWeekList(dungeonId, langmap) {
 	const xdailyd = getExcel('DailyDungeonConfigData');
-	const mapENtoNum = { 'Monday': 1, 'Tuesday': 2, 'Wednesday': 3, 'Thursday': 4, 'Friday': 5, 'Saturday': 6, 'Sunday': 7 };
 	let mylist = [];
 	for(const ele of xdailyd)
-		for(const [key, value] of Object.entries(mapENtoNum))
-			if(ele[key.toLowerCase()].includes(dungeonId)) mylist.push(value);
+		for(const [key, value] of Object.entries(mapENtoNum()))
+			if(ele[key].includes(dungeonId)) mylist.push(value);
 	mylist = mylist.sort((a, b) => a - b);
 	return mylist.map(ele => langmap[dayOfWeek(ele)]);
 }

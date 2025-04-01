@@ -8,6 +8,7 @@ const playerIdToTextMapHash = { 10000005: 2329553598, 10000007: 3241049361 };
 const moraNameTextMapHash = getExcel('MaterialExcelConfigData').find(ele => ele.id === 202).nameTextMapHash;
 const xmat = getExcel('MaterialExcelConfigData');
 const xcity = getExcel('CityConfigData');
+const xsubstat = getExcel('AvatarPromoteExcelConfigData');
 
 const associationToCityId = {
 	'ASSOC_LIYUE': 2,
@@ -23,7 +24,6 @@ const associationToCityId = {
 
 function collateCharacter(lang) {
 	const language = getLanguage(lang);
-	const xsubstat = getExcel('AvatarPromoteExcelConfigData');
 	// console.log(xplayableAvatar.map(ele => ele.imageName));
 	// console.log(avatarIdToFileName)
 	let myavatar = xplayableAvatar.reduce((accum, obj) => {
@@ -84,9 +84,9 @@ function collateCharacter(lang) {
 		else if(associationToCityId[data.associationType] === '')
 			data.region = '';
 		else {
-			data.region = language[xcity.find(ele => ele.cityId === associationToCityId[data.associationType]).cityNameTextMapHash];
+			data.region = language[xcity.find(ele => ele.cityId === associationToCityId[data.associationType])[getCityNameTextMapHash()]];
 		}
-		if (data.region === undefined) console.log(`character missing region ${data.name}`);
+		if (data.region === undefined) console.log(`character missing region ${data.name} for ${data.associationType}`);
 		data.cv = {
 			english: language[extra.cvEnglishTextMapHash],
 			chinese: language[extra.cvChineseTextMapHash],
@@ -116,7 +116,7 @@ function collateCharacter(lang) {
 		// get the promotion costs
 		let costs = {};
 		for(let i = 1; i <= 6; i++) {
-			let apromo = xsubstat.find(ele => ele.avatarPromoteId === obj.avatarPromoteId && ele.promoteLevel === i);
+			let apromo = xsubstat.find(ele => ele.avatarPromoteId === obj.avatarPromoteId && ele[getPromoteLevel()] === i);
 			costs['ascend'+i] = [{
 				id: 202,
 				name: language[moraNameTextMapHash],
@@ -124,6 +124,7 @@ function collateCharacter(lang) {
 				count: apromo.scoinCost
 			}];
 			for(let items of apromo.costItems) {
+				if(items.id === 0) continue;
 				if(items.id === undefined) continue;
 				costs['ascend'+i].push({
 					id: items.id,
@@ -149,7 +150,7 @@ function collateCharacter(lang) {
 		stats.specialized = substat;
 		stats.promotion = xsubstat.reduce((accum, ele) => {
 			if(ele.avatarPromoteId !== obj.avatarPromoteId) return accum;
-			let promotelevel = ele.promoteLevel || 0;
+			let promotelevel = ele[getPromoteLevel()] || 0;
 			accum[promotelevel] = {
 				maxlevel: ele.unlockMaxLevel,
 				hp: ele.addProps.find(ele => ele.propType === 'FIGHT_PROP_BASE_HP').value || 0,
@@ -165,6 +166,28 @@ function collateCharacter(lang) {
 		return accum;
 	}, {})
 	return myavatar;
+}
+
+let cityNameTextMapHash = undefined;
+function getCityNameTextMapHash() {
+	if(cityNameTextMapHash !== undefined) return cityNameTextMapHash;
+	for (let [key, value] of Object.entries(xcity[0])) {
+		if (typeof value === 'number' && getLanguage('EN')[value] === 'Mondstadt') {
+			cityNameTextMapHash = key;
+			return cityNameTextMapHash;
+		}
+	}
+}
+
+let promoteLevel = undefined;
+function getPromoteLevel() {
+	if(promoteLevel !== undefined) return promoteLevel;
+	for (let [key, value] of Object.entries(xsubstat[1])) {
+		if (typeof value === 'number' && value === 1) {
+			promoteLevel = key;
+			return promoteLevel;
+		}
+	}
 }
 
 module.exports = collateCharacter;

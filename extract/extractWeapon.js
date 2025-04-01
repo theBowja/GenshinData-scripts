@@ -5,6 +5,7 @@ const xrefine = getExcel('EquipAffixExcelConfigData');
 
 const moraNameTextMapHash = getExcel('MaterialExcelConfigData').find(ele => ele.id === 202).nameTextMapHash;
 const xmat = getExcel('MaterialExcelConfigData');
+const xsubstat = getExcel('WeaponPromoteExcelConfigData');
 
 const xplayableWeapon = xweapon.filter(obj => {
 	if(obj.rankLevel >= 3 && obj.skillAffix[0] === 0) return false;
@@ -19,7 +20,6 @@ const xplayableWeapon = xweapon.filter(obj => {
 function collateWeapon(lang) {
 	const language = getLanguage(lang);
 	const dupeCheck = {};
-	const xsubstat = getExcel('WeaponPromoteExcelConfigData');
 	let myweapon = xplayableWeapon.reduce((accum, obj) => {
 
 		let data = {};
@@ -45,7 +45,7 @@ function collateWeapon(lang) {
 		data.baseAtkValue = obj.weaponProp.find(obj => obj.propType === 'FIGHT_PROP_BASE_ATTACK').initValue;
 
 		let substat = obj.weaponProp[1].propType;
-		if(substat !== undefined) {
+		if(substat !== undefined && substat !== 'FIGHT_PROP_NONE') {
 			data.mainStatType = substat;
 			data.mainStatText = language[xmanualtext.find(ele => ele.textMapId === substat).textMapContentTextMapHash];
 			let subvalue = obj.weaponProp[1].initValue;
@@ -100,7 +100,7 @@ function collateWeapon(lang) {
 		let costs = {};
 		for(let i = 1; i <= (obj.rankLevel <= 2 ? 4 : 6); i++) {
 			// 1 and 2 star weapons only have 4 ascensions instead of 6
-			let apromo = xsubstat.find(ele => ele.weaponPromoteId === obj.weaponPromoteId && ele.promoteLevel === i);
+			let apromo = xsubstat.find(ele => ele.weaponPromoteId === obj.weaponPromoteId && ele[getPromoteLevel()] === i);
 			costs['ascend'+i] = [{
 				id: 202,
 				name: language[moraNameTextMapHash],
@@ -108,6 +108,7 @@ function collateWeapon(lang) {
 			}];
 
 			for(let items of apromo.costItems) {
+				if(items.id === 0) continue;
 				if(items.id === undefined) continue;
 				costs['ascend'+i].push({
 					id: items.id,
@@ -128,15 +129,15 @@ function collateWeapon(lang) {
 		stats.specialized = substat;
 		stats.promotion = xsubstat.reduce((accum, ele) => {
 			if(ele.weaponPromoteId !== obj.weaponPromoteId) return accum;
-			let promotelevel = ele.promoteLevel || 0;
+			let promotelevel = ele[getPromoteLevel()] || 0;
 			accum[promotelevel] = {
 				maxlevel: ele.unlockMaxLevel,
 				attack: ele.addProps.find(ele => ele.propType === 'FIGHT_PROP_BASE_ATTACK').value || 0
 			};
 			let special = ele.addProps.find(ele => ele.propType === substat);//.value;
 			if(special) special = special.value;
-			if(special !== undefined) {
-				console.log('WEAPON SPECIAL SUBSTAT FOUND: ' + obj.id)
+			if(special !== undefined && special !== 0) {
+				console.log(`WEAPON SPECIAL SUBSTAT FOUND: ${obj.id} ${substat} ${special}`)
 				accum[promotelevel].specialized = special;
 			}
 			return accum;
@@ -156,6 +157,17 @@ function collateWeapon(lang) {
 	}, {});
 	
 	return myweapon;
+}
+
+let promoteLevel = undefined;
+function getPromoteLevel() {
+	if(promoteLevel !== undefined) return promoteLevel;
+	for (let [key, value] of Object.entries(xsubstat[1])) {
+		if (typeof value === 'number' && value === 1) {
+			promoteLevel = key;
+			return promoteLevel;
+		}
+	}
 }
 
 module.exports = collateWeapon;

@@ -49,6 +49,7 @@ function mapping(textmapid) { return xmanualtext.find(ele => ele.textMapId === t
 "UI_DUNGEON_ENTRY_1186", // "Blazing Ruins"
 "UI_DUNGEON_ENTRY_1188", // "Ancient Watchtower"
 "UI_DUNGEON_ENTRY_1190", // "Sanctum of Rainbow Spirits"
+"UI_DUNGEON_ENTRY_1191", // "Derelict Masonry Dock"
 */
 function getDomainEntranceTextMapId(englishname, levelConfigMap) {
 	englishname = englishname.toLowerCase();
@@ -111,6 +112,8 @@ function getDomainEntranceTextMapId(englishname, levelConfigMap) {
 		return "UI_DUNGEON_ENTRY_1188";
 	else if(englishname.includes('the burning gauntlet'))
 		return "UI_DUNGEON_ENTRY_1190";
+	else if(englishname.includes('deepfire construct'))
+		return "UI_DUNGEON_ENTRY_1191";
 	else
 		console.log('no domain entrance mapping found for '+englishname);
 }
@@ -205,10 +208,9 @@ function collateDomain(lang) {
 // format returned is translated and sorted array ["Monday", "Thursday", "Sunday"]
 function getDayWeekList(dungeonId, langmap) {
 	const xdailyd = getExcel('DailyDungeonConfigData');
-	const mapENtoNum = { 'monday': 1, 'tuesday': 2, 'wednesday': 3, 'thursday': 4, 'friday': 5, 'saturday': 6, 'sunday': 7 };
 	let mylist = [];
 	for(const ele of xdailyd)
-		for(const [key, value] of Object.entries(mapENtoNum))
+		for(const [key, value] of Object.entries(mapENtoNum()))
 			if(ele[key].includes(dungeonId)) mylist.push(value);
 	mylist = mylist.sort((a, b) => a - b);
 	return mylist.map(ele => langmap[dayOfWeek(ele)]);

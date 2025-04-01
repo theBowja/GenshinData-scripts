@@ -24,7 +24,7 @@ function collateVoiceover(lang) {
 
 		xvoices.forEach(fetterObj => {
 			// sethos and clorinde. mihoyo really likes to surprise us
-			if (voiceMap[data.id][fetterObj.voiceFile] === undefined && fetterObj.voiceFile.includes(',')) {
+			if (voiceMap[data.id] !== undefined && voiceMap[data.id][fetterObj.voiceFile] === undefined && fetterObj.voiceFile.includes(',')) {
 				const madge = fetterObj.voiceFile.split(',');
 				voiceMap[data.id][madge[0]][0].gender = 2;
 				voiceMap[data.id][madge[1]][0].gender = 1;

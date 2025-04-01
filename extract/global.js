@@ -178,6 +178,37 @@ global.weaponTextMapHash = ['WEAPON_SWORD_ONE_HAND', 'WEAPON_CATALYST', 'WEAPON_
 global.dayOfWeek = function(num) {
 	return xmanualtext.find(ele => ele.textMapId === 'UI_ABYSSUS_DATE'+num).textMapContentTextMapHash;
 }
+let mapENtoNum = undefined;
+// mapENtoNum = { 'Monday': 1, 'Tuesday': 2, 'Wednesday': 3, 'Thursday': 4, 'Friday': 5, 'Saturday': 6, 'Sunday': 7 };
+global.mapENtoNum = function() {
+	if (mapENtoNum !== undefined) return mapENtoNum;
+
+	const sampleDungeon = getExcel('DailyDungeonConfigData')[0];
+	mapENtoNum = {};
+	let sunday = true;
+	for (let [key, value] of Object.entries(sampleDungeon)) {
+		if (!Array.isArray(value)) continue;
+
+		if (value.length === 4 && sunday) {
+			mapENtoNum[key] = 7;
+			sunday = false;
+		}
+		
+		if (value.length !== 1) continue;
+		if (value[0] === 5254 && mapENtoNum[key] === undefined) mapENtoNum[key] = 1;
+		else if (value[0] === 5258 && mapENtoNum[key] === undefined) mapENtoNum[key] = 2;
+		else if (value[0] === 5262 && mapENtoNum[key] === undefined) mapENtoNum[key] = 3;
+		else if (value[0] === 5254 && mapENtoNum[key] === undefined) mapENtoNum[key] = 4;
+		else if (value[0] === 5258 && mapENtoNum[key] === undefined) mapENtoNum[key] = 5;
+		else if (value[0] === 5262 && mapENtoNum[key] === undefined) mapENtoNum[key] = 6;
+	}
+
+	// sort by value
+	mapENtoNum = Object.fromEntries(
+		Object.entries(mapENtoNum).sort(([,a],[,b]) => a-b)
+	);
+	return mapENtoNum;
+}
 
 const uniqueLog = {};
 // if it isn't unique, then appends "a" to end. or "b". all the way to "z".
@@ -220,10 +251,23 @@ global.checkDupeName = function(data, namemap, skipdupelog=[], donotconsolelog =
 }
 
 const xcity = getExcel('CityConfigData');
+let cityNameTextMapHash = undefined;
+function getCityNameTextMapHash() {
+	if(cityNameTextMapHash !== undefined) return cityNameTextMapHash;
+	for (let [key, value] of Object.entries(xcity[0])) {
+		if (typeof value === 'number' && getLanguage('EN')[value] === 'Mondstadt') {
+			cityNameTextMapHash = key;
+			return cityNameTextMapHash;
+		}
+	}
+}
+
 // adds Snezhnaya manually
-if(!xcity.find(ele => getLanguage('EN')[ele.cityNameTextMapHash] === 'Snezhnaya')) {
+if(!xcity.find(ele => getLanguage('EN')[ele[getCityNameTextMapHash()]] === 'Snezhnaya')) {
 	if (getLanguage('EN')[536575635]) {
-		xcity.push({ cityId: 8758412, cityNameTextMapHash: 536575635 })
+		const citydata = { cityId: 8758412 };
+		citydata[getCityNameTextMapHash()] = 536575635;
+		xcity.push(citydata);
 	} else {
 		getLanguage('CHS')['Snezhnaya'] = '至冬国';
 		getLanguage('CHT')['Snezhnaya'] = '至冬國';
@@ -243,8 +287,6 @@ if(!xcity.find(ele => getLanguage('EN')[ele.cityNameTextMapHash] === 'Snezhnaya'
 		xcity.push({ cityId: 8758412, cityNameTextMapHash: 'Snezhnaya'})
 	}
 }
-
-
 
 
 /* =========================================================================================== */

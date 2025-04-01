@@ -10,7 +10,7 @@ function collateConstellation(lang) {
 			let data = {};
 			data.id = obj.skillDepotId;
 			let depot = xskilldepot.find(ele => ele.id === obj.skillDepotId);
-			if(depot === undefined || depot.energySkill === undefined) return; // not a finished (traveler) character
+			if(depot === undefined || depot.energySkill === undefined || depot.talents[0] === 0) return; // not a finished (traveler) character
 			if(depot.talentStarName === '') return; // unfinished
 
 			data.name = language[obj.nameTextMapHash];

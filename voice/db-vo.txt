@@ -1049,7 +1049,6 @@ VO_friendship\VO_venti\vo_venti_teammate_eula_01.wem
 VO_friendship\VO_venti\vo_venti_teammate_baal_01.wem
 VO_friendship\VO_venti\vo_venti_teammate_nahida_01.wem
 VO_friendship\VO_venti\vo_venti_teammate_furina_01.wem
-VO_friendship\VO_venti\vo_venti_teammate_mavuika_01.wem
 VO_friendship\VO_venti\vo_venti_friendship_01.wem
 VO_friendship\VO_venti\vo_venti_friendship_02.wem
 VO_friendship\VO_venti\vo_venti_friendship_03.wem
@@ -1565,7 +1564,6 @@ VO_friendship\VO_zhongli\vo_zhongli_teammate_raidenShogun_01.wem
 VO_friendship\VO_zhongli\vo_zhongli_teammate_nahida_01.wem
 VO_friendship\VO_zhongli\vo_zhongli_teammate_furina_01.wem
 VO_friendship\VO_zhongli\vo_zhongli_teammate_xianyun_01.wem
-VO_friendship\VO_zhongli\vo_zhongli_teammate_mavuika_01.wem
 VO_friendship\VO_zhongli\vo_zhongli_friendship_01.wem
 VO_friendship\VO_zhongli\vo_zhongli_friendship_02.wem
 VO_friendship\VO_zhongli\vo_zhongli_friendship_03.wem
@@ -3095,7 +3093,6 @@ VO_friendship\VO_raidenShogun\vo_raidenEi_teammate_zhongli_01.wem
 VO_friendship\VO_raidenShogun\vo_raidenEi_teammate_venti_01.wem
 VO_friendship\VO_raidenShogun\vo_raidenEi_teammate_nahida_01.wem
 VO_friendship\VO_raidenShogun\vo_raidenEi_teammate_furina_01.wem
-VO_friendship\VO_raidenShogun\vo_raidenEi_teammate_mavuika_01.wem
 VO_friendship\VO_raidenShogun\vo_raidenEi_teammate_mizuki_01.wem
 VO_friendship\VO_raidenShogun\vo_raidenShogun_friendship_01.wem
 VO_friendship\VO_raidenShogun\vo_raidenShogun_friendship_02.wem
@@ -4588,7 +4585,6 @@ VO_friendship\VO_nahida\vo_nahida_teammate_theSeven_01.wem
 VO_friendship\VO_nahida\vo_nahida_teammate_theSeven_02.wem
 VO_friendship\VO_nahida\vo_nahida_teammate_scaramouche_01.wem
 VO_friendship\VO_nahida\vo_nahida_teammate_furina_01.wem
-VO_friendship\VO_nahida\vo_nahida_teammate_mavuika_01.wem
 VO_friendship\VO_nahida\vo_nahida_friendship_01.wem
 VO_friendship\VO_nahida\vo_nahida_friendship_02.wem
 VO_friendship\VO_nahida\vo_nahida_friendship_03.wem
@@ -5586,7 +5582,6 @@ VO_friendship\VO_neuvillette\vo_neuvillette_teammate_lyney&lynette_01.wem
 VO_friendship\VO_neuvillette\vo_neuvillette_teammate_sigewinne_01.wem
 VO_friendship\VO_neuvillette\vo_neuvillette_teammate_furina_01.wem
 VO_friendship\VO_neuvillette\vo_neuvillette_teammate_navia_01.wem
-VO_friendship\VO_neuvillette\vo_neuvillette_teammate_mavuika_01.wem
 VO_friendship\VO_neuvillette\vo_neuvillette_friendship_01.wem
 VO_friendship\VO_neuvillette\vo_neuvillette_friendship_02.wem
 VO_friendship\VO_neuvillette\vo_neuvillette_friendship_03.wem

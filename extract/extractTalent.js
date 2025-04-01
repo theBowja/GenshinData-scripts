@@ -101,6 +101,7 @@ function collateTalent(lang) {
 								count: attTalent.coinCost
 							}];
 							for(let items of attTalent.costItems) {
+								if(items.id === 0) continue;
 								if(items.id === undefined) continue;
 								costs['lvl'+lvl].push({
 									id: items.id,
