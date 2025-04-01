@@ -185,22 +185,22 @@ global.mapENtoNum = function() {
 
 	const sampleDungeon = getExcel('DailyDungeonConfigData')[0];
 	mapENtoNum = {};
-	let sunday = true;
+	let added = {};
 	for (let [key, value] of Object.entries(sampleDungeon)) {
 		if (!Array.isArray(value)) continue;
 
-		if (value.length === 4 && sunday) {
+		if (value.length === 4 && added[7] === undefined) {
 			mapENtoNum[key] = 7;
-			sunday = false;
+			added[7] = true;
 		}
 		
 		if (value.length !== 1) continue;
-		if (value[0] === 5254 && mapENtoNum[key] === undefined) mapENtoNum[key] = 1;
-		else if (value[0] === 5258 && mapENtoNum[key] === undefined) mapENtoNum[key] = 2;
-		else if (value[0] === 5262 && mapENtoNum[key] === undefined) mapENtoNum[key] = 3;
-		else if (value[0] === 5254 && mapENtoNum[key] === undefined) mapENtoNum[key] = 4;
-		else if (value[0] === 5258 && mapENtoNum[key] === undefined) mapENtoNum[key] = 5;
-		else if (value[0] === 5262 && mapENtoNum[key] === undefined) mapENtoNum[key] = 6;
+		if (value[0] === 5254 && added[1] === undefined) { mapENtoNum[key] = 1; added[1] = true; }
+		else if (value[0] === 5258 && added[2] === undefined) { mapENtoNum[key] = 2; added[2] = true; }
+		else if (value[0] === 5262 && added[3] === undefined) { mapENtoNum[key] = 3; added[3] = true; }
+		else if (value[0] === 5254 && added[4] === undefined) { mapENtoNum[key] = 4; added[4] = true; }
+		else if (value[0] === 5258 && added[5] === undefined) { mapENtoNum[key] = 5; added[5] = true; }
+		else if (value[0] === 5262 && added[6] === undefined) { mapENtoNum[key] = 6; added[6] = true; }
 	}
 
 	// sort by value

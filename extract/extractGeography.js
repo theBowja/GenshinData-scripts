@@ -16,7 +16,7 @@ function collageGeography(lang) {
 		data.areaName = language[xarea.find(area => area.id === obj.worldAreaId).areaNameTextMapHash];
 		data.areaId = obj.worldAreaId;
 		data.description = sanitizeDescription(language[obj.descTextMapHash]);
-		data.regionName = language[xcity.find(city => city.cityId === obj.cityId).cityNameTextMapHash];
+		data.regionName = language[xcity.find(city => city.cityId === obj.cityId)[getCityNameTextMapHash()]];
 		data.regionId = obj.cityId;
 		data.showOnlyUnlocked = obj.showOnlyUnlocked ? true : undefined;
 		data.sortOrder = obj.sortOrder;
@@ -35,5 +35,18 @@ function collageGeography(lang) {
 
 	return mygeography;
 }
+
+
+let cityNameTextMapHash = undefined;
+function getCityNameTextMapHash() {
+	if(cityNameTextMapHash !== undefined) return cityNameTextMapHash;
+	for (let [key, value] of Object.entries(xcity[0])) {
+		if (typeof value === 'number' && getLanguage('EN')[value] === 'Mondstadt') {
+			cityNameTextMapHash = key;
+			return cityNameTextMapHash;
+		}
+	}
+}
+
 
 module.exports = collageGeography;

@@ -5,7 +5,7 @@ const xmaterial = getExcel('MaterialExcelConfigData');
 const xspecialty = getExcel('CookBonusExcelConfigData');
 const xavatar = getExcel('AvatarExcelConfigData');
 
-function getSpecialty(id) { return xspecialty.find(ele => ele.recipeId === id); }
+function getSpecialty(id) { return xspecialty.find(ele => ele[getPropRecipeId()] === id); }
 function getMaterial(id) { return xmaterial.find(ele => ele.id === id); }
 function getAvatar(id) { return xavatar.find(ele => ele.id === id); }
 function getManualTextMapHash(id) { 
@@ -77,7 +77,7 @@ function collateFood(lang) {
 		// check if there is a specialty
 		let myspec = getSpecialty(obj.id);
 		if(myspec === undefined) return accum;
-		let xd = getMaterial(myspec.paramVec[0]);
+		let xd = getMaterial(myspec[getPropParamVec()][0]);
 		// if(xd === undefined) return accum;
 		let basedish = data.name;
 		let ingredients = data.ingredients;
@@ -115,6 +115,28 @@ function collateFood(lang) {
 	// console.log(myfood);
 
 	return myfood;
+}
+
+let propRecipeId = undefined;
+function getPropRecipeId() {
+	if(propRecipeId !== undefined) return propRecipeId;
+	for(let [key, value] of Object.entries(xspecialty[0])) {
+		if(typeof value === 'number' && value === 1004) {
+			propRecipeId = key;
+			return propRecipeId;
+		}
+	}
+}
+
+let propParamVec = undefined;
+function getPropParamVec() {
+	if(propParamVec !== undefined) return propParamVec;
+	for(let [key, value] of Object.entries(xspecialty[0])) {
+		if(Array.isArray(value) && value[0] === 108010) {
+			propParamVec = key;
+			return propParamVec;
+		}
+	}
 }
 
 module.exports = collateFood;

@@ -61,7 +61,7 @@ function collateVoiceover(lang) {
 
 			// check unlock conditions
 			for (let i = 0; i < fetterObj.openConds.length; i++) {
-				if (fetterObj.openConds[i].condType) {
+				if (fetterObj.openConds[i].condType && fetterObj.openConds[i].condType !== 'FETTER_COND_NONE') {
 					voiceData.hasUnlockConditions = true;
 					if (!voiceData.unlockConditions) voiceData.unlockConditions = [];
 					voiceData.unlockConditions.push({

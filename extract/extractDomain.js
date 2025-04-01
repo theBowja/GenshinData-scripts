@@ -153,7 +153,7 @@ function collateDomain(lang) {
 		if(obj.id >= 4320 && obj.id <= 4323) obj.cityID = 1; // "Cecilia Garden"
 
 		data.regionId = obj.cityID;
-		data.regionName = language[xcity.find(city => city.cityId === obj.cityID).cityNameTextMapHash];
+		data.regionName = language[xcity.find(city => city.cityId === obj.cityID)[getCityNameTextMapHash()]];
 
 		data.recommendedLevel = obj.showLevel;
 		if(typeof obj.recommendElementTypes[0] === 'string')
@@ -203,6 +203,17 @@ function collateDomain(lang) {
 		return accum;
 	}, {});
 	return mydomain;
+}
+
+let cityNameTextMapHash = undefined;
+function getCityNameTextMapHash() {
+	if(cityNameTextMapHash !== undefined) return cityNameTextMapHash;
+	for (let [key, value] of Object.entries(xcity[0])) {
+		if (typeof value === 'number' && getLanguage('EN')[value] === 'Mondstadt') {
+			cityNameTextMapHash = key;
+			return cityNameTextMapHash;
+		}
+	}
 }
 
 // format returned is translated and sorted array ["Monday", "Thursday", "Sunday"]
