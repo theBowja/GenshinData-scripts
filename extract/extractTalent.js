@@ -56,7 +56,7 @@ function collateTalent(lang) {
 					description = match[1];
 					flavortext = match[2].replaceAll('<i>', '').replaceAll('</i>', '');
 				}
-				ref.description = sanitizer(description, removeColorHTML, removeHashtag, replaceGenderM, replaceLayoutPC, replaceNonBreakSpace);
+				ref.description = sanitizer(description, removeColorHTML, removeHashtag, replaceGenderM, replaceLayoutPC, replaceNonBreakSpace, convertBold, convertLinkToBold);
 				validateString(ref.description, 'talents.combatdescription', lang);
 				if (flavortext) {
 					ref.flavorText = global.sanitizer(flavortext, replaceGenderM, replaceNonBreakSpace, removeColorHTML);
@@ -100,7 +100,7 @@ function collateTalent(lang) {
 								name: language[moraNameTextMapHash],
 								count: attTalent.coinCost
 							}];
-							for(let items of attTalent.costItems) {
+							for(let items of attTalent[getPropCostItems()]) {
 								if(items.id === 0) continue;
 								if(items.id === undefined) continue;
 								costs['lvl'+lvl].push({
@@ -122,7 +122,7 @@ function collateTalent(lang) {
 				ref.name = language[talent.nameTextMapHash];
 				validateString(ref.name, 'talents.passivename', lang);
 				ref.descriptionRaw = sanitizer(language[talent.descTextMapHash], replaceNewline);
-				ref.description = sanitizer(ref.descriptionRaw, removeColorHTML, removeHashtag, replaceGenderM, replaceLayoutPC, replaceNonBreakSpace);
+				ref.description = sanitizer(ref.descriptionRaw, removeColorHTML, removeHashtag, replaceGenderM, replaceLayoutPC, replaceNonBreakSpace, convertLinkToBold);
 				validateString(ref.description, 'talents.passivedescription', lang);
 				data[`filename_passive${index+1}`] = talent.icon;
 			});
@@ -143,6 +143,18 @@ function collateTalent(lang) {
 		return accum;
 	}, {});
 	return mytalent;
+}
+
+
+let propCostItems = undefined;
+function getPropCostItems() {
+	if(propCostItems !== undefined) return propCostItems;
+	for (let [key, value] of Object.entries(xpassive[0])) {
+		if (Array.isArray(value) && value[0].count === 0) {
+			propCostItems = key;
+			return propCostItems;
+		}
+	}
 }
 
 module.exports = collateTalent;

@@ -22,7 +22,7 @@ function collateConstellation(lang) {
 					name: sanitizer(language[stars[i-1].nameTextMapHash], replaceNonBreakSpace, removeHashtag),
 					descriptionRaw: sanitizer(language[stars[i-1].descTextMapHash], replaceNewline)
 				};
-				data['c'+i].description = sanitizer(data['c'+i].descriptionRaw, replaceNonBreakSpace, removeColorHTML, replaceLayoutPC, replaceGenderM, removeHashtag);
+				data['c'+i].description = sanitizer(data['c'+i].descriptionRaw, replaceNonBreakSpace, removeColorHTML, replaceLayoutPC, replaceGenderM, removeHashtag, convertLinkToBold);
 				validateString(data['c'+i].name, 'constellations.name', lang, false);
 				validateString(data['c'+i].description, 'constellations.description', lang);
 

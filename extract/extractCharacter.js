@@ -123,7 +123,7 @@ function collateCharacter(lang) {
 				// materialtype: "MATERIAL_ADSORBATE",
 				count: apromo.scoinCost
 			}];
-			for(let items of apromo.costItems) {
+			for(let items of apromo[getPropCostItems()]) {
 				if(items.id === 0) continue;
 				if(items.id === undefined) continue;
 				costs['ascend'+i].push({
@@ -197,6 +197,17 @@ function getPropUnlockMaxLevel() {
 		if (typeof value === 'number' && value === 20) {
 			propUnlockMaxLevel = key;
 			return propUnlockMaxLevel;
+		}
+	}
+}
+
+let propCostItems = undefined;
+function getPropCostItems() {
+	if(propCostItems !== undefined) return propCostItems;
+	for (let [key, value] of Object.entries(xsubstat[0])) {
+		if (Array.isArray(value) && value[0].count === 0) {
+			propCostItems = key;
+			return propCostItems;
 		}
 	}
 }

@@ -47,7 +47,7 @@ function collateFood(lang) {
 		for(let i = 2; i <= 3; i++) { const tmp = language[obj.effectDesc[i]]; if(tmp) console.log(`${obj.id} ${data.name}: ${tmp}`); }
 
 		// get suspicious, normal, delicious
-		for(let xd of obj.qualityOutputVec) {
+		for(let xd of obj[getPropQualityOutputVec()]) {
 			xd = getMaterial(xd.id);
 			let subdata = {};
 			if(language[xd.interactionTitleTextMapHash]) console.log(`food ${obj.id} has interaction`);
@@ -58,7 +58,7 @@ function collateFood(lang) {
 			data[mapQualityToProp[xd.foodQuality]] = subdata;
 			data.filename_buff = xd.effectIcon;
 		}
-		data.ingredients = obj.inputVec.reduce((accum, ing) => {
+		data.ingredients = obj[getPropInputVec()].reduce((accum, ing) => {
 			if(ing.id === 0) return accum;
 			if(ing.id === undefined) return accum;
 			const mat = getMaterial(ing.id);
@@ -135,6 +135,28 @@ function getPropParamVec() {
 		if(Array.isArray(value) && value[0] === 108010) {
 			propParamVec = key;
 			return propParamVec;
+		}
+	}
+}
+
+let propQualityOutputVec = undefined;
+function getPropQualityOutputVec() {
+	if(propQualityOutputVec !== undefined) return propQualityOutputVec;
+	for(let [key, value] of Object.entries(xrecipe[0])) {
+		if(Array.isArray(value) && typeof value[0] === 'object' && value.length === 3) {
+			propQualityOutputVec = key;
+			return propQualityOutputVec;
+		}
+	}
+}
+
+let propInputVec = undefined;
+function getPropInputVec() {
+	if(propInputVec !== undefined) return propInputVec;
+	for(let [key, value] of Object.entries(xrecipe[0])) {
+		if(Array.isArray(value) && typeof value[0] === 'object' && value.length > 3) {
+			propInputVec = key;
+			return propInputVec;
 		}
 	}
 }
