@@ -122,7 +122,7 @@ function collateTalent(lang) {
 				ref.name = language[talent.nameTextMapHash];
 				validateString(ref.name, 'talents.passivename', lang);
 				ref.descriptionRaw = sanitizer(language[talent.descTextMapHash], replaceNewline);
-				ref.description = sanitizer(ref.descriptionRaw, removeColorHTML, removeHashtag, replaceGenderM, replaceLayoutPC, replaceNonBreakSpace, convertLinkToBold);
+				ref.description = sanitizer(ref.descriptionRaw, removeColorHTML, removeHashtag, replaceGenderM, replaceLayoutPC, replaceNonBreakSpace, convertLinkToBold, removeTimezone);
 				validateString(ref.description, 'talents.passivedescription', lang);
 				data[`filename_passive${index+1}`] = talent.icon;
 			});

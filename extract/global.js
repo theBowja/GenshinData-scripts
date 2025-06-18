@@ -55,7 +55,8 @@ global.stripHTML = function(str) { return (str || '').replace(/(<([^>]+)>)/gi, '
 global.capitalizeFirst = function(str) { return str[0].toUpperCase() + str.toLowerCase().slice(1); }
 global.replaceLayout = function(str) { return str.replace(/{LAYOUT_MOBILE#.*?}{LAYOUT_PC#(.*?)}{LAYOUT_PS#.*?}/gi,'$1').replace('#','').replaceAll('{NON_BREAK_SPACE}', ' '); }
 global.removeSprite = function(str) { return str.replace(/{SPRITE_PRESET.*?}/gi, ''); }
-global.sanitizeDescription = function(str, removeBold) { return removeSprite(replaceNewline(replaceLayout(stripHTML(convertLinkToBold(convertBold(str || '', removeBold), removeBold))))); }
+global.removeTimezone = function(str) { return str.replace("{TIMEZONE}", ""); }
+global.sanitizeDescription = function(str, removeBold) { return removeTimezone(removeSprite(replaceNewline(replaceLayout(stripHTML(convertLinkToBold(convertBold(str || '', removeBold), removeBold)))))); }
 global.getPropNameWithMatch = function(excel, idkey, idval, propval) {
 	const tmp = excel.find(e => e[idkey] === idval);
 	if (!tmp) throw new Error(`getPropNameWithMatch: Did not find value for key`);
