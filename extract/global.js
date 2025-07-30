@@ -154,7 +154,7 @@ global.elementTextMapHash = ['Fire', 'Water', 'Grass', 'Electric', 'Wind', 'Ice'
 	return accum;
 }, {});
 
-global.xplayableAvatar = xavatar.filter(obj => obj.avatarPromoteId !== 2 || obj.id === 10000002); // array
+global.xplayableAvatar = xavatar.filter(obj => (obj.avatarPromoteId !== 2 || obj.id === 10000002) && obj.id !== 10000903 ); // array
 // object map that converts an avatar Id or traveler SkillDepotId to filename
 global.avatarIdToFileName = xplayableAvatar.reduce((accum, obj) => {
 	if(obj.id === 10000005) accum[obj.id] = 'aether';

@@ -60,6 +60,7 @@ function collateCharacter(lang) {
 		data.rarity = obj.qualityType === 'QUALITY_PURPLE' ? 4 : 5;
 
 		if(!isPlayer(obj)) {
+			// console.log(obj)
 			data.birthdaymmdd = extra.infoBirthMonth + '/' + extra.infoBirthDay;
 			let birthday = new Date(Date.UTC(2000, extra.infoBirthMonth-1, extra.infoBirthDay));
 			data.birthday = birthday.toLocaleString(global.localeMap[lang], { timeZone: 'UTC', month: 'long', day: 'numeric' });

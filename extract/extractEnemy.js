@@ -135,12 +135,12 @@ function collateEnemy(lang) {
 		data.budget = mon.entityBudgetLevel;
 
 		// particle drops
-		let drops = [];
-		for(let x of mon[getPropHpDrops()]) {
-			if(x.dropId) drops.push(x.dropId);
-		}
-		drops.push(mon.killDropId);
-		data.drops = drops;
+		// let drops = [];
+		// for(let x of mon[getPropHpDrops()]) {
+		// 	if(x.dropId) drops.push(x.dropId);
+		// }
+		// drops.push(mon.killDropId);
+		// data.drops = drops;
 
 		let stats = {};
 		stats.resistance = {};
