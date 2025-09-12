@@ -19,7 +19,8 @@ const associationToCityId = {
 	'ASSOC_RANGER': '',
 	'ASSOC_SUMERU': 4,
 	ASSOC_FONTAINE: 5,
-	'ASSOC_NATLAN': 6
+	'ASSOC_NATLAN': 6,
+	'ASSOC_NODKRAI': 7
 }
 
 function collateCharacter(lang) {

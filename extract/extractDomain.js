@@ -114,6 +114,12 @@ function getDomainEntranceTextMapId(englishname, levelConfigMap) {
 		return "UI_DUNGEON_ENTRY_1190";
 	else if(englishname.includes('deepfire construct'))
 		return "UI_DUNGEON_ENTRY_1191";
+	else if(englishname.includes('fallen city') || englishname.includes('shadowed legacy') || englishname.includes('overturned roost'))
+		return "UI_DUNGEON_ENTRY_1690";
+	else if(englishname.includes('derivations from the deep'))
+		return "UI_DUNGEON_ENTRY_1692";
+	else if(englishname.includes('radiant splendor') || englishname.includes('prayers sung') || englishname.includes('lunar oblation'))
+		return "UI_DUNGEON_ENTRY_1694";
 	else
 		console.log('no domain entrance mapping found for '+englishname);
 }
