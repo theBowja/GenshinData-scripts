@@ -33,7 +33,16 @@ function collateCharacter(lang) {
 
 		data.id = obj.id;
 		data.name = language[obj.nameTextMapHash];
-		if(isPlayer(obj)) data.name = language[playerIdToTextMapHash[obj.id]];
+		if (!data.name){
+			console.log(data);
+			throw 'missing character name';
+		}
+
+		if(isTraveler(obj)) data.name = language[playerIdToTextMapHash[obj.id]];
+		if (!data.name){
+			console.log(data);
+			throw 'missing character name';
+		}
 
 		if(!isPlayer(obj)) {
 			// get fullname
@@ -49,7 +58,14 @@ function collateCharacter(lang) {
 		data.description = global.sanitizer(language[obj.descTextMapHash], replaceNonBreakSpace, replaceNewline, removeHashtag);
 		if (data.id === 10000005) data.description = sanitizer(data.description, replaceGenderM); // Aether
 		else if (data.id === 10000007) data.description = sanitizer(data.description, replaceGenderF); // Lumine
-		validateString(data.description, 'characters.description', lang);
+		else if (data.id === 10000117) data.description = sanitizer(data.description, replaceGenderM); // Male Manekin
+		else if (data.id === 10000118) data.description = sanitizer(data.description, replaceGenderF); // Female Manekin
+		try {
+			validateString(data.description, 'characters.description', lang);
+		} catch (e) {
+			console.log(data);
+			throw e;
+		}
 
 		data.weaponType = obj.weaponType;
 		data.weaponText = language[weaponTextMapHash[obj.weaponType]];
@@ -60,7 +76,7 @@ function collateCharacter(lang) {
 		data.qualityType = obj.qualityType;
 		data.rarity = obj.qualityType === 'QUALITY_PURPLE' ? 4 : 5;
 
-		if(!isPlayer(obj)) {
+		if(!isTraveler(obj)) {
 			// console.log(obj)
 			data.birthdaymmdd = extra.infoBirthMonth + '/' + extra.infoBirthDay;
 			let birthday = new Date(Date.UTC(2000, extra.infoBirthMonth-1, extra.infoBirthDay));
@@ -69,9 +85,9 @@ function collateCharacter(lang) {
 			data.birthdaymmdd = '';
 			data.birthday = '';
 		}
-		if(isPlayer(obj) && (data.birthmonth || data.birthday)) console.log('warning player has birthday');
+		if(isTraveler(obj) && (data.birthmonth || data.birthday)) console.log('warning player has birthday');
 
-		data.affiliation = isPlayer(obj) ? '' : language[extra.avatarNativeTextMapHash];
+		data.affiliation = isTraveler(obj) ? '' : language[extra.avatarNativeTextMapHash];
 		data.elementType = global.mapElementToType[getLanguage('EN')[extra.avatarVisionBeforTextMapHash].toLowerCase()];
 		if (!data.elementType) console.log(`${data.name} is missing an elementType`);
 		data.elementText = language[extra.avatarVisionBeforTextMapHash];
@@ -107,7 +123,7 @@ function collateCharacter(lang) {
 		const name = obj.iconName.slice(obj.iconName.lastIndexOf('_')+1);
 		data.filename_icon = obj.iconName;
 		data.filename_iconCard = `UI_AvatarIcon_${name}_Card`;
-		if (!isPlayer(obj)) {
+		if (!isTraveler(obj)) {
 			data.filename_gachaSplash = `UI_Gacha_AvatarImg_${name}`;
 			data.filename_gachaSlice = `UI_Gacha_AvatarIcon_${name}`;
 		}

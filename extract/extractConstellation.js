@@ -14,7 +14,7 @@ function collateConstellation(lang) {
 			if(depot.talentStarName === '') return; // unfinished
 
 			data.name = language[obj.nameTextMapHash];
-			if(isPlayer(obj)) data.name += ` (${language[elementTextMapHash[getPlayerElement(obj.skillDepotId)]]})`
+			if(isTraveler(obj)) data.name += ` (${language[elementTextMapHash[getPlayerElement(obj.skillDepotId)]]})`
 
 			let stars = depot.talents.map(talentId => xconstellation.find(ele => ele.talentId === talentId));
 			for(let i = 1; i <= 6; i++) {
@@ -39,10 +39,10 @@ function collateConstellation(lang) {
 				data.filename_constellation2 = `Eff_UI_Talent_PlayerGirl_${element}`;
 			}
 
-			accum[avatarIdToFileName[isPlayer(obj) ? obj.skillDepotId : obj.id]] = data;
+			accum[avatarIdToFileName[isTraveler(obj) ? obj.skillDepotId : obj.id]] = data;
 		}
 
-		if(isPlayer(obj)) {
+		if(isTraveler(obj)) {
 			obj.candSkillDepotIds.forEach(ele => {
 				obj.skillDepotId = ele;
 				dowork();

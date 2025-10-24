@@ -19,11 +19,11 @@ function collateTalent(lang) {
 			if(depot === undefined || depot.energySkill === undefined) return; // not a finished (traveler) character
 			if(depot.talentStarName === '') return; // unfinished
 
-			let filename = avatarIdToFileName[isPlayer(obj) ? obj.skillDepotId : obj.id];
+			let filename = avatarIdToFileName[isTraveler(obj) ? obj.skillDepotId : obj.id];
 
 			data.id = obj.skillDepotId;
 			data.name = language[obj.nameTextMapHash]; // client-facing name
-			if(isPlayer(obj)) data.name += ` (${language[elementTextMapHash[getPlayerElement(obj.skillDepotId)]]})`
+			if(isTraveler(obj)) data.name += ` (${language[elementTextMapHash[getPlayerElement(obj.skillDepotId)]]})`
 
 			let combat = depot.skills.concat([depot.energySkill]) // get array of combat skills IDs
 			// console.log(depot.inherentProudSkillOpens)
@@ -132,7 +132,7 @@ function collateTalent(lang) {
 			accum[filename] = data;
 		}
 
-		if(isPlayer(obj)) {
+		if(isTraveler(obj)) {
 			obj.candSkillDepotIds.forEach(ele => {
 				obj.skillDepotId = ele;
 				dowork();

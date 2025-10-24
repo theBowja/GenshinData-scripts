@@ -45,6 +45,9 @@ const langcodes = ['CHS', 'CHT', 'DE', 'EN', 'ES', 'FR', 'ID', 'IT', 'JP', 'KR',
 const assocTextMapHash = ['ASSOC_TYPE_MONDSTADT', 'ASSOC_TYPE_LIYUE', 'ASSOC_TYPE_FATUI'];
 
 global.isPlayer = function(data) { return data.candSkillDepotIds && data.candSkillDepotIds.length !== 0; }
+global.isTraveler = function(data) { return isPlayer(data) && !isRealManekin(data) && !isFakeManekin(data); }
+global.isFakeManekin = function(data) { return data.id === 10000998 || data.id === 10000999 || data.id === 11000998 || data.id === 11000999; } // UCG test character prototype
+global.isRealManekin = function(data) { return data.id === 10000117 || data.id === 10000118;}
 global.getPlayerElement = function(SkillDepotId) { let tmp = xskilldepot.find(ele => ele.id === SkillDepotId); return tmp === undefined ? tmp : tmp.talentStarName.split('_').pop(); }
 global.getLanguage = function(abbriev) { return getTextMap(abbriev.toUpperCase()); }
 global.normalizeStr = function(str) { return str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
@@ -154,7 +157,7 @@ global.elementTextMapHash = ['Fire', 'Water', 'Grass', 'Electric', 'Wind', 'Ice'
 	return accum;
 }, {});
 
-global.xplayableAvatar = xavatar.filter(obj => (obj.avatarPromoteId !== 2 || obj.id === 10000002) && obj.id !== 10000903 ); // array
+global.xplayableAvatar = xavatar.filter(obj => (obj.avatarPromoteId !== 2 || obj.id === 10000002) && obj.id !== 10000903 && !isFakeManekin(obj)); // array
 // object map that converts an avatar Id or traveler SkillDepotId to filename
 global.avatarIdToFileName = xplayableAvatar.reduce((accum, obj) => {
 	if(obj.id === 10000005) accum[obj.id] = 'aether';

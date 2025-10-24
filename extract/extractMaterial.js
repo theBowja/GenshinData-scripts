@@ -1,4 +1,5 @@
 require('./global.js');
+const xsource = getExcel('MaterialSourceDataExcelConfigData');
 
 /*
 MATERIAL_AVATAR_MATERIAL is talent level-up material, etc.
@@ -26,7 +27,7 @@ check MaterialSourceDataExcelConfigData should have
 */
 
 const filter = ['MATERIAL_EXCHANGE', 'MATERIAL_WOOD', 'MATERIAL_AVATAR_MATERIAL', 'MATERIAL_EXP_FRUIT',
-				'MATERIAL_WEAPON_EXP_STONE', 'MATERIAL_CONSUME', 'MATERIAL_FISH_BAIT', 'MATERIAL_FISH_ROD'];
+				'MATERIAL_WEAPON_EXP_STONE', 'MATERIAL_CONSUME', 'MATERIAL_FISH_BAIT', 'MATERIAL_FISH_ROD', 'MATERIAL_ELEM_CRYSTAL'];
 
 // Adventure EXP, Mora, Primogems, Companionship EXP, Apple, Sunsettia, Starshroom, Activated Starshroom, Scorched Starshroom
 const includeMatId = [102, 202, 201, 105, 100001, 100002, 101212, 101226, 101227];
@@ -49,7 +50,6 @@ function sortMaterials(mata, matb) {
 
 function collateMaterial(lang) {
 	const language = getLanguage(lang);
-	const xsource = getExcel('MaterialSourceDataExcelConfigData');
 	const xmat = getExcel('MaterialExcelConfigData').sort(sortMaterials);
 	const xarchive = getExcel('MaterialCodexExcelConfigData');
 	const xdungeon = getExcel('DungeonExcelConfigData');
@@ -109,7 +109,8 @@ function collateMaterial(lang) {
 			// 	return poolAccum;
 			// }, []);
 		// }
-		const sourcelist = tmp.textList.concat(tmp.jumpList).concat(tmp.jumpDescs);
+		const sourcelist = tmp.textList.concat(tmp.jumpList).concat(tmp[getPropJumpDescs()]);
+		// if (obj.id === 112075) console.log(tmp)
 		data.sources = sourcelist.map(ele => language[ele]).filter(ele => ele !== '' && ele !== undefined); // TextList/JumpList
 
 		data.filename_icon = obj.icon;
@@ -138,6 +139,17 @@ function getDayWeekList(dungeonId, langmap) {
 			if(ele[key].includes(dungeonId)) mylist.push(value);
 	mylist = mylist.sort((a, b) => a - b);
 	return mylist.map(ele => langmap[dayOfWeek(ele)]);
+}
+
+let propJumpDescs = undefined;
+function getPropJumpDescs() {
+	if(propJumpDescs !== undefined) return propJumpDescs;
+	for (let [key, value] of Object.entries(xsource[0])) {
+		if (Array.isArray(value) && value[0] === 2918309764) {
+			propJumpDescs = key;
+			return propJumpDescs;
+		}
+	}
 }
 
 module.exports = collateMaterial;
