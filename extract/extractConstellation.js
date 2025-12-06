@@ -24,7 +24,13 @@ function collateConstellation(lang) {
 				};
 				data['c'+i].description = sanitizer(data['c'+i].descriptionRaw, replaceNonBreakSpace, removeColorHTML, replaceLayoutPC, replaceGenderM, removeHashtag, convertLinkToBold);
 				validateString(data['c'+i].name, 'constellations.name', lang, false);
-				validateString(data['c'+i].description, 'constellations.description', lang);
+
+				try {
+					validateString(data['c'+i].description, 'constellations.description', lang);
+				} catch (e) {
+					console.log(data);
+					throw e;
+				}
 
 				data['filename_c'+i] = stars[i-1].icon;
 			}

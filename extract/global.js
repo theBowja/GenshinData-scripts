@@ -53,7 +53,10 @@ global.getLanguage = function(abbriev) { return getTextMap(abbriev.toUpperCase()
 global.normalizeStr = function(str) { return str.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
 global.makeFileName = function(str, lang) { return normalizeStr(str).toLowerCase().replace(/[^a-z0-9]/g,''); }
 global.convertBold = function(str, removeBold) { return str.replace(/<color=#FFD780FF>(.*?)<\/color>/gi, removeBold ? '$1' : '**$1**'); }
-global.convertLinkToBold = function(str, removeBold) { return str.replace(/{LINK#.*?}(.*?){\/LINK.*?}/gi, removeBold ? '$1' : '**$1**'); }
+global.convertLinkToBold = function(str, removeBold) {
+	str = str.replace(/{LINK#.*?}(.*?){\/LINK.*?}/gi, removeBold ? '$1' : '**$1**');
+	return str.replace(/{LINK#.*?}/gi, '');
+}
 global.stripHTML = function(str) { return (str || '').replace(/(<([^>]+)>)/gi, ''); }
 global.capitalizeFirst = function(str) { return str[0].toUpperCase() + str.toLowerCase().slice(1); }
 global.replaceLayout = function(str) { return str.replace(/{LAYOUT_MOBILE#.*?}{LAYOUT_PC#(.*?)}{LAYOUT_PS#.*?}/gi,'$1').replace('#','').replaceAll('{NON_BREAK_SPACE}', ' '); }
@@ -92,14 +95,25 @@ global.sanitizer = function(str, ...sanfunctions) {
 	return str;
 }
 global.validateString = function(str, folder, lang, throwerror = true) {
-	// thoma's talent string has an empty color tag for some reason
-	str = str.replace('<color=#FF9999FF></color>', '');
-	if (str === undefined || str === '' ||  /\||{|}|#|<\/|\\n/.test(str)) {
-		// console.log(`${folder} ${lang} invalid string: ${str}`);
-		if (throwerror) throw `${folder} ${lang} invalid string: ${str}`;
-		return false;
-	}
-	return true;
+    // thoma's talent string has an empty color tag for some reason
+    str = str.replace('<color=#FF9999FF></color>', '');
+
+    if (str === undefined) {
+        if (throwerror) throw `${folder} ${lang} invalid string: String is **undefined**`;
+        return false;
+    }
+    if (str === '') {
+        if (throwerror) throw `${folder} ${lang} invalid string: String is **empty**`;
+        return false;
+    }
+    const failedCharMatch = /\||{|}|#|<\/|\\n/.exec(str);
+    if (failedCharMatch) {
+        const failedChar = failedCharMatch[0];
+        if (throwerror) throw `${folder} ${lang} invalid string: Contains **invalid character** "${failedChar}"\n ${str}`;
+        return false;
+    }
+    
+    return true;
 }
 
 global.getMatSourceText = function(id, textmap) {
