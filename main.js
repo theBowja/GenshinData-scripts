@@ -54,7 +54,7 @@ function exportGenshinData() {
 		const starttime = Date.now();
 		console.log(`Processing language: ${lang}`);
 		tasks.forEach(task => {
-			exportDataByLang(task.folder, task.collate, lang);
+			exportDataByLang(task.folder, task.collate, lang, false);
 		});
 		if (tasks.length > 0) console.log(`done ${lang} in ${(Date.now() - starttime) / 1000} seconds`);
 	});
