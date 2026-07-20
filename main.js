@@ -1,8 +1,9 @@
+const ENGLISHONLY = true;
 
 exportGenshinData();
 
 function exportGenshinData() {
-	const { exportCurve, exportData, exportDataByLang, langcodes } = require('./extract/global.js');
+	let { exportCurve, exportData, exportDataByLang, langcodes } = require('./extract/global.js');
 
 	const tasks = [
 		// { folder: 'characters', collate: require('./extract/extractCharacter.js') },
@@ -28,7 +29,7 @@ function exportGenshinData() {
 
 		// { folder: 'voiceovers', collate: require('./extract/extractVoiceover') },
 
-		// { folder: 'tcgcharactercards', collate: require('./extract/extractTcgCharacterCard') },
+		{ folder: 'tcgcharactercards', collate: require('./extract/extractTcgCharacterCard') },
 		// { folder: 'tcgenemycards', collate: require('./extract/extractTcgEnemyCard') },
 		// { folder: 'tcgactioncards', collate: require('./extract/extractTcgActionCard') },
 		// { folder: 'tcgstatuseffects', collate: require('./extract/extractTcgStatusEffect') },
@@ -48,6 +49,8 @@ function exportGenshinData() {
 
 	// Export curves (not language dependent, run once)
 	curveTasks.forEach(task => exportCurve(task.folder, task.file));
+
+	langcodes = ENGLISHONLY ? ['EN'] : langcodes;
 
 	// Export data by language (optimized orchestration)
 	langcodes.forEach(lang => {

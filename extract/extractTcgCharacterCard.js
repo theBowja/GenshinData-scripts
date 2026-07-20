@@ -15,6 +15,7 @@ const propEnemy = getPropNameWithMatch(xchar, 'id', 3202, true);
 const propTags = getPropNameWithMatch(xchar, 'id', 1101, 'GCG_TAG_ELEMENT_CRYO');
 const propSwitch = getPropNameWithMatch(xchar, 'id', 1101, 'Switch_Ganyu');
 
+const propSkillInclude = getPropNameWithMatch(xskill, 'id', 13096, true, ['isHidden', 'notActive']);
 const propSkillKey = getPropNameWithMatch(xskill, 'id', 11011, 'Effect_Damage_Physic_2');
 const propSkillType = getPropNameWithMatch(xskill, 'id', 11011, 'GCG_SKILL_TAG_A');
 const propSkillCost = Object.entries(xskill.find(e => e.id === 11011)).find(([k, v]) => Array.isArray(v) && v[0].count)[0];
@@ -96,37 +97,51 @@ function collate(lang, doEnemy = false) {
 
 		data.skills = [];
 		for (const skillId of obj.skillList) {
-			const skillObj = xskill.find(e => e.id === skillId);
-			const stypetag = skillObj[propSkillType][0]
-			// if (stypetag === 'GCG_SKILL_TAG_NONE') continue; // i have no idea what these skills are but they dont seem to be important
+			try {
+				const skillObj = xskill.find(e => e.id === skillId);
+				if (skillObj[propSkillInclude]) continue; // These are skills that are not included in the game
+				// Note: skillObj.notActive means it is a passive skill
 
-			const skill = {};
-			skill.id = skillId;
-			skill.name = language[skillObj.nameTextMapHash] || '';
-			if (skillId !== 23035) skill.name = sanitizeName(skill.name); // that one random _none skill has undefined skill name
-			skill.descriptionraw = language[skillObj.descTextMapHash];
-			if (skill.descriptionraw === undefined) skill.descriptionraw = ''; // tartaglia Ranged Stance is missing description. im too lazy to figure this out
-			if (tcgSkillKeyMap[skillObj[propSkillKey]]) {
-				// console.log(skill)
-				if (skill.descriptionraw.includes('D__KEY__DAMAGE')) {
-					skill.basedamage = tcgSkillKeyMap[skillObj[propSkillKey]].basedamage;
+				const stypetag = skillObj[propSkillType][0]
+				// if (stypetag === 'GCG_SKILL_TAG_NONE') continue; // i have no idea what these skills are but they dont seem to be important
+
+				const skill = {};
+				skill.id = skillId;
+
+				skill.name = language[skillObj.nameTextMapHash] || '';
+				if (skillId !== 23035) skill.name = sanitizeName(skill.name); // that one random _none skill has undefined skill name
+				skill.descriptionraw = language[skillObj.descTextMapHash];
+				if (skill.descriptionraw === undefined) skill.descriptionraw = ''; // tartaglia Ranged Stance is missing description. im too lazy to figure this out
+				if (tcgSkillKeyMap[skillObj[propSkillKey]]) {
+					// console.log(skill)
+					if (skill.descriptionraw.includes('D__KEY__DAMAGE')) {
+						skill.basedamage = tcgSkillKeyMap[skillObj[propSkillKey]].basedamage;
+					}
+					if (skill.descriptionraw.includes('D__KEY__ELEMENT')) {
+						skill.baseelement = tcgSkillKeyMap[skillObj[propSkillKey]].baseelement;
+					}
 				}
-				if (skill.descriptionraw.includes('D__KEY__ELEMENT')) {
-					skill.baseelement = tcgSkillKeyMap[skillObj[propSkillKey]].baseelement;
-				}
+				skill.descriptionreplaced = getDescriptionReplaced(skill, skill.descriptionraw, language, skillObj[propSkillKey], tcgSkillKeyMap[skillObj[propSkillKey]]);
+				skill.description = sanitizeDescription(skill.descriptionreplaced, true);
+				skill.typetag = stypetag;
+				if (skill.typetag === 'GCG_SKILL_TAG_NONE')
+					skill.type = '';
+				else
+					skill.type = language[xskilltag.find(e => e.type === skill.typetag).nameTextMapHash];
+				if (skillObj[propSkillType][1] !== "GCG_SKILL_TAG_NONE") console.log(`tcg character skill ${skillId} ${skill.name} does not have a second skill tag of NONE`);
+
+				if (skillObj.isNotTriggerActionPost)
+					skill.isPrepareSkill = true;
+
+				skill.playcost = skillObj[propSkillCost].filter(e => e.count).map(e => ({ costtype: e[propSkillCostDice], count: e.count }));
+
+				data.skills.push(skill);
+			} catch (e) {
+				console.error(`[extractTcgCharacterCard] Uncaught exception processing skill ${skillId} for char ${obj.id} (${data.name}):`);
+				console.error(`  skillKey (${propSkillKey}): ${xskill.find(s => s.id === skillId)?.[propSkillKey]}`);
+				console.error(`  skillkeydata in map: ${tcgSkillKeyMap[xskill.find(s => s.id === skillId)?.[propSkillKey]] !== undefined}`);
+				throw e;
 			}
-			skill.descriptionreplaced = getDescriptionReplaced(skill, skill.descriptionraw, language, skillObj[propSkillKey], tcgSkillKeyMap[skillObj[propSkillKey]]);
-			skill.description = sanitizeDescription(skill.descriptionreplaced, true);
-			skill.typetag = stypetag;
-			if (skill.typetag === 'GCG_SKILL_TAG_NONE')
-				skill.type = '';
-			else
-				skill.type = language[xskilltag.find(e => e.type === skill.typetag).nameTextMapHash];
-			if (skillObj[propSkillType][1] !== "GCG_SKILL_TAG_NONE") console.log(`tcg character skill ${skillId} ${skill.name} does not have a second skill tag of NONE`);
-
-			skill.playcost = skillObj[propSkillCost].filter(e => e.count).map(e => ({ costtype: e[propSkillCostDice], count: e.count }));
-
-			data.skills.push(skill);
 		}
 
 		// IMAGE

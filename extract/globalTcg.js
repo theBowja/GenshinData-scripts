@@ -12,6 +12,7 @@ global.loadTcgSkillKeyMap = function () {
 	const tmpo = Object.values(tmpf)[0];
 	tcgSkillKeyMap.DAMAGEVALUEPROP = Object.entries(tmpo['-2060930438']).find(([key, val]) => typeof val === 'number')[0];
 	tcgSkillKeyMap.ELEMENTVALUEPROP = Object.entries(tmpo['476224977']).find(([key, val]) => val.startsWith('GCG'))[0];
+	tcgSkillKeyMap.FILENAMEPROP = Object.keys(tmpf)[1];
 	// console.log(tcgSkillKeyMap);
 	if (!tcgSkillKeyMap.DAMAGEVALUEPROP || !tcgSkillKeyMap.ELEMENTVALUEPROP)
 		console.log('ERROR: loadTcgSkillKeyMap is missing a property map!');
@@ -22,8 +23,14 @@ global.loadTcgSkillKeyMap = function () {
 		const fileObj = require(`${config.GenshinData_folder}/BinOutput/GCG/Gcg_DeclaredValueSet/${filename}`);
 
 		try {
-			const dataname = fileObj.name; //filename.replace('.json', '');
-			const uncutmap = Object.values(fileObj)[1];
+
+			let dataname = fileObj[tcgSkillKeyMap.FILENAMEPROP]; //filename.replace('.json', '');
+			if (dataname === undefined) {
+				// console.log(`tcgSkillKeyMap.FILENAMEPROP not found in ${filename}. This is expected for some old files that haven't been removed.`);
+				continue;
+			}
+
+			const uncutmap = Object.values(fileObj)[0];
 
 			tcgSkillKeyMap[dataname] = {};
 
@@ -33,12 +40,13 @@ global.loadTcgSkillKeyMap = function () {
 						tcgSkillKeyMap[dataname].basedamage = kobj['value'] || kobj[tcgSkillKeyMap.DAMAGEVALUEPROP];
 						if (tcgSkillKeyMap[dataname].basedamage === undefined) console.log(`loadTcgSkillKeyMap failed to extract basedamage from ${filename}`);
 						break;
+					case '1428448536': // D__KEY__DAMAGE_1
 					case '1428448537': // D__KEY__DAMAGE_2
-					case '1428448538':
-					case '1428448539':
-					case '1428448540':
-					case '1428448541':
-					case '1428448542':
+					case '1428448538': // D__KEY__DAMAGE_3
+					case '1428448539': // D__KEY__DAMAGE_4
+					case '1428448540': // D__KEY__DAMAGE_5
+					case '1428448541': // D__KEY__DAMAGE_6
+					case '1428448542': // D__KEY__DAMAGE_7
 						const damagekey = `damage_${parseInt(key) - 1428448535}`;
 						tcgSkillKeyMap[dataname][damagekey] = kobj['value'] || kobj[tcgSkillKeyMap.DAMAGEVALUEPROP];
 						if (tcgSkillKeyMap[dataname][damagekey] === undefined) console.log(`loadTcgSkillKeyMap failed to extract damage key: ${key}`);
@@ -65,154 +73,163 @@ global.loadTcgSkillKeyMap = function () {
 }
 
 global.getDescriptionReplaced = function (data, description, translation, errormessage, skillkeydata) {
-	const xcard = getExcel('GCGCardExcelConfigData');
-	const xchar = getExcel('GCGCharExcelConfigData');
-	const xskill = getExcel('GCGSkillExcelConfigData');
-	const xelement = getExcel('GCGElementExcelConfigData');
-	const xkeyword = getExcel('GCGKeywordExcelConfigData');
-	const propKeywordId = getPropNameWithMatch(xelement, 'type', 'GCG_ELEMENT_CRYO', 101);
+	try {
+		const xcard = getExcel('GCGCardExcelConfigData');
+		const xchar = getExcel('GCGCharExcelConfigData');
+		const xskill = getExcel('GCGSkillExcelConfigData');
+		const xelement = getExcel('GCGElementExcelConfigData');
+		const xkeyword = getExcel('GCGKeywordExcelConfigData');
+		const propKeywordId = getPropNameWithMatch(xelement, 'type', 'GCG_ELEMENT_CRYO', 101);
 
-	let ind = description.indexOf('$[');
-	while (ind !== -1) {
-		const strToReplace = description.substring(ind, description.indexOf(']', ind) + 1);
-		let replacementText = strToReplace;
+		let ind = description.indexOf('$[');
+		while (ind !== -1) {
+			const strToReplace = description.substring(ind, description.indexOf(']', ind) + 1);
+			let replacementText = strToReplace;
 
-		let selector = strToReplace.substring(2, strToReplace.length - 1).split('|');
-		if (selector.length > 2) console.log(`Tcg description ${strToReplace} has extra pipes for ${data.name}`);
-		selector = selector[1];
-		if (selector === 'nc') selector = undefined;
+			let selector = strToReplace.substring(2, strToReplace.length - 1).split('|');
+			if (selector.length > 2) console.log(`Tcg description ${strToReplace} has extra pipes for ${data.name}`);
+			selector = selector[1];
+			if (selector === 'nc') selector = undefined;
 
-		switch (description[ind + 2]) {
-			case 'D': // D__KEY__DAMAGE or D__KEY__ELEMENT
-				switch (description[ind + 10]) {
-					case 'D': // DAMAGE
-						if (description[ind + 16] === '_') { // D__KEY__DAMAGE_2
-							const damagekey = `damage_` + description[ind + 17];
+			switch (description[ind + 2]) {
+				case 'D': // D__KEY__DAMAGE or D__KEY__ELEMENT
+					switch (description[ind + 10]) {
+						case 'D': // DAMAGE
+							if (description[ind + 16] === '_') { // D__KEY__DAMAGE_2
+								const damagekey = `damage_` + description[ind + 17];
 
-							if (!skillkeydata[damagekey]) {
-								console.log(`skillkeydata ${errormessage} is missing damage key ${damagekey}`);
-								console.log(skillkeydata)
-							}
-							replacementText = skillkeydata[damagekey] + '';
+								if (!skillkeydata[damagekey]) {
+									console.log(`skillkeydata ${errormessage} is missing damage key ${damagekey}`);
+									console.log(skillkeydata)
+								}
+								replacementText = skillkeydata[damagekey] + '';
 
-						} else {
-							if (data.basedamage === undefined && skillkeydata.damage_2 && data.id === 22042) {
-								replacementText = skillkeydata.damage_2 + '';
+							} else {
+								if (data.basedamage === undefined && skillkeydata.damage_2 && data.id === 22042) {
+									replacementText = skillkeydata.damage_2 + '';
 
-							} else { // idk what im even doing
-								replacementText = data.basedamage + '';
+								} else { // idk what im even doing
+									replacementText = data.basedamage + '';
 
-								if (data.basedamage === undefined) {
-									console.log(description)
-									console.log(`Tcg object is missing skill base damage for skill ${errormessage} for data id ${data.id}`);
+									if (data.basedamage === undefined) {
+										console.log(description)
+										console.log(`Tcg object is missing skill base damage for skill ${errormessage} for data id ${data.id}`);
+									}
 								}
 							}
-						}
 
-						break;
+							break;
 
-					case 'E': // ELEMENT
-						const element = data.baseelement === 'GCG_ELEMENT_NONE' ? undefined : data.baseelement;
-						const keywordId = xelement.find(e => e.type === element)[propKeywordId];
-						const elementTextMapHash = xkeyword.find(e => e.id === keywordId).titleTextMapHash;
-						replacementText = translation[elementTextMapHash];
-						break;
+						case 'E': // ELEMENT
+							const element = data.baseelement === 'GCG_ELEMENT_NONE' ? undefined : data.baseelement;
+							const keywordId = xelement.find(e => e.type === element)[propKeywordId];
+							const elementTextMapHash = xkeyword.find(e => e.id === keywordId).titleTextMapHash;
+							replacementText = translation[elementTextMapHash];
+							break;
 
-					default:
-						console.log(`Tcg description has unhandled replacement letter ${description[ind + 2]} for ${data.name}`);
-						break;
-				}
-				break;
+						default:
+							console.log(`Tcg description has unhandled replacement letter ${description[ind + 2]} for ${data.name}`);
+							break;
+					}
+					break;
 
-			// case 'I':
-			// 	 break;
+				// case 'I':
+				// 	 break;
 
-			case 'C': // GCGCard
-				const cardId = parseInt(description.substring(ind + 3, description.indexOf(']', ind)), 10);
-				const cardObj = xcard.find(e => e.id === cardId);
-				const cardName = translation[cardObj.nameTextMapHash];
+				case 'C': // GCGCard
+					const cardId = parseInt(description.substring(ind + 3, description.indexOf(']', ind)), 10);
+					const cardObj = xcard.find(e => e.id === cardId);
+					const cardName = translation[cardObj.nameTextMapHash];
 
-				replacementText = cardName;
-				break;
+					replacementText = cardName;
+					break;
 
-			case 'K': // GCGKeyword
-				const keywordId = parseInt(description.substring(ind + 3, description.indexOf(']', ind)), 10);
-				const keywordObj = xkeyword.find(e => e.id === keywordId);
-				const keywordName = translation[keywordObj.titleTextMapHash];
+				case 'K': // GCGKeyword
+					const keywordId = parseInt(description.substring(ind + 3, description.indexOf(']', ind)), 10);
+					const keywordObj = xkeyword.find(e => e.id === keywordId);
+					const keywordName = translation[keywordObj.titleTextMapHash];
 
-				replacementText = keywordName;
-				break;
+					replacementText = keywordName;
+					break;
 
-			case 'A': // GCGChar
-				const charId = parseInt(description.substring(ind + 3, description.indexOf(']', ind)), 10);
-				const charObj = xchar.find(e => e.id === charId);
-				const charName = translation[charObj.nameTextMapHash];
+				case 'A': // GCGChar
+					const charId = parseInt(description.substring(ind + 3, description.indexOf(']', ind)), 10);
+					const charObj = xchar.find(e => e.id === charId);
+					const charName = translation[charObj.nameTextMapHash];
 
-				replacementText = charName;
-				break;
+					replacementText = charName;
+					break;
 
-			case 'S': // GCGSkill
-				const skillId = parseInt(description.substring(ind + 3, description.indexOf(']', ind)), 10);
-				const skillObj = xskill.find(e => e.id === skillId);
+				case 'S': // GCGSkill
+					const skillId = parseInt(description.substring(ind + 3, description.indexOf(']', ind)), 10);
+					const skillObj = xskill.find(e => e.id === skillId);
 
-				if (skillObj === undefined) {
-					console.log(`No skillObj found to replace in description:`);
-					console.log('  ' + description);
-				} else {
+					if (skillObj === undefined) {
+						console.log(`No skillObj found to replace in description:`);
+						console.log('  ' + description);
+					} else {
 
-					const skillName = translation[skillObj.nameTextMapHash];
+						const skillName = translation[skillObj.nameTextMapHash];
 
-					replacementText = skillName;
-				}
-				break;
+						replacementText = skillName;
+					}
+					break;
 
-			// case 'S':
-			// 	break;
+				// case 'S':
+				// 	break;
 
-			default:
-				console.log(`Tcg description has unhandled replacement letter ${description[ind + 2]} for ${data.name}`);
-				break;
+				default:
+					console.log(`Tcg description has unhandled replacement letter ${description[ind + 2]} for ${data.name}`);
+					break;
+			}
+
+			// console.log('===========');
+			// console.log(description);
+			// console.log(selector);
+			// console.log(replacementText);
+
+			const splitText = replacementText.split('|');
+			if (selector && splitText.find(s => s.startsWith(selector))) {
+				replacementText = splitText.find(s => s.startsWith(selector)).split(':')[1];
+			} else {
+				replacementText = splitText[0];
+			}
+
+			description = description.replaceAll(strToReplace, replacementText);
+
+			ind = description.indexOf('$[', ind + 1);
 		}
 
-		// console.log('===========');
-		// console.log(description);
-		// console.log(selector);
-		// console.log(replacementText);
+		description = description.replaceAll('${[GCG_TOKEN_SHIELD]}', '{GCG_TOKEN_SHIELD}');
 
-		const splitText = replacementText.split('|');
-		if (selector && splitText.find(s => s.startsWith(selector))) {
-			replacementText = splitText.find(s => s.startsWith(selector)).split(':')[1];
-		} else {
-			replacementText = splitText[0];
+		if (description.indexOf('$') !== -1)
+			console.log(`Tcg description has unreplaced text for:\n  ${description} `);
+		// Replace {PLURAL#1|pt.|pts.}
+		ind = description.indexOf('{PLURAL');
+		while (ind !== -1) {
+			const strToReplace = description.substring(ind, description.indexOf('}', ind) + 1);
+			let replacementText = strToReplace;
+
+			const values = strToReplace.substring(1, strToReplace.length - 1).split('|');
+			const number = parseInt(values[0].split('#')[1], 10);
+			if (number === 1) replacementText = values[1];
+			else if (number > 1) replacementText = values[2];
+			else console.log(`Tcg plural has unhandled value ${number} for ${strToReplace} for ${data.name}`);
+
+			description = description.replaceAll(strToReplace, replacementText);
+
+			ind = description.indexOf('{PLURAL', ind + 1);
 		}
 
-		description = description.replaceAll(strToReplace, replacementText);
-
-		ind = description.indexOf('$[', ind + 1);
+		return description;
+	} catch (e) {
+		console.error(`[globalTcg.getDescriptionReplaced] Uncaught exception processing "${errormessage}":`);
+		console.error(`  description : ${description}`);
+		console.error(`  data.id     : ${data?.id}`);
+		console.error(`  skillkeydata: ${JSON.stringify(skillkeydata)}`);
+		console.error(e);
+		throw e;
 	}
-
-	description = description.replaceAll('${[GCG_TOKEN_SHIELD]}', '{GCG_TOKEN_SHIELD}');
-
-	if (description.indexOf('$') !== -1)
-		console.log(`Tcg description has unreplaced text for:\n  ${description} `);
-	// Replace {PLURAL#1|pt.|pts.}
-	ind = description.indexOf('{PLURAL');
-	while (ind !== -1) {
-		const strToReplace = description.substring(ind, description.indexOf('}', ind) + 1);
-		let replacementText = strToReplace;
-
-		const values = strToReplace.substring(1, strToReplace.length - 1).split('|');
-		const number = parseInt(values[0].split('#')[1], 10);
-		if (number === 1) replacementText = values[1];
-		else if (number > 1) replacementText = values[2];
-		else console.log(`Tcg plural has unhandled value ${number} for ${strToReplace} for ${data.name}`);
-
-		description = description.replaceAll(strToReplace, replacementText);
-
-		ind = description.indexOf('{PLURAL', ind + 1);
-	}
-
-	return description;
 }
 
 global.getTcgTagImage = function (tag) {

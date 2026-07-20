@@ -81,10 +81,15 @@ global.replaceLayout = function (str) { return str.replace(/{LAYOUT_MOBILE#.*?}{
 global.removeSprite = function (str) { return str.replace(/{SPRITE_PRESET.*?}/gi, ''); }
 global.removeTimezone = function (str) { return str.replace("{TIMEZONE}", ""); }
 global.sanitizeDescription = function (str, removeBold) { return removeTimezone(removeSprite(replaceNewline(replaceLayout(stripHTML(convertLinkToBold(convertBold(str || '', removeBold), removeBold)))))); }
-global.getPropNameWithMatch = function (excel, idkey, idval, propval) {
+global.getPropNameWithMatch = function (excel, idkey, idval, propval, notprops = []) {
 	const tmp = excel.find(e => e[idkey] === idval);
 	if (!tmp) throw new Error(`getPropNameWithMatch: Did not find value for key`);
-	return Object.entries(tmp).find(e => e[1] === propval || e[1][0] === propval)[0];
+	const match = Object.entries(tmp).find(([key, val]) => {
+		if (notprops.includes(key)) return false;
+		return val === propval || val[0] === propval;
+	});
+	if (!match) throw new Error(`getPropNameWithMatch: Did not find value for key`);
+	return match[0];
 };
 global.validName = function (name) { return name !== '' && !name.includes('</') && !/[|{}#]/.test(name) }
 global.sanitizeName = function (str, id) {
