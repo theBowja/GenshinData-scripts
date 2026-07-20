@@ -301,6 +301,8 @@ global.getTcgTagImage = function (tag) {
 			return 'UI_Gcg_Tag_Faction_Sumeru';
 		case 'GCG_TAG_NATION_FONTAINE':
 			return 'UI_Gcg_Tag_Faction_Fontaine';
+		case 'GCG_TAG_NATION_NATLAN':
+			return 'UI_Gcg_Tag_Faction_Natlan';
 
 		case 'GCG_TAG_ARKHE_OUSIA':
 			return 'UI_Gcg_Tag_Faction_Ousia';

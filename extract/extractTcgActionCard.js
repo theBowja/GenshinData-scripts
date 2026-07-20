@@ -14,7 +14,7 @@ const propInPlayDescription = getPropNameWithMatch(xcard, 'id', 213011, 30100261
 
 const propShareId = getPropNameWithMatch(xdeckcard, 'id', 1101, 1);
 const propStoryText = getPropNameWithMatch(xdeckcard, 'id', 1101, 753619631);
-const propCharacterSource = getPropNameWithMatch(xdeckcard, 'id', 1101, 142707039);
+const propCharacterSource = getPropNameWithMatch(xdeckcard, 'id', 1101, 142707551);
 
 const propCardFace = getPropNameWithMatch(xcardview, 'id', 1101, 'Gcg_CardFace_Char_Avatar_Ganyu');
 
@@ -38,7 +38,7 @@ function collate(lang) {
 		if (data.id === data.shareid) console.log(`tcg action card ${deck.id} has same shareid`);
 
 		data.cardtype = obj.cardType;
-		let cardTypeSuffix = data.cardtype.substring(data.cardtype.lastIndexOf('_')+1);
+		let cardTypeSuffix = data.cardtype.substring(data.cardtype.lastIndexOf('_') + 1);
 		if (cardTypeSuffix === 'MODIFY') cardTypeSuffix = 'EQUIP';
 		else if (cardTypeSuffix === 'ASSIST') cardTypeSuffix = 'SUPPORT';
 		data.cardtypetext = language[xmanualtext.find(e => e.textMapId === `UI_GCG_CARD_TYPE_${cardTypeSuffix}`).textMapContentTextMapHash];
@@ -73,14 +73,14 @@ function collate(lang) {
 
 		// IMAGE
 		const cardface = xcardview.find(e => e.id === obj.id)[propCardFace]; // example: Gcg_CardFace_Char_Avatar_Qin
-		const imagebase = cardface.substring(cardface.lastIndexOf('_')+1); // example: Ganyu
+		const imagebase = cardface.substring(cardface.lastIndexOf('_') + 1); // example: Ganyu
 
 		data.filename_cardface = `UI_${cardface}`;
 		data.filename_cardface_golden = `UI_${cardface}_Golden`;
 		data.filename_cardface_HD = `UI_${cardface}_HD`;
 
 		let filename = makeUniqueFileName(obj.nameTextMapHash, accum);
-		if(filename === '') return accum;
+		if (filename === '') return accum;
 		checkDupeName(data, dupeCheck, skipdupelog);
 		accum[filename] = data;
 		if (!validName(data.name)) console.log(`${__filename.split(/[\\/]/).pop()} invalid data name: ${data.name}`);

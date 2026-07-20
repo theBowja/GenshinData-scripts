@@ -1,4 +1,4 @@
-const ENGLISHONLY = true;
+const ENGLISHONLY = false;
 
 exportGenshinData();
 
@@ -29,7 +29,7 @@ function exportGenshinData() {
 
 		// { folder: 'voiceovers', collate: require('./extract/extractVoiceover') },
 
-		{ folder: 'tcgcharactercards', collate: require('./extract/extractTcgCharacterCard') },
+		// { folder: 'tcgcharactercards', collate: require('./extract/extractTcgCharacterCard') },
 		// { folder: 'tcgenemycards', collate: require('./extract/extractTcgEnemyCard') },
 		// { folder: 'tcgactioncards', collate: require('./extract/extractTcgActionCard') },
 		// { folder: 'tcgstatuseffects', collate: require('./extract/extractTcgStatusEffect') },
