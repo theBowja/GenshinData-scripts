@@ -22,7 +22,7 @@ const propSkillCostDice = Object.entries(xskill.find(e => e.id === 11011)[propSk
 
 const propShareId = getPropNameWithMatch(xdeckcard, 'id', 1101, 1);
 const propStoryText = getPropNameWithMatch(xdeckcard, 'id', 1101, 753619631);
-const propCharacterSource = getPropNameWithMatch(xdeckcard, 'id', 1101, 142707039);
+const propCharacterSource = getPropNameWithMatch(xdeckcard, 'id', 1101, 142707551);
 
 const propCardFace = getPropNameWithMatch(xcardview, 'id', 1101, 'Gcg_CardFace_Char_Avatar_Ganyu');
 
@@ -30,7 +30,7 @@ const tcgSkillKeyMap = loadTcgSkillKeyMap();
 // const checkBaseDamageIgnoreLog = ['Char_Skill_11013', 'Char_Skill_13012', 'Char_Skill_16013', 'Char_Skill_22014', 'Char_Skill_13073', ''];
 
 const skipdupelog = [2602, 1211]; // Azhdaha, Furina
-function collate(lang, doEnemy=false) {
+function collate(lang, doEnemy = false) {
 	const language = getLanguage(lang);
 	const dupeCheck = {};
 	let includeTfs = [];
@@ -71,7 +71,7 @@ function collate(lang, doEnemy=false) {
 			includeTfs = includeTfs.concat(tfMap[obj.id]);
 		}
 		if (tfList.includes(obj.id)) {
-			data.istransformation = true; 
+			data.istransformation = true;
 		}
 
 		data.hp = obj.hp;
@@ -90,8 +90,8 @@ function collate(lang, doEnemy=false) {
 				data.storytext = sanitizeDescription(language[deckcardObj[propStoryText]]);
 				data.source = language[deckcardObj[propCharacterSource]];
 			}
-		} catch(e) {
-			console.log('wtf asdf '+obj.id);
+		} catch (e) {
+			console.log('wtf asdf ' + obj.id);
 		}
 
 		data.skills = [];
@@ -102,7 +102,7 @@ function collate(lang, doEnemy=false) {
 
 			const skill = {};
 			skill.id = skillId;
-			skill.name = language[skillObj.nameTextMapHash] || ''; 
+			skill.name = language[skillObj.nameTextMapHash] || '';
 			if (skillId !== 23035) skill.name = sanitizeName(skill.name); // that one random _none skill has undefined skill name
 			skill.descriptionraw = language[skillObj.descTextMapHash];
 			if (skill.descriptionraw === undefined) skill.descriptionraw = ''; // tartaglia Ranged Stance is missing description. im too lazy to figure this out
@@ -131,24 +131,24 @@ function collate(lang, doEnemy=false) {
 
 		// IMAGE
 		const cardface = xcardview.find(e => e.id === obj.id)[propCardFace]; // example: Gcg_CardFace_Char_Avatar_Qin
-		const imagebase = cardface.substring(cardface.lastIndexOf('_')+1); // example: Ganyu
+		const imagebase = cardface.substring(cardface.lastIndexOf('_') + 1); // example: Ganyu
 
 		data.filename_cardface = `UI_${cardface}`;
 		data.filename_cardface_golden = `UI_${cardface}_Golden`;
 		data.filename_cardface_HD = `UI_${cardface}_HD`;
 		let parts = cardface.split('_');
 		parts.splice(1, 1); // remove CardFace
-		parts[2] = parts[2]+'Icon';
+		parts[2] = parts[2] + 'Icon';
 		data.filename_icon = `UI_${parts.join('_')}`;
 
 		let filename;
 		if ([6601, 6602, 6603, 6604].includes(obj.id)) { // if Azhdaha clones, then give better filename
 			filename = getAzhdahaFilename(obj);
-			if(filename === '') return accum;
-			if(accum[filename] !== undefined) console.log(`ERROR: tcg character cards this Azhdaha element clone already exists`);
+			if (filename === '') return accum;
+			if (accum[filename] !== undefined) console.log(`ERROR: tcg character cards this Azhdaha element clone already exists`);
 		} else {
 			filename = makeUniqueFileName(isWanderer ? getWandererNameTextMapHash() : obj.nameTextMapHash, accum);
-			if(filename === '') return accum;
+			if (filename === '') return accum;
 		}
 		checkDupeName(data, dupeCheck, skipdupelog, doEnemy);
 		accum[filename] = data;
@@ -185,14 +185,14 @@ function getAzhdahaFilename(obj) {
 * Note: Pneuma/Ousia enemies transform into their base version and must be reversed.
 */
 let tfMap = {
-	1212: [ 1211 ] // furina
+	1212: [1211] // furina
 }; // mapping from base card ids to a list of their transformed card ids. see below this function
 let tfList = []; // list of transformed card ids
 function buildTransformationMap() {
 	const language = getLanguage('EN');
 	const data = xchar.filter(obj => !obj.skillList.includes(80)).map(obj => {
 		const cardface = xcardview.find(e => e.id === obj.id)[propCardFace]; // example: Gcg_CardFace_Char_Avatar_Qin
-		const imagebase = cardface.substring(cardface.lastIndexOf('_')+1); // example: Ganyu
+		const imagebase = cardface.substring(cardface.lastIndexOf('_') + 1); // example: Ganyu
 
 		const hasArkhe = obj.skillList.some(skillId => {
 			const skillObj = xskill.find(e => e.id === skillId);
@@ -240,11 +240,11 @@ buildTransformationMap();
 
 // sanity checking tfList
 const correctTfList = '1212,3006,3006,3007,3007,3008,3008,3011,3011,6301,6302,6303,6304,6601,6602,6603,6604'
-if (correctTfList !== tfList.sort()+'') {
+if (correctTfList !== tfList.sort() + '') {
 	console.log(`WARNING: tcg character/enemy cards has an unverified transformation-exclusive card`);
 	console.log('new tfMap:');
 	console.log(tfMap);
-	console.log(tfList.sort()+'');
+	console.log(tfList.sort() + '');
 }
 /*
 tfMap = {
