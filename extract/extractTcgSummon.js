@@ -21,10 +21,13 @@ function collate(lang) {
 	const language = getLanguage(lang);
 	const dupeCheck = {};
 	let mydata = xcard.reduce((accum, obj) => {
+		// if (obj.id === 116097) console.log("HEY HEY HEY");
 		if (!['GCG_CARD_SUMMON'].includes(obj.cardType)) return accum;
 		if (obj.isHidden) return accum;
-		if (!obj[propCounter]) return accum;
-		if (!obj[propHint]) return accum;
+		// if (obj.id === 116097) console.log(propCounter);
+		// if (obj.id === 116097) console.log(propHint);
+		// if (!obj[propCounter]) return accum;
+		// if (!obj[propHint]) return accum;
 
 		let data = {};
 		data.id = obj.id;

@@ -36,7 +36,7 @@ function collate(lang, doEnemy = false) {
 	const dupeCheck = {};
 	let includeTfs = [];
 	let mydata = xchar.reduce((accum, obj) => {
-		if (obj.skillList.includes(80)) return accum;
+		if (!obj.skillList || obj.skillList.includes(80)) return accum; // if the character has no skills, then skip it
 		if (!includeTfs.includes(obj.id)) {
 			if (doEnemy && !obj[propEnemy]) return accum; // enemy cards only
 			if (!doEnemy && !obj[propPlayable]) return accum; // playable characters cards only
@@ -205,7 +205,7 @@ let tfMap = {
 let tfList = []; // list of transformed card ids
 function buildTransformationMap() {
 	const language = getLanguage('EN');
-	const data = xchar.filter(obj => !obj.skillList.includes(80)).map(obj => {
+	const data = xchar.filter(obj => obj.skillList && !obj.skillList.includes(80)).map(obj => {
 		const cardface = xcardview.find(e => e.id === obj.id)[propCardFace]; // example: Gcg_CardFace_Char_Avatar_Qin
 		const imagebase = cardface.substring(cardface.lastIndexOf('_') + 1); // example: Ganyu
 

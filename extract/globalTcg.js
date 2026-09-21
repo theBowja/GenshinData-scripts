@@ -9,10 +9,11 @@ global.loadTcgSkillKeyMap = function () {
 
 	// Find DAMAGEVALUEPROP and ELEMENTVALUEPROP
 	const tmpf = require(`${config.GenshinData_folder}/BinOutput/GCG/Gcg_DeclaredValueSet/Char_Skill_13023.json`);
-	const tmpo = Object.values(tmpf)[0];
+	// get the first element that is an object
+	const tmpo = Object.values(tmpf).find(e => typeof e === 'object');
 	tcgSkillKeyMap.DAMAGEVALUEPROP = Object.entries(tmpo['-2060930438']).find(([key, val]) => typeof val === 'number')[0];
 	tcgSkillKeyMap.ELEMENTVALUEPROP = Object.entries(tmpo['476224977']).find(([key, val]) => val.startsWith('GCG'))[0];
-	tcgSkillKeyMap.FILENAMEPROP = Object.keys(tmpf)[1];
+	tcgSkillKeyMap.FILENAMEPROP = Object.keys(tmpf).find(e => typeof tmpf[e] === 'string');
 	// console.log(tcgSkillKeyMap);
 	if (!tcgSkillKeyMap.DAMAGEVALUEPROP || !tcgSkillKeyMap.ELEMENTVALUEPROP)
 		console.log('ERROR: loadTcgSkillKeyMap is missing a property map!');
@@ -30,8 +31,7 @@ global.loadTcgSkillKeyMap = function () {
 				continue;
 			}
 
-			const uncutmap = Object.values(fileObj)[0];
-
+			const uncutmap = Object.values(fileObj).find(e => typeof e === 'object');
 			tcgSkillKeyMap[dataname] = {};
 
 			for (let [key, kobj] of Object.entries(uncutmap)) {
@@ -52,7 +52,7 @@ global.loadTcgSkillKeyMap = function () {
 						if (tcgSkillKeyMap[dataname][damagekey] === undefined) console.log(`loadTcgSkillKeyMap failed to extract damage key: ${key}`);
 						break;
 					case '476224977': // extract baseelement
-						tcgSkillKeyMap[dataname].baseelement = kobj['value'] || kobj[tcgSkillKeyMap.ELEMENTVALUEPROP] || 'GCG_ELEMENT_NONE';
+						tcgSkillKeyMap[dataname].baseelement = kobj['value'] || kobj[tcgSkillKeyMap.ELEMENTVALUEPROP] || 'GCG_ELEMENT_PHYSIC';
 						if (tcgSkillKeyMap[dataname].baseelement === undefined) console.log('loadTcgSkillKeyMap failed to extract baseelement');
 						break;
 					// case '-1197212178': // effectnum
@@ -66,9 +66,9 @@ global.loadTcgSkillKeyMap = function () {
 			continue;
 		}
 	}
-
 	tcgSkillKeyMap.loaded = true;
 	// console.log(tcgSkillKeyMap)
+	// throw new Error('test');
 	return tcgSkillKeyMap;
 }
 
@@ -122,7 +122,11 @@ global.getDescriptionReplaced = function (data, description, translation, errorm
 
 						case 'E': // ELEMENT
 							const element = data.baseelement === 'GCG_ELEMENT_NONE' ? undefined : data.baseelement;
-							const keywordId = xelement.find(e => e.type === element)[propKeywordId];
+
+							// 7.0 hotfix: if element is missing and GCG_ELEMENT_PHYSIC, then set keywordId to 100
+							let keywordId = xelement.find(e => e.type === element)?.[propKeywordId];
+							if (element === 'GCG_ELEMENT_PHYSIC' && keywordId === undefined) keywordId = 100;
+
 							const elementTextMapHash = xkeyword.find(e => e.id === keywordId).titleTextMapHash;
 							replacementText = translation[elementTextMapHash];
 							break;

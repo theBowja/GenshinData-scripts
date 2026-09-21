@@ -29,8 +29,8 @@ function exportGenshinData() {
 
 		// { folder: 'voiceovers', collate: require('./extract/extractVoiceover') },
 
-		// { folder: 'tcgcharactercards', collate: require('./extract/extractTcgCharacterCard') },
-		// { folder: 'tcgenemycards', collate: require('./extract/extractTcgEnemyCard') },
+		{ folder: 'tcgcharactercards', collate: require('./extract/extractTcgCharacterCard') },
+		{ folder: 'tcgenemycards', collate: require('./extract/extractTcgEnemyCard') },
 		// { folder: 'tcgactioncards', collate: require('./extract/extractTcgActionCard') },
 		// { folder: 'tcgstatuseffects', collate: require('./extract/extractTcgStatusEffect') },
 		// { folder: 'tcgsummons', collate: require('./extract/extractTcgSummon') },
